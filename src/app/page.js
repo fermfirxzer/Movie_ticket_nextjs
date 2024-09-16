@@ -1,9 +1,35 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      
-    </div>
-  );
+import SwiperComponent from "@/component/SwiperComponent";
+
+export default function Mainpage(){
+
+    return(
+        <main className="bg-black  text-white font-Kanit ml-2 mx-6 ">
+            <div>
+                <div className="mb-4 mt-10">
+                    <h1 className="text-3xl mx-5 my-6 lg:mx-9 ">ภาพยนตร์แนะนำ</h1>
+                    <SwiperComponent></SwiperComponent>
+                </div>
+                <div>
+                    <h1 className="text-3xl mx-5 my-6 lg:mx-9">กำลังฉาย</h1>
+                    <SwiperComponent></SwiperComponent>
+                </div>
+                <div>
+                    <h1 className="text-3xl mx-5 my-6 lg:mx-9">โปรแกรมหน้า</h1>
+                    <SwiperComponent></SwiperComponent>
+                </div>
+            </div>
+          
+          
+
+
+            
+        </main>
+        
+    );
+
+
+
 }
+

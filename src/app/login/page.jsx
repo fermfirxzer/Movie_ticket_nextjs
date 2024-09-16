@@ -5,9 +5,7 @@ export default function Login(){
 
     return(
 
-        <main className="bg-black h-screen flex justify
-        
-        -center items-center font-Kanit">
+        <main className="bg-black h-screen flex justify-center items-center font-Kanit">
             
             <div className="bg-black border border-white h-[54rem] w-full md:w-3/4 lg:w-2/4 flex flex-col items-center justify-center p-6 md:p-12 lg:p-16 ">
                 <div className="text-center mb-9">
