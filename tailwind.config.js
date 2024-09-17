@@ -11,6 +11,7 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        bgsoft:"var(--bgsoft)"
       },
       lineClamp: {
         4: '4',
@@ -25,6 +26,9 @@ module.exports = {
         'lg': '1024px', 
         'xl': '1456px', 
         
+      },
+      borderWidth: {
+        '0.5': '0.5px',
       },
     },
   
