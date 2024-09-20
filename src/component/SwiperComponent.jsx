@@ -6,7 +6,6 @@ import Link from 'next/link';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-
 // Import required modules from Swiper
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 const movies = [
@@ -91,6 +90,7 @@ const SwiperComponent = () => {
       style = {{
         '--swiper-navigation-color' : '#fff',
         '--swiper-pagination-color' : '#fff',
+       
       }}
       breakpoints={{
         640: { slidesPerView: 2, },
@@ -103,6 +103,7 @@ const SwiperComponent = () => {
         <SwiperSlide key={index}>
           <div className='flex flex-col items-center'>
             <div className="relative flex flex-col items-center w-full">
+                
                 <img src={movie.imageUrl} className='w-4/5  rounded-xl' alt={movie.title}/>
                 <Link href='showtime'>
                   <div className="absolute inset-0 bg-black bg-opacity-70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
