@@ -11,6 +11,8 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        gold: 'var(--gold)',
+        bggray: 'var(--bggray)'
       },
       lineClamp: {
         4: '4',

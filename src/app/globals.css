@@ -8,7 +8,7 @@
   --background: #000;
   --foreground: #171717;
   --gold:rgb(210, 170, 90);
- 
+  --bggray:#111111;
 }
 
 @media (prefers-color-scheme: dark) {
