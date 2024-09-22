@@ -15,6 +15,7 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --bgsoft:#1b181a;
   }
 }
 
@@ -37,5 +38,8 @@ body {
   font-family: 'Kanit', sans-serif;
 }
 
+.header{
+
+}
 
 

@@ -6,7 +6,6 @@ import Link from 'next/link';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-
 // Import required modules from Swiper
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 const movies = [
@@ -95,6 +94,7 @@ const SwiperComponent = () => {
       style = {{
         '--swiper-navigation-color' : '#fff',
         '--swiper-pagination-color' : '#fff',
+       
       }}
       breakpoints={{
         640: { slidesPerView: 2 },

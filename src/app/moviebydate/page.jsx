@@ -165,17 +165,22 @@ export default function Admin(){
                 <div>
                     {movies.map((movie) => {
                         const showtimes = showtimemovie.find(showtime => showtime.MovieId === movie.MovieId);
-                    
+                        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(movie.startDate));
                         return(
                             <div className="mb-20 md:flex ">
                                 <div className=" md:w-2/5 xl:w-1/5 mr-2   text-xl md:text-2xl ">
                                  
                                         <img src={movie.imageUrl} className='w-48 md:w-60 rounded-xl ' alt={movie.title} />
                                         <div className="flex justify-between md:block my-2" >
-                                            <div className="text-white font-Kanit  w-full md:w-60 ">{movie.title}</div>
-                                            <div className="font-bold w-full text-end md:text-start">
+                                            <div className="w-full">
+                                              <div className="text-gold text-lg font-Kanit  w-full md:w-60 ">{formattedDate}</div>
+                                              <div className="text-white font-Kanit  w-full md:w-60 ">{movie.title}</div>
+                                            </div>
+                                           
+                                            <div className="font-bold w-full text-end md:text-start w-full">
                                                 <Link href='edit '>
-                                                    <button className="bg-gold w-14 p-1 rounded-md text-lg ">
+                                                    <button className="bg-gold w-14 p-1 rounded-md text-lg hover:scale-90">
                                                         Edit
                                                     </button>
                                                 </Link>
@@ -195,8 +200,8 @@ export default function Admin(){
                                             <div className="mx-1 md:text-xl">Theater {key.split('tt')}</div>
                                             <div className="flex flex-wrap">
                                                 {showtimes[key].map((time, index) => (
-                                                    <div key={index} className="m-2 bg-white text-black p-2 w-20  text-center rounded-md">
-                                                      {/* bg-none text-white border border-white */}
+                                                    <div key={index} className="m-2 bg-white text-black p-2 w-20  text-center rounded-md hover:bg-gold duration-300 cursor-pointer">
+                                                                              {/* bg-none text-white border border-white */}
                                                         {time}
                                                     </div>
                                                 ))}

@@ -55,55 +55,57 @@ export default function Showtime() {
         
        
     ];
-        // Group showtimes by TheaterId
-        const groupedShowtimes = showtimes.reduce((acc, showtime) => {
-            if (!acc[showtime.TheaterId]) {
-                acc[showtime.TheaterId] = [];
-            }
-            acc[showtime.TheaterId].push(showtime);
-            return acc;
-        }, {});
+    // Group showtimes by TheaterId
+    const groupedShowtimes = showtimes.reduce((acc, showtime) => {
+        if (!acc[showtime.TheaterId]) {
+            acc[showtime.TheaterId] = [];
+        }
+        acc[showtime.TheaterId].push(showtime);
+        return acc;
+    }, {});
 
-        // Update the selected showtime and Scroll to booking
-        const [selectedShowtime, setSelectedShowtime] = useState(null);
-        const handleShowtimeClick = (showtime) => {
-            setSelectedShowtime(showtime); 
-        };
-   
-        useEffect(() => {
-            if (selectedShowtime) {
-                const bookingSection = document.getElementById('booking');
-                if (bookingSection) {
-                    bookingSection.scrollIntoView({ behavior: 'smooth' });
-                }
+    // Update the selected showtime and Scroll to booking
+    const [selectedShowtime, setSelectedShowtime] = useState(null);
+    const handleShowtimeClick = (showtime) => {
+        setSelectedShowtime(showtime);
+    };
+
+    useEffect(() => {
+        if (selectedShowtime) {
+            const bookingSection = document.getElementById('booking');
+            if (bookingSection) {
+                bookingSection.scrollIntoView({ behavior: 'smooth' });
             }
-        }, [selectedShowtime]); // Run effect whenever selectedShowtime changes
+
+        }
+    }, [selectedShowtime]); // Run effect whenever selectedShowtime changes
 
 
     //SEAT
-    const seats =[];
-   
+    const seats = [];
+
     const letters = 'LKJIHGFEDCBA'
-    
-    for(let i=0;i<12;i++){
+
+    for (let i = 0; i < 12; i++) {
         const row = [];
-        for(let j=0;j<16;j++){
-            const seatLabel = `${letters[i]}${j+1}`
+        for (let j = 0; j < 16; j++) {
+            const seatLabel = `${letters[i]}${j + 1}`
             row.push(seatLabel)
         }
         seats.push(row)
     }
     seats.forEach(row => {
-        console.log(row.join(' | '));
+        // console.log(row.join(' | '));
     });
 
     const [selectedSeats, setSelectedSeats] = useState([]);
     const toggleSeat = (seat) => {
         if (selectedSeats.includes(seat)) {
-          setSelectedSeats(selectedSeats.filter(s => s !== seat)); // Deselect seat
+            setSelectedSeats(selectedSeats.filter(s => s !== seat)); // Deselect seat
         } else {
-          setSelectedSeats([...selectedSeats, seat]); // Select seat
+            setSelectedSeats([...selectedSeats, seat]); // Select seat
         }
+        console.log(selectedSeats)
     };
 
 
@@ -111,14 +113,14 @@ export default function Showtime() {
 
     //SEAT same show, theater, date
     const seatdatabase = [
-        {seatId:'A1',showtimeID:1,theaterId:1,date:'17 DEC 2024' },{seatId:'F8',showtimeID:1,theaterId:1,date:'17 DEC 2024' },
-        {seatId:'A2',showtimeID:1,theaterId:1,date:'17 DEC 2024' }, {seatId:'F9',showtimeID:1,theaterId:1,date:'17 DEC 2024' },
-        {seatId:'A3',showtimeID:1,theaterId:1,date:'17 DEC 2024' }, {seatId:'F10',showtimeID:1,theaterId:1,date:'17 DEC 2024' },
-        {seatId:'K11',showtimeID:1,theaterId:1,date:'17 DEC 2024' }, {seatId:'K15',showtimeID:1,theaterId:1,date:'17 DEC 2024' },
+        { seatId: 'A1', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' }, { seatId: 'F8', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' },
+        { seatId: 'A2', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' }, { seatId: 'F9', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' },
+        { seatId: 'A3', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' }, { seatId: 'F10', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' },
+        { seatId: 'K11', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' }, { seatId: 'K15', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' },
     ];
     const isSeatBooked = (seat) => {
         return seatdatabase.some(
-          (bookedSeat) => bookedSeat.seatId === seat
+            (bookedSeat) => bookedSeat.seatId === seat
         );
     };
 
@@ -135,7 +137,7 @@ export default function Showtime() {
         window.location.reload();
     };
     return (
-        <main className="mt-16 min-h-screen duration-200 mx-20">
+        <main className="mt-16 min-h-screen duration-200 ">
             {/* movie detail  */}
             <div className="flex  my-12 bg-bggray w-full  ">
                 <div className="flex justify-center items-center mx-2  md:mx-12">
@@ -145,7 +147,7 @@ export default function Showtime() {
                     <p className="text-[--gold]"> {formattedstartDate} - {formattedendDate}</p>
                     <p className="text-xl lg:text-2xl"> {movies.title} </p>
                     <div className="flex">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center mt-1" height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center mt-1" height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" /></svg>
 
                         <p>{movies.duration}</p>
                     </div>
@@ -156,7 +158,7 @@ export default function Showtime() {
                 </div>
             </div>
 
-            
+
             <div className='mx-6 my-2 lg:mx-16'>
                 <h1 className='text-white font-Kanit text-2xl'>รอบภาพยนตร์</h1>
             </div>
@@ -166,7 +168,7 @@ export default function Showtime() {
 
             {/* showtime */}
             <div className='mx-5 my-8 font-Kanit md:mx-16'>
-              
+
                 {Object.keys(groupedShowtimes).map((theaterId) => (
                     <div key={theaterId}>
                         <h3 className='text-white md:text-xl'>Theater {theaterId}</h3>
@@ -180,59 +182,59 @@ export default function Showtime() {
                     </div>
                 ))}
             </div>
-           
-           
+
+
             {/* booking and  summary */}
-            { selectedShowtime &&(
-            <div className="mx-5 my-20 font-Kanit md:mx-16">
-                <hr className="border-t-2 border-gray-300 my-4" />
-                <div className="flex flex-col xl:flex-row items-center font-Kanit  w-full " id = "booking">
-                    
-                    <div className=' flex flex-col items-center w-5/6 xl:w-2/3 mt-20'>
-                        
-                    
-                        <div className='w-full xl:w-2/3  h-10 bg-black border-2 border-[--gold] text-white text-2xl items-center justify-center flex mb-12'>
-                            SCREEN
-                        </div>
-                        {seats.map((rowSeats, rowIndex) => (
-                            <div key={rowIndex} className="flex mb-4 justify-center text-white  w-full ">
+            {selectedShowtime && (
+                <div className="mx-5 my-20 font-Kanit md:mx-16">
+                    <hr className="border-t-2 border-gray-300 my-4" />
+                    <div className="flex flex-col xl:flex-row items-center font-Kanit  w-full " id="booking">
+
+                        <div className=' flex flex-col items-center w-5/6 xl:w-2/3 mt-20'>
+
+
+                            <div className='w-full xl:w-2/3  h-10 bg-black border-2 border-[--gold] text-white text-2xl items-center justify-center flex mb-12'>
+                                SCREEN
+                            </div>
+                            {seats.map((rowSeats, rowIndex) => (
+                                <div key={rowIndex} className="flex mb-4 justify-center text-white  w-full ">
                                     <span className='mx-1 md:mx-2'>{letters[rowIndex]}</span>
                                     {rowSeats.map((seat) => (
-                                    <div key={seat} id={seat} onClick = {!isSeatBooked(seat) ? () => toggleSeat(seat) : undefined} 
+                                        <div key={seat} id={seat} onClick={!isSeatBooked(seat) ? () => toggleSeat(seat) : undefined}
                                             className={`cursor-pointer text-center rounded mr-1 md:m-1 w-8 h-6 md:h-10 md:w-10  text-white rounded-t-2xl
                                             ${isSeatBooked(seat) ? 'bg-gray-900 cursor-not-allowed' : selectedSeats.includes(seat) ? 'bg-[--gold]' : 'bg-red-900 '}`}
-                                    ></div>
+                                        ></div>
                                     ))}
                                     <span className='mx-1'>{letters[rowIndex]}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className='w-3/4 xl:w-1/4 border  text-white p-2 md:p-6 my-12 text-sm md:text-lg '>
-                        <h1 className='font-bold mx-2  text-lg '>SUMMARY</h1>
-                        <div className='flex'>
-                            <img src={movies.imageUrl} className='w-16 m-2 md:w-40'></img>
-                            <div className='flex flex-col mt-2 mx-2'>
-                                <p className='font-bold'>{movies.title}</p>
-                                <div className='flex items-center'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center " height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/></svg>
-                                    <p>{movies.duration}</p>
                                 </div>
-                                <div className='mt-2'>
-                                    <p >Theater {selectedShowtime.TheaterId}</p>
-                                    <div className="flex justify-center items-center bg-[--gold]  p-2 w-12 h-7 md:w-24 md:h-10 rounded font-bold  md:text-lg text-black " >
-                                        {selectedShowtime.Time}
+                            ))}
+                        </div>
+                        <div className='w-3/4 xl:w-1/4 border  text-white p-2 md:p-6 my-12 text-sm md:text-lg '>
+                            <h1 className='font-bold mx-2  text-lg '>SUMMARY</h1>
+                            <div className='flex'>
+                                <img src={movies.imageUrl} className='w-16 m-2 md:w-40'></img>
+                                <div className='flex flex-col mt-2 mx-2'>
+                                    <p className='font-bold'>{movies.title}</p>
+                                    <div className='flex items-center'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center " height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" /></svg>
+                                        <p>{movies.duration}</p>
+                                    </div>
+                                    <div className='mt-2'>
+                                        <p >Theater {selectedShowtime.TheaterId}</p>
+                                        <div className="flex justify-center items-center bg-[--gold]  p-2 w-12 h-7 md:w-24 md:h-10 rounded font-bold  md:text-lg text-black " >
+                                            {selectedShowtime.Time}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
 
-                        {selectedSeats.length === 0 ? (null):(
-                        <div className='flex flex-wrap mx-2 text-sm md:text-lg duration-500'>
-                            <div className='w-1/2 flex flex-wrap '>
-                                <div className='w-full'>ที่นั่ง : </div>
-                                {selectedSeats.map((selectedseat) => (
-                                    <div className='mr-1'>{selectedseat},</div>
+                            {selectedSeats.length === 0 ? (null) : (
+                                <div className='flex flex-wrap mx-2 text-sm md:text-lg duration-500'>
+                                    <div className='w-1/2 flex flex-wrap '>
+                                        <div className='w-full'>ที่นั่ง : </div>
+                                        {selectedSeats.map((selectedseat) => (
+                                            <div className='mr-1'>{selectedseat},</div>
 
                                 ))}
                             </div>
@@ -247,13 +249,13 @@ export default function Showtime() {
                 </div>
             </div>
             )}
-           
-           
-           
-            
-            
+
+
+
+
+
             {/* Modal */}
-             {isModalOpen && (
+            {isModalOpen && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center font-Kanit">
                     <div className="bg-black text-white p-6 rounded-xl shadow-lg max-w-md md:max-w-3xl w-full">
                         <h2 className="text-xl font-bold mb-4 lg:text-2xl">ยืนยันการซื้อ</h2>
@@ -265,7 +267,7 @@ export default function Showtime() {
                                 <div className='flex flex-col mt-2 mx-2'>
                                     <p className='font-bold text-lg'>{movies.title}</p>
                                     <div className='flex items-center'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center " height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center " height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" /></svg>
                                         <p>{movies.duration}</p>
                                     </div>
                                     <div className='mt-2'>
@@ -280,28 +282,28 @@ export default function Showtime() {
                                 <div className='w-1/2 flex flex-wrap '>
                                     <div className='w-full'>ที่นั่ง : </div>
                                     {selectedSeats.map((selectedseat) => (
-                                        <div className='mr-1'>{selectedseat},</div>
+                                        <div key={selectedSeats} className='mr-1'>{selectedseat},</div>
                                     ))}
                                 </div>
-                                <div  className='w-1/2 text-end'>
+                                <div className='w-1/2 text-end'>
                                     <p className=''>ราคา</p>
                                     <span>{selectedSeats.length * movies.price}</span>
                                 </div>
                             </div>
-                             
+
                         </div>
                         <div className="flex justify-end my-5">
                             <button className="bg-gray-300 text-gray-800 py-2 px-4 rounded mr-4" onClick={() => setIsModalOpen(false)}>
                                 ยกเลิก
                             </button>
-                            <button  type = "submit" className="bg-[--gold] text-black py-2 px-4 rounded"onClick={handleConfirmPurchase}>
+                            <button type="submit" className="bg-[--gold] text-black py-2 px-4 rounded" onClick={handleConfirmPurchase}>
                                 ซื้อตั๋ว
                             </button>
                         </div>
                     </div>
                 </div>
             )}
-           
+
         </main>
     );
 }

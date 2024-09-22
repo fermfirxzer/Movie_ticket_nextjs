@@ -12,7 +12,8 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         gold: 'var(--gold)',
-        bggray: 'var(--bggray)'
+        bggray: 'var(--bggray)',
+        bgsoft:"var(--bgsoft)"
       },
       lineClamp: {
         4: '4',
@@ -27,6 +28,9 @@ module.exports = {
         'lg': '1024px', 
         'xl': '1456px', 
         
+      },
+      borderWidth: {
+        '0.25': '0.25px',
       },
     },
   
