@@ -41,5 +41,8 @@ body {
 .header{
 
 }
+input,textarea{
+  color:black;
+}
 
 
