@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect,useState } from 'react';
-import SwiperDate from '@/component/SwiperDate';
+import SwiperDate from '@/app/component/SwiperDate';
 
 export default function Showtime() {
     const movies = {
