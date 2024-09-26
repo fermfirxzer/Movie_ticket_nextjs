@@ -72,6 +72,7 @@ const Explore = () => {
     ];
     const totalItems = 100; // จำนวนข้อมูลทั้งหมด
     const itemsPerPage = 12;
+    const isAdmin=true;
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
@@ -82,7 +83,6 @@ const Explore = () => {
             console.log(`ดึงข้อมูลจาก ${start} ถึง ${end}`);
             // เขียนโค้ดสำหรับดึงข้อมูลจริง ๆ ที่นี่
         };
-
         fetchData();
     }, [currentPage]);
     const handlePageChange = (pageNumber) => {
@@ -124,6 +124,9 @@ const Explore = () => {
                         />
                     </div>
                 </div>
+                <div className='text-white'>
+                    <button>เพิ่มหนัง</button>
+                </div>
                 <div className='search-body flex justify-between items-center px-24 md:px-48 lg:mx-9 my-6'>
                     {/* Title on the Left */}
                     <h3 className='text-3xl text-white font-bold'>Explore</h3>
@@ -141,10 +144,10 @@ const Explore = () => {
 
                 <div className='flex flex-wrap gap-4 justify-center'>
                     {movies.map((movie, index) => (
-                        <div key={index} className='flex flex-col w-[40%] md:w-[30%] lg:w-[20%] items-center justify-start'>
+                        <div key={index} className='flex flex-col w-[40%] md:w-[30%] lg:w-[20%] items-center justify-start' >
                             <div className="relative flex flex-col items-center w-full">
                                 <img src={movie.imageUrl} className='w-4/5  rounded-xl' alt={movie.title} />
-                                <Link href='showtime'>
+                                <Link href={isAdmin?"editmovie":"showtime"}>
                                     <div className="absolute inset-0 bg-black bg-opacity-70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
                                         <input type="button" value="ดูเพิ่มเติม" className='bg-gray-100 text-black w-4/6 rounded cursor-pointer' />
                                     </div>
@@ -167,7 +170,6 @@ const Explore = () => {
                     totalItems={totalItems}
                     itemsPerPage={itemsPerPage}
                     onPageChange={handlePageChange}
-
                 />
             </div>
         </div>
