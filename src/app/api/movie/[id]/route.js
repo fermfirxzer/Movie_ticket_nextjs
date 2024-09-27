@@ -1,5 +1,3 @@
-
-
 import { connectMongoDB } from "@/../lib/mongodb.js"; // Adjust the import path based on your MongoDB connection file
 import { Movie } from "@/../lib/model/movie.js";// Adjust the import path based on your Mongoose model
 import { NextResponse } from "next/server";
@@ -34,7 +32,7 @@ export async function PUT(request, { params }) {
         if (!checkmovie) {
             return NextResponse.json({ Message: "Movie id not found" }, { status: 400 });
         }
-        const result=await Movie.updateOne(
+        const result = await Movie.updateOne(
             { _id: movid_id }, // Ensure the ID is correctly wrapped in ObjectId
             {
                 $set: {
@@ -44,10 +42,7 @@ export async function PUT(request, { params }) {
                     price: movieData.price,
                     duration: movieData.duration,
                     desc: movieData.desc,
-<<<<<<< HEAD
-                    imageUrl:movieData.imageUrl,
-=======
->>>>>>> 979582ac1c53debe17842f4e0ccc32e5145fc18f
+                    imageUrl: movieData.imageUrl,
                 },
             });
         if (result.modifiedCount === 0) {
