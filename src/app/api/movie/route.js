@@ -1,27 +1,34 @@
 import { connectMongoDB } from "@/../lib/mongodb.js"; // Ensure you have a utility to connect to MongoDB
-import Movie from "@/../lib/model/movie.js";
+import {Movie} from "@/../lib/model/movie.js";
 import { NextResponse } from "next/server";
+
 export async function POST(request) {
     try {
         const movieData = await request.json();
         console.log(movieData)
-        return NextResponse.json(movieData, { status: 201 });
-        // // Validate the movie data (optional)
-        // if (!movieData.name || !movieData.startDate || !movieData.endDate) {
-        //     return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
-        // }
-        // // Connect to the database
-        // const db = await connectToDatabase();
 
-        // // Create a new movie instance
-        // const newMovie = new Movie(movieData);
+        if (!movieData.movie_name || !movieData.startDate || !movieData.endDate || !movieData.price || !movieData.duration||!movieData.desc) {
+            return NextResponse.json({ Message: 'Missing required fields' }, { status: 400 });
+        }
 
-        // // Save the movie to the database
-        // await newMovie.save();
+        await connectMongoDB();
 
-        // return new Response(JSON.stringify(newMovie), { status: 201 }); // Return the created movie with a 201 status
+        const checkname = await Movie.findOne({ movie_name: movieData.movie_name }); // Use `findOne` for a single document
+
+        if (checkname) {
+            return NextResponse.json({ Message: "Movie name already exists!" }, { status: 400 }); // Change status to 400
+        }
+
+        const newMovie = new Movie(movieData);
+        try {
+            await newMovie.save();
+            return NextResponse.json({ Message: "Insert Movie success" }, { status: 201 });
+        } catch (error) {
+            console.error('Error saving movie:', error); 
+            return NextResponse.json({ Message: 'Failed to save in DB' }, { status: 400 });
+        }
     } catch (error) {
         console.error('Error inserting movie:', error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
+        return NextResponse.json({ Message: 'Internal Server Error' }, { status: 500 });
     }
 }

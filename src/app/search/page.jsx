@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Pagination from '@/component/Pagination';
 
@@ -8,14 +8,14 @@ const Explore = () => {
     const [movies, setMovies] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const itemsPerPage = 12;
-    const totalItems = movies.length; // Update based on actual data
+    const [totalItems,setTotalItems]= useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     
-    
-    
+    const searchInputRef = useRef(null);
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const response = await fetch(`/api/search?name=${searchQuery}`, {
+                const response = await fetch(`/api/search?name=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`, {
                     method: 'GET',
                 });
     
@@ -23,9 +23,12 @@ const Explore = () => {
                     throw new Error(`Error: ${response.status}`);
                 }
     
+               
                 const data = await response.json();
-                setMovies(data);
-                console.log(data); 
+                setMovies(data.movies); 
+                setTotalItems(data.totalCount); 
+                console.log(data.movies); 
+                console.log(data.totalCount); 
             } catch (error) {
                 console.error('Error fetching movies3:', error);
             }
@@ -34,30 +37,19 @@ const Explore = () => {
       
             fetchMovies();
        
-    }, []);
+    }, [currentPage,searchQuery]);
+    
+    
     const handleSearchClick = async () => {
-        if (!searchQuery) return; // Don't search if the search query is empty
-        try {
-            const response = await fetch(`/api/search?name=${searchQuery}`, {
-                method: 'GET',
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-
-            const data = await response.json();
-           
-            setMovies(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching movies:', error);
-        }
+        setCurrentPage(1);
+        setSearchQuery(searchInputRef.current.value) 
        
     };
+
     const handlePageChange = (pageNumber) => {
       setCurrentPage(pageNumber);
     };
+
     return (
         <div>
             <div className=''>
@@ -84,8 +76,8 @@ const Explore = () => {
                         </div>
                         <input
                             type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            ref={searchInputRef}
+                            
                             placeholder="Search for movies..."
                             className="w-full pl-10 px-4 py-2 rounded-md border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-[--gold]"
                         />
@@ -130,6 +122,7 @@ const Explore = () => {
                 <Pagination
                     totalItems={totalItems}
                     itemsPerPage={itemsPerPage}
+                    currentPage={currentPage}
                     onPageChange={handlePageChange}
                 />
             </div>

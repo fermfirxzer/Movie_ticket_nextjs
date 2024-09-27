@@ -1,13 +1,8 @@
 import { connectMongoDB } from "@/../lib/mongodb.js"; // MongoDB connection utility
-import Movie from "@/../lib/model/movie.js";
+import {Movie} from "@/../lib/model/movie.js";
 import { NextResponse } from "next/server";
 
-// Mock data for movies
-const mockMovies = [
-    { id: 1, title: "Mock Movie 1", desc: "Description of Mock Movie 1" },
-    { id: 2, title: "Mock Movie 2", desc: "Description of Mock Movie 2" },
-    { id: 3, title: "Mock Movie 3", desc: "Description of Mock Movie 3" },
-];
+
 
 export async function GET(req) {
     try {
@@ -17,27 +12,36 @@ export async function GET(req) {
         // Extract search query parameter from the request
         const { searchParams } = new URL(req.url);
         const name = searchParams.get('name');
-
-        await connectMongoDB();    
+        const page = parseInt(searchParams.get('page')) || 1;
+        const limit = parseInt(searchParams.get('limit')) || 12;
+        const skip = (page - 1) * limit;
+    
+         
 
          
         let movies;
-
+        let totalCount;
         if (name) {
+            totalCount = await Movie.countDocuments({
+                movie_name: { $regex: name, $options: "i" } // Count matching documents
+            });
             // If search query exists, filter movies by search query
             console.log("Search query parameter:", name);
             movies = await Movie.find({
                 movie_name: { $regex: name, $options: "i" } // "i" for case-insensitive search
-            });
+            }).skip(skip).limit(limit);
+
             console.log("Movies found:", movies);
+         
         } else {
             // If no search query, fetch all movies
-            movies = await Movie.find();
+            totalCount = await Movie.countDocuments();
+            movies = await Movie.find().skip(skip).limit(limit);
             console.log("All movies from DB:", movies);
         }
       
         // Return the filtered movies
-        return NextResponse.json(movies);
+        return NextResponse.json({ movies, totalCount });
        
       
        
