@@ -1,9 +1,15 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useMovie } from '@/context/Moviecontext';
-export default function Edit() {
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
+
+export default function Edit({ params }) {
     const [errmovie, setErrmovie] = useState("");
     const currentMovieId = 1;
+    const router = useRouter();
+    const [Loading, setLoading] = useState(true);
+    const { name } = params;
     const theaters = {
         1: ['12:30', '15:30', '18:30', '21:30', '22:30'],
         2: ['12:00', '15:00', '18:00', '21:00', '22:00'],
@@ -40,55 +46,19 @@ export default function Edit() {
 
         }
     ];
-    const insertMovie = async (e) => {
-        e.preventDefault();
-        setErrmovie(null);
-        console.log(currentMovieInfo)
-        if (!currentMovieInfo.imageFile) {
-            setErrmovie("Image required");
-            return;
-        }
-        const formData = new FormData();
-        formData.append('image', currentMovieInfo.imageFile);
-        try {
-            const imageResponse = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
-            // console.log(imageResponse.json())
-            const imageData = await imageResponse.json();
-            console.log(imageData.imageUrl);
-            setCurrentMovieInfo({
-                ...currentMovieInfo,
-                imageUrl: imageData.imageUrl,
-            });
-            const movieResponse = await fetch('/api/movie', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(currentMovieInfo),
-            });
-            const movieData = await movieResponse.json()
-            setErrmovie(movieData.Message);
-
-        } catch (error) {
-            console.log(error.Message);
-            setErrmovie('An error occurred while uploading the image');
-        }
-    };
-    const { movieId, setMovieId } = useMovie();
+    const [Moviename, setMoviename] = useState(name || null);
+    
     useEffect(() => {
-        if (movieId) { // Remove after fetching
-            // Fetch movie data using movieId
+        if (Moviename) {
             const fetchMovie = async () => {
                 try {
-                    const response = await fetch(`/api/movie/${movieId}`);
+                    const response = await fetch(`/api/movie/${Moviename}`);
                     if (!response.ok) {
                         throw new Error('Failed to fetch movie');
                     }
                     const data = await response.json();
                     setCurrentMovieInfo(data);
+
                     setLoading(false);
 
                 } catch (error) {
@@ -99,7 +69,7 @@ export default function Edit() {
             };
             fetchMovie();
         }
-    }, [movieId]);
+    }, [Moviename]);
 
     const [currentMovieInfo, setCurrentMovieInfo] = useState({
         movie_id: '',
@@ -121,7 +91,7 @@ export default function Edit() {
             [name]: value,
         });
         console.log(currentMovieInfo)
-        console.log(movieId)
+
     };
     const handleClick = () => {
         document.getElementById('fileInput').click();
@@ -258,7 +228,7 @@ export default function Edit() {
             setAddTheater(true);
         }
     };
-
+    console.log(currentMovieShowtimes)
 
     const saveShowtime = (TheaterId) => {
         setCurrentMovieShowtimes(prevShowtimes => ({
@@ -276,7 +246,7 @@ export default function Edit() {
             ...prev,
             [TheaterId]: false,
         }));
-
+        console.log(currentMovieShowtimes)
     };
 
     //Add showtime
@@ -305,31 +275,44 @@ export default function Edit() {
     const updateMovie = async (event) => {
         event.preventDefault(); // Prevent default form submission
         try {
-            if (currentMovieInfo.imagePath != null && currentMovieInfo.imageFile) {
+            let updatedMovieInfo = { ...currentMovieInfo };
+    
+            // If there's an image file to upload, upload it first
+            if (currentMovieInfo.imagePath && currentMovieInfo.imageFile) {
                 const formData = new FormData();
                 formData.append('image', currentMovieInfo.imageFile);
+    
                 const imageResponse = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData,
                 });
-                // console.log(imageResponse.json())
+    
                 const imageData = await imageResponse.json();
                 console.log(imageData.imageUrl);
-                setCurrentMovieInfo({
-                    ...currentMovieInfo,
+    
+                // Update the movie info with the new image URL
+                updatedMovieInfo = {
+                    ...updatedMovieInfo,
                     imageUrl: imageData.imageUrl,
-                });
+                };
             }
-            const response = await fetch(`/api/movie/${currentMovieInfo._id}`, {
+    
+            // Now proceed with updating the movie information
+            const response = await fetch(`/api/movie`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(currentMovieInfo),
+                body: JSON.stringify(updatedMovieInfo), // Use the updated movie info with the image URL
             });
+    
             if (response.ok) {
-
+                const data = await response.json();
+                console.log(data);
                 setErrmovie('Movie updated successfully');
+                setTimeout(() => {
+                    router.push(`/editmovie/${data.movie_name}`);
+                }, 3000);
             } else {
                 setErrmovie('Failed to update movie');
             }
@@ -338,8 +321,47 @@ export default function Edit() {
         }
     };
     const deleteMovie = async (e) => {
-        console.log("delete", movieId);
         e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`/api/movie/${currentMovieInfo.movie_name}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(currentMovieInfo),
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your movie has been deleted.',
+                            'success'
+                        );
+                        setTimeout(() => {
+                            router.push('/search');
+                        }, 3000);
+                    } else {
+                        setErrmovie('Failed to delete movie');
+                    }
+                } catch (error) {
+                    setErrmovie(error.Message);
+                }
+            }
+        });
+    
+    }
+    if (Loading) {
+        return <div> Loading ....</div>
     }
     return (
         <main className='min-h-screen font-Kanit bg-black'>
@@ -353,15 +375,8 @@ export default function Edit() {
 
                     <div className=" mx-6 mt-6 mb-2 w-80 h-80 ">
                         <div onClick={handleClick} className="cursor-pointer w-full  h-full bg-black p-1 rounded-xl ">
-
-                            <img
-                                src={
-                                    currentMovieInfo.imageUrl && movieId && imagecount
-                                        ? `/uploads/${currentMovieInfo.imageUrl}`
-                                        : currentMovieInfo.imagePath
-                                            ? currentMovieInfo.imagePath
-                                            : "https://1146890965.rsc.cdn77.org/web/newux/assets/images/default-newArticle@3x.png"
-                                }
+                            <img src={currentMovieInfo.imageUrl && imagecount ? `/uploads/${currentMovieInfo.imageUrl}`
+                            : currentMovieInfo.imagePath? currentMovieInfo.imagePath: "https://1146890965.rsc.cdn77.org/web/newux/assets/images/default-newArticle@3x.png" }
                                 alt="Movie Image"
                                 className="w-full h-full object-contain rounded-lg"
                             />

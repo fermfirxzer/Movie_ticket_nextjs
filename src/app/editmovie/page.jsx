@@ -1,12 +1,13 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useMovie } from '@/context/Moviecontext';
+import { useRouter } from 'next/navigation';
 export default function Edit() {
     const [errmovie, setErrmovie] = useState("");
+    const router = useRouter();
     const insertMovie = async (e) => {
         e.preventDefault();
         setErrmovie(null);
-        console.log(currentMovieInfo)
         if (!currentMovieInfo.imageFile) {
             setErrmovie("Image required");
             return;
@@ -25,6 +26,7 @@ export default function Edit() {
                 ...currentMovieInfo,
                 imageUrl: imageData.imageUrl,
             });
+
             const movieResponse = await fetch('/api/movie', {
                 method: 'POST',
                 headers: {
@@ -34,7 +36,11 @@ export default function Edit() {
             });
             const movieData = await movieResponse.json()
             setErrmovie(movieData.Message);
-
+            if (movieResponse.ok) {
+                setTimeout(() => {
+                    router.push('/search');
+                }, 3000);
+            }
         } catch (error) {
             console.log(error.Message);
             setErrmovie('An error occurred while uploading the image');
@@ -47,7 +53,7 @@ export default function Edit() {
         startDate: '',
         endDate: '',
         imageUrl: '',
-        imagePath:'',
+        imagePath: '',
         duration: '',
         desc: '',
         price: '',
@@ -80,9 +86,6 @@ export default function Edit() {
         }
 
     };
-
-
-
 
 
     return (
