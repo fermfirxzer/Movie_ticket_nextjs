@@ -1,13 +1,11 @@
 
 'use client'
-import React, { useState } from 'react';
-
-
+import React, { useState, useEffect } from 'react';
 
 export default function Edit() {
-    const [errmovie, setErrmovie] = useState("error");
+    const [errmovie, setErrmovie] = useState("");
     const currentMovieId = 1;
-
+    const [loading, setLoading] = useState(false||localStorage.getItem('movieId') );
     const theaters = {
         1: ['12:30', '15:30', '18:30', '21:30', '22:30'],
         2: ['12:00', '15:00', '18:00', '21:00', '22:00'],
@@ -15,7 +13,7 @@ export default function Edit() {
         4: ['9:30', '12:30', '15:30', '18:30', '21:30', '22:30'],
         5: ['9:00', '12:00', '15:00', '18:00', '21:00', '22:00', '1:00', '4:00'],
     }
-
+    const [movieId,setmovieId]=useState(localStorage.getItem('movieId')||null);
     const showtimemovie = [
         {
             ShowtimeId: 1, MovieId: 1
@@ -57,7 +55,8 @@ export default function Edit() {
     const insertMovie = async (e) => {
         e.preventDefault();
         setErrmovie(null);
-        if(!currentMovieInfo.imageFile){
+        console.log(currentMovieInfo)
+        if (!currentMovieInfo.imageFile) {
             setErrmovie("Image required");
             return;
         }
@@ -75,7 +74,6 @@ export default function Edit() {
                 ...currentMovieInfo,
                 imageUrl: imageData.imageUrl,
             });
-            console.log(currentMovieInfo)
             const movieResponse = await fetch('/api/movie', {
                 method: 'POST',
                 headers: {
@@ -88,33 +86,32 @@ export default function Edit() {
 
         } catch (error) {
             console.log(error.Message);
-            console.log(error)
             setErrmovie('An error occurred while uploading the image');
         }
-        // try {
-        //     const response = await fetch('/api/movie', {
-        //         method: 'POST', // Specify the HTTP method
-        //         headers: {
-        //             'Content-Type': 'application/json', // Set the content type
-        //         },
-        //         body: JSON.stringify(currentMovieInfo), // Convert the movie data to JSON
-        //     });
-
-        //     if (!response.ok) {
-        //         const errorData = await response.json();
-        //         setErrmovie(`${response.statusText} ${errorData.error}`);
-        //         // throw new Error(`Error: ${response.statusText}`);
-        //     }else{
-        //         setErrmovie("Movie inserted successfully");
-        //     }
-        //     // const data = await response.json(); // Parse the JSON response
-        //     // console.log('Movie inserted:', data);
-        // } catch (error) {
-        //     console.error('Error inserting movie:', error);
-        // }
     };
+    useEffect(() => {
+        if (movieId) {
+            localStorage.removeItem('movieId'); // Remove after fetching
+            // Fetch movie data using movieId
+            const fetchMovie = async () => {
+                try {
+                    const response = await fetch(`/api/movie/${movieId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch movie');
+                    }
+                    const data = await response.json();
+                    setCurrentMovieInfo(data);
+                    setLoading(false);
 
+                } catch (error) {
+                    setError(error.message || 'Unknown error');
+                }
 
+            };
+            fetchMovie();
+        }
+    }, []);
+    
     // const movie = {
     //     MovieId:1,
     //     name: 'Spider-Man: No Way Home',
@@ -127,7 +124,7 @@ export default function Edit() {
     // };
     // const movie=null;
     const [currentMovieInfo, setCurrentMovieInfo] = useState({
-        movie_id: movie?.MovieId || '',
+        movie_id: '',
         movie_name: movie?.name || '',
         startDate: movie?.startDate ? new Date(movie.startDate).toISOString().split('T')[0] : '',
         endDate: movie?.endDate ? new Date(movie.endDate).toISOString().split('T')[0] : '',
@@ -138,11 +135,7 @@ export default function Edit() {
         price: movie?.price || '',
         imageFile: null,
     });
-
-
-
-
-
+    console.log(currentMovieInfo)
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCurrentMovieInfo({
@@ -166,9 +159,7 @@ export default function Edit() {
             });
         }
     };
-    const handleSubmit = () => {
-        console.log('submit');
-    };
+
 
 
     //edit each theater
@@ -309,8 +300,31 @@ export default function Edit() {
         }));
 
     };
+    const updateMovie = async (event) => {
+        event.preventDefault(); // Prevent default form submission
+        try {
+            const response = await fetch(`/api/movie/${currentMovieInfo._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(currentMovieInfo),
+            });
+            if (response.ok) {
+                // Handle success (e.g., navigate or show success message)
+                console.log('Movie updated successfully');
+            } else {
+                throw new Error('Failed to update movie');
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
 
-
+    const deleteMovie = async (e) => {
+        console.log("delete");
+        e.preventDefault();
+    }
 
 
 
@@ -338,13 +352,19 @@ export default function Edit() {
     const isTempShowtimeSelected = (theaterId, time) => {
         return tempShowtimes[`tt${theaterId}`]?.includes(time);
     };
-
+    if (loading) {
+        return <p>Loading...</p>; // Show loading state
+    }
     return (
         <main className='min-h-screen font-Kanit bg-black'>
 
             <div className="xl:flex xl:flex-wrap   bg-bggray py-12 justify-center md:justify-start p-2 md:mx-40 ">
-                <div className='flex flex-wrap  xl:w-full justify-center lg:justify-start'>
+                <div className='flex w-full p-10'>
                     <p className='text-white mt-5 w-80 md:w-full mx-10 text-3xl font-bold'>ข้อมูลหนัง</p>
+                    {currentMovieInfo._id&& (<button type="submit" className='bg-white hover:scale-90 w-16 p-2 rounded-md mx-2' onClick={deleteMovie}>ลบ</button>)}
+                </div>
+                <div className='flex flex-wrap  xl:w-full justify-center lg:justify-start'>
+
                     <div className=" mx-6 mt-6 mb-2 w-80 h-80 ">
                         <div onClick={handleClick} className="cursor-pointer w-full  h-full bg-black p-1 rounded-xl ">
 
@@ -357,7 +377,7 @@ export default function Edit() {
                         </div>
                         <input id="fileInput" type="file" accept="image/*" className='hidden' name="imagePath" onChange={handleImageChange} />
                     </div>
-                    <form className="w-4/5 md:w-2/3 lg:w-1/2 mx-6 my-6" onSubmit={insertMovie}>
+                    <form className="w-4/5 md:w-2/3 lg:w-1/2 mx-6 my-6" onSubmit={updateMovie}>
                         <div className="mb-4">
                             <label className="block text-gray-700 ">Name</label>
                             <input type="text" name="movie_name" value={currentMovieInfo.movie_name} onChange={handleInputChange} className="w-full px-3 py-2 border rounded" required />
