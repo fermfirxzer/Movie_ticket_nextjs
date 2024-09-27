@@ -1,4 +1,3 @@
-
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useMovie } from '@/context/Moviecontext';
@@ -305,7 +304,7 @@ export default function Edit() {
     const updateMovie = async (event) => {
         event.preventDefault(); // Prevent default form submission
         try {
-            if (currentMovieInfo.imagePath!=null&&currentMovieInfo.imageFile) {
+            if (currentMovieInfo.imagePath != null && currentMovieInfo.imageFile) {
                 const formData = new FormData();
                 formData.append('image', currentMovieInfo.imageFile);
                 const imageResponse = await fetch('/api/upload', {
@@ -338,7 +337,7 @@ export default function Edit() {
         }
     };
     const deleteMovie = async (e) => {
-        console.log("delete",movieId);
+        console.log("delete", movieId);
         e.preventDefault();
     }
     return (
@@ -536,4 +535,3 @@ export default function Edit() {
 
 
 }
-

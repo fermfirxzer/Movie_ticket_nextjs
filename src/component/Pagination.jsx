@@ -1,38 +1,43 @@
 "use client"
 import React, { useState } from 'react';
 
-const Pagination = ({ totalItems, itemsPerPage, onPageChange }) => {
+const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => {
     // คำนวณจำนวนหน้าทั้งหมด
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+    const handleClick = (pageNumber) => {
+        if (pageNumber !== currentPage) {
+            onPageChange(pageNumber);
+        }
+    };
     // เก็บสถานะหน้าปัจจุบัน
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
 
-    // ฟังก์ชันสำหรับเปลี่ยนหน้า
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-        onPageChange(pageNumber);
-    };
+    // // ฟังก์ชันสำหรับเปลี่ยนหน้า
+    // const handlePageChange = (pageNumber) => {
+    //     setCurrentPage(pageNumber);
+    //     onPageChange(pageNumber);
+    // };
 
-    // ฟังก์ชันสำหรับเลื่อนไปหน้าก่อนหน้า
-    const goToPreviousPage = () => {
-        if (currentPage > 1) {
-            handlePageChange(currentPage - 1);
-        }
-    };
+    // // ฟังก์ชันสำหรับเลื่อนไปหน้าก่อนหน้า
+    // const goToPreviousPage = () => {
+    //     if (currentPage > 1) {
+    //         handlePageChange(currentPage - 1);
+    //     }
+    // };
 
-    // ฟังก์ชันสำหรับเลื่อนไปหน้าถัดไป
-    const goToNextPage = () => {
-        if (currentPage < totalPages) {
-            handlePageChange(currentPage + 1);
-        }
-    };
+    // // ฟังก์ชันสำหรับเลื่อนไปหน้าถัดไป
+    // const goToNextPage = () => {
+    //     if (currentPage < totalPages) {
+    //         handlePageChange(currentPage + 1);
+    //     }
+    // };
 
     return (
         <div className="flex items-center justify-center mt-4">
             <button
                 className="px-3 py-2 mx-1 bg-gray-600 rounded hover:bg-gray-400 text-xl"
-                onClick={goToPreviousPage}
+                onClick={() => handleClick(currentPage - 1)} 
                 disabled={currentPage === 1}
             >
                 &lt;
@@ -45,7 +50,7 @@ const Pagination = ({ totalItems, itemsPerPage, onPageChange }) => {
 
             <button
                 className="px-3 py-2 mx-1 bg-gray-600 rounded hover:bg-gray-400 text-xl"
-                onClick={goToNextPage}
+                onClick={() => handleClick(currentPage + 1)} 
                 disabled={currentPage === totalPages}
             >
                 &gt;
