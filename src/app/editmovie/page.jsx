@@ -1,11 +1,10 @@
 
 'use client'
 import React, { useState, useEffect } from 'react';
-
+import { useMovie } from '@/context/Moviecontext';
 export default function Edit() {
     const [errmovie, setErrmovie] = useState("");
     const currentMovieId = 1;
-    const [loading, setLoading] = useState(false||localStorage.getItem('movieId') );
     const theaters = {
         1: ['12:30', '15:30', '18:30', '21:30', '22:30'],
         2: ['12:00', '15:00', '18:00', '21:00', '22:00'],
@@ -13,7 +12,6 @@ export default function Edit() {
         4: ['9:30', '12:30', '15:30', '18:30', '21:30', '22:30'],
         5: ['9:00', '12:00', '15:00', '18:00', '21:00', '22:00', '1:00', '4:00'],
     }
-    const [movieId,setmovieId]=useState(localStorage.getItem('movieId')||null);
     const showtimemovie = [
         {
             ShowtimeId: 1, MovieId: 1
@@ -43,15 +41,6 @@ export default function Edit() {
 
         }
     ];
-    const movie = {
-        name: '',
-        startDate: null,
-        endDate: null,
-        imageUrl: '',
-        duration: '',
-        desc: ''
-        , price: null,
-    };
     const insertMovie = async (e) => {
         e.preventDefault();
         setErrmovie(null);
@@ -89,9 +78,9 @@ export default function Edit() {
             setErrmovie('An error occurred while uploading the image');
         }
     };
+    const { movieId, setMovieId } = useMovie();
     useEffect(() => {
-        if (movieId) {
-            localStorage.removeItem('movieId'); // Remove after fetching
+        if (movieId) { // Remove after fetching
             // Fetch movie data using movieId
             const fetchMovie = async () => {
                 try {
@@ -104,38 +93,28 @@ export default function Edit() {
                     setLoading(false);
 
                 } catch (error) {
-                    setError(error.message || 'Unknown error');
+                    console.log(error.Message)
+                    setErrmovie(error.Message);
                 }
 
             };
             fetchMovie();
         }
-    }, []);
-    
-    // const movie = {
-    //     MovieId:1,
-    //     name: 'Spider-Man: No Way Home',
-    //     startDate:new Date('2024-09-18'),
-    //     endDate:new Date('2024-12-30'),
-    //     imageUrl: 'https://th.bing.com/th?id=OIP.6_208hkN2fO_hurqMskt_AHaK-&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-    //     duration: '2 ชม. 28 นาที',
-    //     desc: 'Eddie  กาลครั้งหนึ่ง..เมื่อถึงยุคมืดที่ดนตรีไทยถูกสั่งห้ามเล่นโดยไม่ได้รับอนุญาติ เพราะท่านผู้นำต้องการที่จะสร้างบ้านเมืองให้เป็นอารยฯ ใครผ่าฝืนจะถูกจัดการอย่างเด็ดขาด ผู้พันเผ่า(เก้า จิรายุ)ได้รับมอบหมายให้นำกำลังออกกวาดล้างปิดทุกสำนักดนตรีไทยที่ไม่ได้รับอนุญาติ รวมถึงสำนักของเซียนขาวผู้ที่เคยสร้างปมแค้นในใจเมื่อตอนวัยเด็กให้กับผู้พันเผ่า การกวาดล้างครั้งนี้จึงถือเป็นการล้างปมแค้นไปในตัว แต่ผู้พันเผ่าดันพลั้งมือในตอนกวาดล้างสำนักดนตรีไทยของเซีนขาว ทำให้เซียนขาวบาดเจ็บปางตาย ด้วยเหตุนี้ จึงทำให้ เชิด(พีท พชร)ที่เปรียบเสมือนผู้สืบทอดสำนักต่อจากเซียนขาวผู้เป็นพ่อ แต่เรื่องราวมันกลับตาลปัตรเพราะเชิดเอาแต่สนใจดนตรีฝรั่งไม่ยอมทำตามสิ่งที่บรรพบุรุษสืบทอดกันมา เมื่อเกิดเหตุการณ์ที่เซียนขาวเกือบตายเพราะถูกผู้มีอำนาจกดขี่ดนตรีไทยด้วยกฎหมายที่ไม่เป็นธรรม ทำให้เชิดต้องหันกลับมาเล่นดนตรีไทยอีกครั้ง และเหล่าลูกศิษย์ของเซียนขาว กลั่น(เจแปน ภาณุพรรณ) พวง(นิกกี้ ณฉัตร) สิงห์(เติ้ล) จึงรวมตัวตั้งแก๊งที่มีชื่อว่า“ค้างคาวกินกล้วย” เพื่อล้างแค้นให้กับเซียนขาว และออกทวงคืนดนตรีไทยให้กลับมาเป็นของทุกคนอีกครั้ง โดยมีแก้วตา(โจริน 4EVE) สาวสวยผู้เป็นมือซ้อแห่งสำนักเซียนดำ ผู้หญิงที่ทำให้ผู้พันเผ่าหลงรัก แต่ดันไปช่วยเหลือเชิดและก๊วนค้างคาวกินกล้วยให้แข็งข้อต่อท่านผู้นำ ยิ่งทำให้ผู้พันเผ่าไม่พอใจเป็นอย่างมาก จนกลายเป็นสงครามระหว่างเพื่อนที่มีดนตรีไทยมรดกของชาติเป็นเดิมพัน ศึกรบและศึกรัก ศึกค้างคาวกินกล้วยจะจบลงอย่างไร เชิดแก๊งค้างคาวกินกล้วยจะทำให้ดนตรีไทยกลับมาเป็นของทุกคนอีกครั้งได้หรือไม่ ติดตามในภาพยนตร์กวนๆที่จะชวนทุกคนมา เฮฮา ดราม่า น้ำตาซึม ระเบิดภูเขา เผากระท่อม ไปด้วยกันand Venom are on the run. Hunted by both of their worlds and with the net closing in, the duo are forced into a devastating decision that will bring the curtains down on Venom and Eddies last danc'
-    //     ,price:120, 
-    // };
-    // const movie=null;
+    }, [movieId]);
+
     const [currentMovieInfo, setCurrentMovieInfo] = useState({
         movie_id: '',
-        movie_name: movie?.name || '',
-        startDate: movie?.startDate ? new Date(movie.startDate).toISOString().split('T')[0] : '',
-        endDate: movie?.endDate ? new Date(movie.endDate).toISOString().split('T')[0] : '',
-        imageUrl: movie?.imageUrl || '',
-        imagePath: movie?.imagePath || '',
-        duration: movie?.duration || '',
-        desc: movie?.desc || '',
-        price: movie?.price || '',
+        movie_name: '',
+        startDate: '',
+        endDate: '',
+        imageUrl: '',
+        duration: '',
+        desc: '',
+        price: '',
         imageFile: null,
+        imagePath: '',
     });
-    console.log(currentMovieInfo)
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCurrentMovieInfo({
@@ -147,6 +126,7 @@ export default function Edit() {
     const handleClick = () => {
         document.getElementById('fileInput').click();
     };
+    const [imagecount, setImagecount] = useState(1);
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         const { name } = e.target;
@@ -158,10 +138,8 @@ export default function Edit() {
                 imageFile: file,
             });
         }
+        setImagecount(0);
     };
-
-
-
     //edit each theater
     const [editTheaterIds, setEditTheaterIds] = useState({
         '1': false,
@@ -300,34 +278,6 @@ export default function Edit() {
         }));
 
     };
-    const updateMovie = async (event) => {
-        event.preventDefault(); // Prevent default form submission
-        try {
-            const response = await fetch(`/api/movie/${currentMovieInfo._id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(currentMovieInfo),
-            });
-            if (response.ok) {
-                // Handle success (e.g., navigate or show success message)
-                console.log('Movie updated successfully');
-            } else {
-                throw new Error('Failed to update movie');
-            }
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
-
-    const deleteMovie = async (e) => {
-        console.log("delete");
-        e.preventDefault();
-    }
-
-
-
 
     //Add showtime
     const [tempShowtimes, setTempShowtimes] = useState({});
@@ -352,8 +302,44 @@ export default function Edit() {
     const isTempShowtimeSelected = (theaterId, time) => {
         return tempShowtimes[`tt${theaterId}`]?.includes(time);
     };
-    if (loading) {
-        return <p>Loading...</p>; // Show loading state
+    const updateMovie = async (event) => {
+        event.preventDefault(); // Prevent default form submission
+        try {
+            if (currentMovieInfo.imagePath!=null&&currentMovieInfo.imageFile) {
+                const formData = new FormData();
+                formData.append('image', currentMovieInfo.imageFile);
+                const imageResponse = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                // console.log(imageResponse.json())
+                const imageData = await imageResponse.json();
+                console.log(imageData.imageUrl);
+                setCurrentMovieInfo({
+                    ...currentMovieInfo,
+                    imageUrl: imageData.imageUrl,
+                });
+            }
+            const response = await fetch(`/api/movie/${currentMovieInfo._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(currentMovieInfo),
+            });
+            if (response.ok) {
+
+                setErrmovie('Movie updated successfully');
+            } else {
+                setErrmovie('Failed to update movie');
+            }
+        } catch (error) {
+            setErrmovie(error.Message);
+        }
+    };
+    const deleteMovie = async (e) => {
+        console.log("delete",movieId);
+        e.preventDefault();
     }
     return (
         <main className='min-h-screen font-Kanit bg-black'>
@@ -361,19 +347,24 @@ export default function Edit() {
             <div className="xl:flex xl:flex-wrap   bg-bggray py-12 justify-center md:justify-start p-2 md:mx-40 ">
                 <div className='flex w-full p-10'>
                     <p className='text-white mt-5 w-80 md:w-full mx-10 text-3xl font-bold'>ข้อมูลหนัง</p>
-                    {currentMovieInfo._id&& (<button type="submit" className='bg-white hover:scale-90 w-16 p-2 rounded-md mx-2' onClick={deleteMovie}>ลบ</button>)}
+                    {currentMovieInfo._id && (<button type="submit" className='bg-white hover:scale-90 w-16 p-2 rounded-md mx-2' onClick={deleteMovie}>ลบ</button>)}
                 </div>
                 <div className='flex flex-wrap  xl:w-full justify-center lg:justify-start'>
 
                     <div className=" mx-6 mt-6 mb-2 w-80 h-80 ">
                         <div onClick={handleClick} className="cursor-pointer w-full  h-full bg-black p-1 rounded-xl ">
 
-                            {currentMovieInfo.imagePath ? (
-                                <img src={currentMovieInfo.imagePath} alt="Uploaded" className="w-full h-full object-contain rounded-lg" />
-                            ) : (
-                                <img src="https://1146890965.rsc.cdn77.org/web/newux/assets/images/default-newArticle@3x.png" alt="Upload" className="w-full h-full object-contain rounded-lg" />
-                            )}
-
+                            <img
+                                src={
+                                    currentMovieInfo.imageUrl && movieId && imagecount
+                                        ? `/uploads/${currentMovieInfo.imageUrl}`
+                                        : currentMovieInfo.imagePath
+                                            ? currentMovieInfo.imagePath
+                                            : "https://1146890965.rsc.cdn77.org/web/newux/assets/images/default-newArticle@3x.png"
+                                }
+                                alt="Movie Image"
+                                className="w-full h-full object-contain rounded-lg"
+                            />
                         </div>
                         <input id="fileInput" type="file" accept="image/*" className='hidden' name="imagePath" onChange={handleImageChange} />
                     </div>

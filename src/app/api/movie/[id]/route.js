@@ -44,6 +44,7 @@ export async function PUT(request, { params }) {
                     price: movieData.price,
                     duration: movieData.duration,
                     desc: movieData.desc,
+                    imageUrl:movieData.imageUrl,
                 },
             });
         if (result.modifiedCount === 0) {

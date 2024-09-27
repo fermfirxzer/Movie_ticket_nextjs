@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Pagination from '@/component/Pagination';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMovie } from '@/context/Moviecontext';
 const Explore = () => {
     const router = useRouter();
     const movies = [
@@ -74,9 +75,9 @@ const Explore = () => {
     ];
     const totalItems = 100; // จำนวนข้อมูลทั้งหมด
     const itemsPerPage = 12;
-    const isAdmin=true;
+    const isAdmin = true;
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     useEffect(() => {
         // ฟังก์ชันดึงข้อมูลตามหน้าปัจจุบัน
         const fetchData = async () => {
@@ -97,10 +98,16 @@ const Explore = () => {
     // const filteredMovies = movies.filter((movie) =>
     //   movie.title.toLowerCase().includes(searchQuery.toLowerCase())
     // );
+    const { setMovieId } = useMovie();
     const handleEditClick = (movieId) => {
-        localStorage.setItem('movieId', "66f50326189103c5a66d4885"); // or use sessionStorage
+        setMovieId("66f50326189103c5a66d4885");
         router.push('/editmovie');
+
     };
+    const handleAddClick = () => {
+        setMovieId(null);
+        router.push('/editmovie');
+    }
     return (
         <div>
             <div className=''>
@@ -130,20 +137,24 @@ const Explore = () => {
                         />
                     </div>
                 </div>
-                {isAdmin&&<div className='text-white '>
-                    <button>เพิ่มหนัง</button>
-                </div>}
-                <div className='search-body flex justify-between items-center px-24 md:px-48 lg:mx-9 my-6'>
-                    {/* Title on the Left */}
-                    <h3 className='text-3xl text-white font-bold'>Explore</h3>
 
-                    {/* Sorting Dropdown on the Right */}
-                    <div className='flex items-center'>
-                        <h5 className='mr-2 text-white'>เรียงจาก :</h5>
-                        <select className='text-black px-2 py-1 rounded-md' onChange={(e) => setOrderBy(e.target.value)}>
-                            <option value="newest">OrderBy Starting</option>
-                            <option value="oldest">OrderBy Ending</option>
-                        </select>
+                <div className='search-body px-24 md:px-48 lg:mx-9 my-6'>
+                    {isAdmin && 
+                        <button className='text-white' onClick={handleAddClick}>เพิ่มหนัง</button>
+                    }
+                    <div className='flex justify-between items-center'>
+
+
+                        <h3 className='text-3xl text-white font-bold'>Explore</h3>
+
+                        {/* Sorting Dropdown on the Right */}
+                        <div className='flex items-center'>
+                            <h5 className='mr-2 text-white'>เรียงจาก :</h5>
+                            <select className='text-black px-2 py-1 rounded-md' onChange={(e) => setOrderBy(e.target.value)}>
+                                <option value="newest">OrderBy Starting</option>
+                                <option value="oldest">OrderBy Ending</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -153,7 +164,7 @@ const Explore = () => {
                         <div key={index} className='flex flex-col w-[40%] md:w-[30%] lg:w-[20%] items-center justify-start' >
                             <div className="relative flex flex-col items-center w-full">
                                 <img src={movie.imageUrl} className='w-4/5  rounded-xl' alt={movie.title} />
-                                <div onClick={(e) =>{isAdmin?handleEditClick(movie._id):router.push('/showtime');}}> 
+                                <div onClick={(e) => { isAdmin ? handleEditClick(movie._id) : handleAddClick(); }}>
                                     <div className="absolute inset-0 bg-black bg-opacity-70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
                                         <input type="button" value="ดูเพิ่มเติม" className='bg-gray-100 text-black w-4/6 rounded cursor-pointer' />
                                     </div>
