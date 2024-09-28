@@ -9,11 +9,13 @@ export async function GET(req) {
 
         // Use the URL constructor to parse the request URL
         const { searchParams } = new URL(req.url);
-        const name = searchParams.get('name') || '';
-        const page = parseInt(searchParams.get('page')) || 1; 
-        const limit = parseInt(searchParams.get('limit')) || 12; 
+        const name = searchParams.get('name');
+        const page = parseInt(searchParams.get('page')) ; 
+        const limit = parseInt(searchParams.get('limit')) ; 
         const skip = (page - 1) * limit; 
+        const orderBy = searchParams.get('orderBy') ;
 
+        const sortDirection = orderBy === 'asc' ? 1 : -1;
         let movies;
         let totalCount;
 
@@ -26,11 +28,11 @@ export async function GET(req) {
            
             movies = await Movie.find({
                 movie_name: { $regex: name, $options: "i" }
-            }).skip(skip).limit(limit);
+            }).sort({ startDate: sortDirection }).skip(skip).limit(limit);
         } else {
            
             totalCount = await Movie.countDocuments();
-            movies = await Movie.find().skip(skip).limit(limit);
+            movies = await Movie.find().sort({ startDate: sortDirection }).skip(skip).limit(limit);
         }
 
        
