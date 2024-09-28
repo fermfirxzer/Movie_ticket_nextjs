@@ -72,7 +72,9 @@ export default function Login() {
 
         try {
             const res = await signIn("credentials" , {
-                emaillogin , passwordlogin , redirect : false
+                username : usernamelogin , 
+                password : passwordlogin , 
+                redirect : false ,
             }) 
 
             if(res.error) {
@@ -80,7 +82,7 @@ export default function Login() {
                 return;
             }
 
-            router.replace("Somewhere")
+            router.replace("/")
 
         } catch (error) {
             console.log(error)
@@ -132,6 +134,7 @@ export default function Login() {
                         <button type="submit" className="bg-red-900 rounded-2xl w-[90%] py-1 mx-6 mt-5">
                             เข้าสู่ระบบ
                         </button>
+                        {error && <p className="text-red-600">{error}</p>}
                     </form>
                 )}
 

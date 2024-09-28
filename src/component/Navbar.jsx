@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { signOut } from 'next-auth/react';
 export default function Navbar() {
     // State to control the visibility of the mobile nav
     const [isMobileNavVisible, setMobileNavVisible] = useState(false);
@@ -77,7 +78,7 @@ export default function Navbar() {
 
                                 <div className='flex flex-col mt-3 gap-3'>
                                     <Link href="#" className='hover:underline underline-offset-4 decoration-4'>History</Link>
-                                    <Link href="#" className='hover:underline underline-offset-4 decoration-4'>Logout</Link>
+                                    <Link onClick={() => signOut()} className='hover:underline underline-offset-4 decoration-4'>Logout</Link>
                                 </div>
                             </div>) : (
                                 <>
@@ -97,7 +98,7 @@ export default function Navbar() {
                                 <div className="absolute bg-white text-black mt-2 right-0 shadow-md rounded z-[999]">
                                     <div className='flex p-3 items-center justify-start hover:bg-gray-200'>
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className='w-8 h-7 cursor-pointer' fill="currentColor"><path d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z" /></svg>
-                                        <span className='self-end '>Username</span>
+                                        <span className='self-end' id="username">Username</span>
                                     </div>
                                     <hr className='border-gray-700 '></hr>
                                     <ul className='mt-3'>
