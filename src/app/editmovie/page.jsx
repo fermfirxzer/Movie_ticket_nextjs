@@ -22,7 +22,6 @@ export default function Edit() {
             , tt3: ['22:00', '1:00']
             , tt4: []
             , tt5: ['12:00', '21:00']
-
         },
         {
             ShowtimeId: 2, MovieId: 2

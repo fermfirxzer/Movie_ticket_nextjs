@@ -27,20 +27,20 @@ export default function Showtime() {
 
 
     //DATE
-    const today = new Date();
-    const options = { month: 'short', day: 'numeric' };
-    const formattedToday = new Intl.DateTimeFormat('en-US', options).format(today);
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const dates = [];
+    // const today = new Date();
+    // const options = { month: 'short', day: 'numeric' };
+    // const formattedToday = new Intl.DateTimeFormat('en-US', options).format(today);
+    // const tomorrow = new Date();
+    // tomorrow.setDate(tomorrow.getDate() + 1);
+    // const dates = [];
 
-    for (let i = 0; i < 30; i++) {
-        const date = new Date(tomorrow);
-        date.setDate(tomorrow.getDate() + i);
-        const options = { month: 'short', day: 'numeric' };
-        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
-        dates.push(formattedDate); // Format the date
-    }
+    // for (let i = 0; i < 30; i++) {
+    //     const date = new Date(tomorrow);
+    //     date.setDate(tomorrow.getDate() + i);
+    //     const options = { month: 'short', day: 'numeric' };
+    //     const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
+    //     dates.push(formattedDate); // Format the date
+    // }
 
 
     //SHOWTIME by movieID
@@ -136,6 +136,8 @@ export default function Showtime() {
         alert('Ticket purchased successfully!');
         window.location.reload();
     };
+
+
     return (
         <main className="mt-16 min-h-screen duration-200 ">
             {/* movie detail  */}
