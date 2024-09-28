@@ -1,5 +1,5 @@
 'use client'
-import SwiperDate from "@/app/component/SwiperDate"
+import SwiperDate from "@/component/SwiperDate"
 import Link from 'next/link';
 export default function Admin(){
     const movies = [

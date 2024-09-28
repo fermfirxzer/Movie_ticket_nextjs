@@ -3,12 +3,15 @@ import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
-import { signOut } from 'next-auth/react';
+import { signOut , useSession } from 'next-auth/react';
 export default function Navbar() {
+    const { data : session } = useSession();
+
     // State to control the visibility of the mobile nav
     const [isMobileNavVisible, setMobileNavVisible] = useState(false);
     const [islogin, setLogin] = useState(true);
     const [showuser, setShowuser] = useState(false)
+
     // Refs for mobile nav and burger icon
     const mobileNavRef = useRef(null);
     const burgerRef = useRef(null);
@@ -91,19 +94,19 @@ export default function Navbar() {
 
                 <div className='hidden md:flex md:gap-8 '>
 
-                    {islogin ? (
+                    {session ? (
                         <div className='relative'>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className='w-7 h-7 cursor-pointer' fill="currentColor" onClick={(e) => { setShowuser(!showuser) }}><path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" /></svg>
                             {showuser && (
                                 <div className="absolute bg-white text-black mt-2 right-0 shadow-md rounded z-[999]">
                                     <div className='flex p-3 items-center justify-start hover:bg-gray-200'>
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className='w-8 h-7 cursor-pointer' fill="currentColor"><path d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z" /></svg>
-                                        <span className='self-end' id="username">Username</span>
+                                        <span className='self-end' id="username">{session?.user?.username}</span>
                                     </div>
                                     <hr className='border-gray-700 '></hr>
                                     <ul className='mt-3'>
                                         <li className="py-1 px-2 hover:bg-gray-200">History</li>
-                                        <li className="py-1 px-2  hover:bg-gray-200">Logout</li>
+                                        <li className="py-1 px-2  hover:bg-gray-200"><a onClick={() => signOut()}>Logout</a></li>
                                     </ul>
                                 </div>
                             )}
@@ -111,7 +114,7 @@ export default function Navbar() {
                     ) : (
 
                         <ul>
-                            <li>Sign in</li>
+                            <li><a href="/login">Sign in</a></li>
                         </ul>
 
                     )}

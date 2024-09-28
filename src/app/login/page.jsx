@@ -1,9 +1,12 @@
 "use client";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter , redirect } from "next/navigation";
 import { useState } from "react";
 
 export default function Login() {
+    const { data : session} = useSession();
+    if(session) redirect("/");
+
     const [login, setLogin] = useState(true);
     const [showPass, setShowPass] = useState(false);
     const [error, setError] = useState("");
