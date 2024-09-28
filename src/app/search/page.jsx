@@ -98,11 +98,15 @@ const Explore = () => {
                     </div>
                     </div>
                     {/* Movie list */}
-                    <div className='flex flex-wrap gap-4 justify-center'>
+                    <div className='flex flex-wrap gap-4 justify-start ml-24'>
                         {movies.map((movie, index) => (
                             <div key={index} className='flex flex-col w-[40%] md:w-[30%] lg:w-[20%] items-center justify-start'>
                                 <div className="relative flex flex-col items-center w-full">
-                                    <img src={`/uploads/${movie.imageUrl}`} className='w-4/5 rounded-xl' alt={movie.movie_name} />
+                                    <div className='w-4/5 rounded-xl'>
+                                    <img src={`/uploads/${movie.imageUrl}`} className='w-full' alt={movie.movie_name} />
+                                        </div>
+
+                                    
                                     <Link href='showtime'></Link>
                                     <div onClick={(e) => { isAdmin ? handleEditClick(movie.movie_name) : handleAddClick(); }}>
                                         <div className="absolute inset-0 bg-black bg-opacity-70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
@@ -113,7 +117,7 @@ const Explore = () => {
                                 <div className='flex justify-between w-4/5 mt-2'>
                                     <div className='w-1/2'>
                                         <p className='text-[--gold] text-xs md:text-sm'>{new Date(movie.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                                        <p className='text-sm md:text-lg lg:text-xl'>{movie.movie_name}</p>
+                                        <p className='text-sm md:text-lg'>{movie.movie_name}</p>
                                     </div>
                                     <div className='flex justify-end w-1/2'>
                                         <p className='text-xs md:text-sm'>{movie.duration}</p>
