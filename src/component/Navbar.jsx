@@ -3,15 +3,17 @@ import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from 'next/navigation';
 export default function Navbar() {
     // State to control the visibility of the mobile nav
     const [isMobileNavVisible, setMobileNavVisible] = useState(false);
     const [islogin, setLogin] = useState(true);
     const [showuser, setShowuser] = useState(false)
     // Refs for mobile nav and burger icon
+    const [isAdmin,setAdmin]=useState(true);
     const mobileNavRef = useRef(null);
     const burgerRef = useRef(null);
-
+    const router = useRouter();
     // Function to toggle mobile nav
     const toggleMobileNav = () => {
         setMobileNavVisible(prev => !prev);
@@ -28,13 +30,17 @@ export default function Navbar() {
             setMobileNavVisible(false);
         }
     };
-
+    const [Search,setSearch]=useState(null);
     // Set up event listener on component mount and clean up on unmount
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-
+    const handlesearch=(e)=>{
+        if (e.key === 'Enter') {
+            router.push(`/search?name=${Search}`);
+        }
+    }
     return (
         <nav className='mx-auto'>
             <div className='p-5 px-12 flex justify-between items-center'>
@@ -46,7 +52,7 @@ export default function Navbar() {
 
 
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className='w-4 h-4'><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill='white' /></svg>
-                        <input type="text" className='search text-white opacity-100 p-1 md:w-56 focus:outline-none bg-black'></input>
+                        <input type="text" className='search text-white opacity-100 p-1 md:w-56 focus:outline-none bg-black'onChange={(e) => setSearch(e.target.value)} onKeyDown={handlesearch}></input>
                     </div>
                 </div>
 

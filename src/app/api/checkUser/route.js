@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { connectMongoDB } from "../../../lib/mongodb";
-import User from "../../../lib/model/user";
+import { connectMongoDB } from "@/../lib/mongodb.js";
+import User from "@/../lib/model/user.js";
 
 export async function POST(req) {
+    console.log("This is checkUser");
     try {
         await connectMongoDB();
         const { username , email } = await req.json();
