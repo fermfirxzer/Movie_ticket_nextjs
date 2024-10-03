@@ -9,7 +9,7 @@ const Insertmovie = ({ moviename }) => {
     const router = useRouter();
     const [Loading, setLoading] = useState(true);
     const [Moviename, setMoviename] = useState(moviename  || null);
-
+    
     useEffect(() => {
         if (Moviename) {
             const fetchMovie = async () => {
