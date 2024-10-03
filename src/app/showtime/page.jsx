@@ -108,9 +108,6 @@ export default function Showtime() {
         console.log(selectedSeats)
     };
 
-
-
-
     //SEAT same show, theater, date
     const seatdatabase = [
         { seatId: 'A1', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' }, { seatId: 'F8', showtimeID: 1, theaterId: 1, date: '17 DEC 2024' },
