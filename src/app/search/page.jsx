@@ -83,9 +83,7 @@ const Explore = () => {
                         />
                     </div>
                 </div>
-                <div className='text-white'>
-                    <button>เพิ่มหนัง</button>
-                </div>
+                
                 <div className='search-body px-24 md:px-48 lg:mx-9 my-6'>
                     {isAdmin &&
                         <button className='bg-white hover:scale-90 p-2 rounded-md mx-2 ml-auto flex' onClick={handleAddClick}>เพิ่มหนัง</button>

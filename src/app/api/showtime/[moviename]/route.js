@@ -3,7 +3,7 @@ import { connectMongoDB } from "@/../lib/mongodb.js"; // Adjust the import path 
 import { Showtime } from "@/../lib/model/showtime";
 import { Theater } from "@/../lib/model/theater";
 import { NextResponse } from "next/server";
-
+//ดึงรอบฉายทั้งหมดจากชื่อหนัง
 export async function GET(request, { params }) {
     const { moviename } = params; 
     try {
