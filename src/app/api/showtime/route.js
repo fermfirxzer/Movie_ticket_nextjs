@@ -16,7 +16,7 @@ export async function POST(request) {
                     endDate: { $gte: new Date(startDate) }  // Existing endDate should be greater than or equal to newStartDate
                 }
             },
-            
+             
         ]);
 
         const theaterIdsInShowtime = showtimes.map(item => item.theater_id);
