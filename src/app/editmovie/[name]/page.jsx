@@ -33,10 +33,10 @@ export default function Edit({ params }) {
         }
     }, [Moviename]);
 
-    const [showForm, setShowForm] = useState(true);
+    const [showForm, setShowForm] = useState(false);
     const [showDate, setshowDate] = useState({
-        startDate: '2024-09-19',
-        endDate: '2024-09-25',
+        startDate: '',
+        endDate: '',
     })
     const handleDateChange = (e) => {
         setErrDate(null);
@@ -69,11 +69,17 @@ export default function Edit({ params }) {
             }
         };
         setErrDate(null);
-        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate) {
+        setavailableTheater([]);
+        setAvailableTime([]);   
+        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate&&showDate.startDate<=showDate.endDate) {
             fetchTheater();
-            setErrDate("date ถูกต้อง")
-        } else {
-            setErrDate("วันที่ของ show ต้องอยู่ในช่วงของหนัง");
+            setErrDate("date ถูกต้อง");
+        }else if(!showDate.startDate||!showDate.endDate){
+            setErrDate("กรุณากรอกวันที่")
+        }else if(showDate.startDate>showDate.endDate) {
+            setErrDate("วันที่เริ่ม show ต้องมากกว่าวันที่จบ show");
+        }else{
+            setErrDate("show ต้องอยู่ในช่วงเวลาของหนัง")
         }
     }, [showDate.startDate, showDate.endDate, movieStart, movieEnd])
 
@@ -86,13 +92,13 @@ export default function Edit({ params }) {
     const [availableTime, setAvailableTime] = useState([]);
 
     const handleTheaterChange = (e) => {
+        setAvailableTime([]);
         const theaterName = e.target.value;
         setSelectedTheaters((prevState) => ({
             ...prevState,
             Theater: theaterName,
             time: [],
         }));
-
         const theater = availableTheater.find((theater) => theater.theater_name === theaterName);
         if (theater) {
             setAvailableTime(theater.available_times);
@@ -139,6 +145,9 @@ export default function Edit({ params }) {
                 return;
             }
             setErrshowtime("Add showtime success!")
+            setTimeout(() => {
+                window.location.reload(); // Reload the page
+            }, 2000);
         } catch (error) {
             setErrshowtime(error.Message);
             console.log(error.Message);
@@ -169,7 +178,9 @@ export default function Edit({ params }) {
 
                 if (response.ok) {
                     Swal.fire('Deleted!', 'Your showtime has been deleted.', 'success');
-                    
+                    setTimeout(() => {
+                        window.location.reload(); // Reload the page
+                    }, 2000); // 2-second delay
                 } else {
                     const errorData = await response.json();
                     Swal.fire('Error!', errorData.Message, 'error');
@@ -226,13 +237,14 @@ export default function Edit({ params }) {
                                 />
                             </div>
                         </div>
-                        <div>
-                            {Errdate && <p>{Errdate}</p>}
+                        
+                            {Errdate && <p className="text-red-500">*{Errdate}</p>}
+                            {Errdate=="date ถูกต้อง"&&<div> 
                             <h3>โรงหนัง :</h3>
 
                             <div className="flex flex-col mb-4 text-black">
                                 <select onChange={handleTheaterChange}>
-                                    <option value="" disabled>Select a theater</option>
+                                    <option value="">Select a theater</option>
                                     {availableTheater && availableTheater.map((theater) => (
                                         <option key={theater._id} value={theater.theater_name}>
                                             {theater.theater_name}
@@ -257,7 +269,8 @@ export default function Edit({ params }) {
                                     <p className="text-gray-400">No available times for this theater.</p>
                                 )}
                             </div>
-                        </div>
+                            </div>}
+                       
                         <div className='flex justify-end mt-6'>
                             {Errshowtime && <p className='self-start flex-grow'>{Errshowtime}</p>}
                             <button className='bg-white  p-2 w-22  rounded-lg flex justify-center mx-4 font-bold hover:scale-90' onClick={handleAddshowtime} >

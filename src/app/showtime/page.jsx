@@ -19,9 +19,7 @@ export default function Showtime() {
         ,price:120
     }
     ;
- 
-   
-   
+
     const option = { day: 'numeric', month: 'short', year: 'numeric' };
     const formattedstartDate = new Intl.DateTimeFormat('en-US', option).format(movies.startDate);
     const formattedendDate = new Intl.DateTimeFormat('en-US', option).format(movies.endDate);

@@ -12,6 +12,9 @@ export default function Edit() {
             setErrmovie("Image required");
             return;
         }
+        if(currentMovieInfo.startDate>currentMovieInfo.endDate){
+            setErrmovie("startDate ของหนังต้องมากกว่า endDate");
+        }
         const formData = new FormData();
         formData.append('image', currentMovieInfo.imageFile);
         try {
