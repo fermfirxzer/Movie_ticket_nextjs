@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-const Insertmovie = ({ moviename }) => {
+const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
     const [errmovie, setErrmovie] = useState("");
     
     const router = useRouter();
     const [Loading, setLoading] = useState(true);
     const [Moviename, setMoviename] = useState(moviename  || null);
-
+    
     useEffect(() => {
         if (Moviename) {
             const fetchMovie = async () => {
@@ -20,7 +20,8 @@ const Insertmovie = ({ moviename }) => {
                     }
                     const data = await response.json();
                     setCurrentMovieInfo(data);
-
+                    setMovieStart(data.startDate);  
+                    setMovieEnd(data.endDate);
                     setLoading(false);
 
                 } catch (error) {
@@ -31,7 +32,7 @@ const Insertmovie = ({ moviename }) => {
             };
             fetchMovie();
         }
-    }, [Moviename]);
+    }, [Moviename, setMovieStart, setMovieEnd]);
 
     const [currentMovieInfo, setCurrentMovieInfo] = useState({
         movie_id: '',

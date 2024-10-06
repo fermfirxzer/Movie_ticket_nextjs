@@ -4,10 +4,18 @@ import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-export default function SwiperDate(){
+import { useState } from 'react';
 
-   
+export default function SwiperDate({ onDateSelect}){
+
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const handleDateSelect = (date,index) => {
+        setSelectedIndex(index);
+        onDateSelect(date); // Call the callback with the selected date
+    };
+
     //DATE
+    const isToday = selectedIndex === -1;
     const today = new Date();
     const options = { month: 'short', day: 'numeric' };
     const formattedToday = new Intl.DateTimeFormat('en-US', options).format(today);
@@ -18,9 +26,7 @@ export default function SwiperDate(){
     for (let i = 0; i < 30; i++) {
         const date = new Date(tomorrow);
         date.setDate(tomorrow.getDate() + i);
-        const options = { month: 'short', day: 'numeric' };
-        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
-        dates.push(formattedDate); // Format the date
+        dates.push(date); 
     }
 
 
@@ -39,11 +45,12 @@ export default function SwiperDate(){
    
 
     return(
+   
         <main>
              <div className='flex lg:w-4/5 font-Kanit '>
                 
-                <div className="flex  mx-6 my-6 md:mx-16 justify-start w-12 md:w-16">
-                    <div className="flex items-center justify-center text-sm w-12 md:w-16 h-12 font-bold border border-[--gold] rounded-lg bg-[--gold]">{formattedToday}</div>
+                <div className="flex  mx-6 my-6 md:mx-16 justify-start w-12 md:w-16" onClick={() => handleDateSelect(today ,-1)}>
+                    <div className={`flex items-center justify-center text-sm w-12 md:w-16 h-12 font-bold border  rounded-lg  cursor-pointer border-gold  ${isToday ? 'bg-gold ' : 'bg-black text-gold'}`}>{formattedToday}</div>
                 </div>
 
                 <Swiper 
@@ -67,15 +74,24 @@ export default function SwiperDate(){
                         1400: {slidesPerView: 13},
                     }}
                 >
-                    {dates.map((date, index) => (
-                        <SwiperSlide key={index} >
-                            {newMonth(date)}
-                            <div className="relative flex items-center justify-center  border w-12 h-12 my-6 md:w-16 border-[--gold] m-0 rounded-lg hover:bg-[--gold] text-[--gold] font-bold hover:text-black cursor-pointer duration-300">
-                                <p className="text-center text-sm ">{date}</p>
-                            </div>
-                        </SwiperSlide>
-                    ))}
-                  
+
+                    {dates.map((date, index) => {
+                        const options = { month: 'short', day: 'numeric' };
+                        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
+                        const isSelected = selectedIndex === index;
+                        return (
+                            <SwiperSlide key={index}  onClick={() => handleDateSelect(date,index)}>
+                                {newMonth(formattedDate )}
+                                <div 
+                                
+                                className={`relative flex items-center justify-center border w-12 h-12 my-6 md:w-16 m-0 rounded-lg cursor-pointer duration-300 font-bold
+                                    ${isSelected ? 'bg-gold text-black border-black'  : 'border-gold text-gold hover:bg-gold hover:text-black'}`}
+                                >
+                                    <p className="text-center text-sm ">{formattedDate }</p>
+                                </div>
+                            </SwiperSlide>
+                        );
+                    })}
                 </Swiper>
             </div>
         </main>
