@@ -69,11 +69,17 @@ export default function Edit({ params }) {
             }
         };
         setErrDate(null);
-        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate) {
+        setavailableTheater([]);
+        setAvailableTime([]);   
+        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate&&showDate.startDate<=showDate.endDate) {
             fetchTheater();
-            setErrDate("date ถูกต้อง")
-        } else {
-            setErrDate("วันที่ของ show ต้องอยู่ในช่วงของหนัง");
+            setErrDate("date ถูกต้อง");
+        }else if(showDate.startDate>showDate.endDate) {
+            setErrDate("วันที่เริ่ม show ต้องมากกว่าวันที่จบ show");
+        }else if(!showDate.startDate||!showDate.endDate){
+            setErrDate("กรอกวันที่ให้ถูกต้อง")
+        }else{
+            setErrDate("show ต้องอยู่ในช่วงเวลาของหนัง")
         }
     }, [showDate.startDate, showDate.endDate, movieStart, movieEnd])
 
@@ -92,7 +98,6 @@ export default function Edit({ params }) {
             Theater: theaterName,
             time: [],
         }));
-
         const theater = availableTheater.find((theater) => theater.theater_name === theaterName);
         if (theater) {
             setAvailableTime(theater.available_times);
@@ -169,7 +174,9 @@ export default function Edit({ params }) {
 
                 if (response.ok) {
                     Swal.fire('Deleted!', 'Your showtime has been deleted.', 'success');
-                    
+                    setTimeout(() => {
+                        router.reload(); // Reload the page
+                    }, 2000); // 2-second delay
                 } else {
                     const errorData = await response.json();
                     Swal.fire('Error!', errorData.Message, 'error');
