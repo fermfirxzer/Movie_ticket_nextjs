@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Insertmovie from '@/component/insertmovie'
-
+import Swal from 'sweetalert2';
 
 export default function Edit({ params }) {
     const [errfetchshowtime, setErrfetchshowtime] = useState("");
@@ -10,6 +10,7 @@ export default function Edit({ params }) {
     const { name } = params;
     const [Moviename, setMoviename] = useState(name || null);
     const [Showtime, setShowtime] = useState(null);
+    const [Errdate, setErrDate] = useState(null);
     useEffect(() => {
         const fetchShowtime = async () => {
             try {
@@ -32,61 +33,156 @@ export default function Edit({ params }) {
         }
     }, [Moviename]);
 
-    console.log(Showtime);
-
-    //Dropdown 
-    const [showForm, setShowForm] = useState(false);
-    const [Date, setDate] = useState({
-        startDate: '',
-        endDate: '',
+    const [showForm, setShowForm] = useState(true);
+    const [showDate, setshowDate] = useState({
+        startDate: '2024-09-19',
+        endDate: '2024-09-25',
     })
-    const handleDateChange=(e)=>{
+    const handleDateChange = (e) => {
+        setErrDate(null);
         const { name, value } = e.target;
-        setDate({
-            ...Date,
+        setshowDate((prevDate) => ({
+            ...prevDate,
             [name]: value,
-        });
-        console.log(Date)
+        }));
+
     }
+    const [movieStart, setMovieStart] = useState('');
+    const [movieEnd, setMovieEnd] = useState('');
     const [availableTheater, setavailableTheater] = useState(null);
     useEffect(() => {
         const fetchTheater = async () => {
             try {
-                const response = await fetch(`/api/showtime`, {
-                    method: 'POST', // Specify the POST method
+                const response = await fetch(`/api/showtime?startDate=${showDate.startDate}&endDate=${showDate.endDate}`, {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json', // Set the content type to JSON
                     },
-                    body: JSON.stringify({ startDate: date.startDate, endDate: date.endDate }), // Send the date in the body
                 });
                 if (!response.ok) {
                     throw new Error('Failed to fetch movie');
                 }
                 const data = await response.json();
                 setavailableTheater(data);
-
-
             } catch (error) {
                 console.log(error.Message)
             }
         };
-        fetchTheater();
-    }, [Date.startDate, Date.endDate])
-    const [selectedTheaters, setSelectedTheaters] = useState([]); // Array to hold selected theater IDs and their times
+        setErrDate(null);
+        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate) {
+            fetchTheater();
+            setErrDate("date ถูกต้อง")
+        } else {
+            setErrDate("วันที่ของ show ต้องอยู่ในช่วงของหนัง");
+        }
+    }, [showDate.startDate, showDate.endDate, movieStart, movieEnd])
 
-    const handleTheaterChange = (index, theaterId) => {
-        const updatedTheaters = [...selectedTheaters];
-        updatedTheaters[index] = theaterId; // Update the specific index with the selected theater ID
-        setSelectedTheaters(updatedTheaters);
+
+
+    const [selectedTheaters, setSelectedTheaters] = useState({
+        Theater: '',
+        time: [],
+    });
+    const [availableTime, setAvailableTime] = useState([]);
+
+    const handleTheaterChange = (e) => {
+        const theaterName = e.target.value;
+        setSelectedTheaters((prevState) => ({
+            ...prevState,
+            Theater: theaterName,
+            time: [],
+        }));
+
+        const theater = availableTheater.find((theater) => theater.theater_name === theaterName);
+        if (theater) {
+            setAvailableTime(theater.available_times);
+        }
     };
 
-    const addNewSelect = () => {
-        setSelectedTheaters([...selectedTheaters, null]); // Add a new select with a null value
+    console.log(availableTheater);
+
+    const handleshowForm = () => {
+        setShowForm(!showForm);
+        setSelectedTheaters({
+            Theater: '',
+            time: [],
+        });
+    }
+    const [Errshowtime, setErrshowtime] = useState(null);
+    const addTime = (time) => {
+        setSelectedTheaters((prev) => {
+            const currentTime = prev.time || []; // Ensure prev.time is an array (fallback to empty array if undefined)
+            const isTimeSelected = currentTime.includes(time); // Check if the time is already selected
+            return {
+                ...prev,
+                time: isTimeSelected
+                    ? currentTime.filter(t => t !== time) // Remove the time if it's already selected
+                    : [...currentTime, time], // Add the time if it's not selected
+            };
+        });
+    };
+    const handleAddshowtime = async (e) => {
+        e.preventDefault();
+        setErrshowtime(null);
+        try {
+            const response = await fetch(`/api/showtime`, {
+                method: 'POST', // Specify the POST method
+                headers: {
+                    'Content-Type': 'application/json', // Set the content type to JSON
+                },
+                body: JSON.stringify({ showDate, selectedTheaters, Moviename }), // Send the date in the body
+            });
+            if (!response.ok) {
+
+                const errorData = await response.json();
+                setErrshowtime(errorData.Message);
+                return;
+            }
+            setErrshowtime("Add showtime success!")
+        } catch (error) {
+            setErrshowtime(error.Message);
+            console.log(error.Message);
+        }
+    }
+    const DeleteShowtime = async (showtime) => {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: `You will delete the showtime for ${showtime.theater_name}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+        });
+
+        if (result.isConfirmed) {
+            // Perform the delete operation
+            
+            try {
+                const response = await fetch(`/api/showtime`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(showtime),
+                });
+
+                if (response.ok) {
+                    Swal.fire('Deleted!', 'Your showtime has been deleted.', 'success');
+                    
+                } else {
+                    const errorData = await response.json();
+                    Swal.fire('Error!', errorData.Message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error!', error.message, 'error');
+            }
+        }
     };
     return (
         <main className='min-h-screen font-Kanit bg-black'>
 
-            <Insertmovie moviename={Moviename} />
+            <Insertmovie moviename={Moviename} setMovieStart={setMovieStart} setMovieEnd={setMovieEnd} />
             <div className='container mx-auto'>
                 <h4 className='text-2xl font-bold'>รอบการฉายของหนัง : {decodeURIComponent(Moviename)}</h4>
                 <h3>{errfetchshowtime && (errfetchshowtime)}</h3>
@@ -94,11 +190,9 @@ export default function Edit({ params }) {
                     {Showtime && Showtime.map((showtimeGroup, groupIndex) => (
                         <div key={groupIndex} className='border-white border-2 p-5'>
                             <div className='flex gap-4'>
-                                From: <p>{showtimeGroup.startDate.toLocaleDateString('en-Us')}</p>
-                                to: <p>{showtimeGroup.endDate.toLocaleDateString('en-Us')}</p>
-                            
+                                From :<p>{showtimeGroup.startDate}</p>
+                                To :<p>{showtimeGroup.endDate}</p>
                             </div>
-
 
                             {showtimeGroup.showtimes.map((showtime, index) => (
                                 <div key={showtime._id}>
@@ -110,6 +204,11 @@ export default function Edit({ params }) {
                                             </button>
                                         ))}
                                     </div>
+                                    <div className="flex justify-end"onClick={() => DeleteShowtime(showtime)}>
+                                        <button className='bg-red-900 text-white p-2 w-22  rounded-lg flex justify-center hover:scale-90' onClick={() => setShowForm(!showForm)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="40px" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -118,56 +217,62 @@ export default function Edit({ params }) {
                 {showForm && (
                     <div className='w-[100%] flex flex-col gap-12 mx-auto font-bold text-lg mt-4'>
                         <div>
-                        <h3 className='text-white'>เพิ่มรอบฉาย :</h3>
-                        <div className='flex gap-10'>
-                            <input type="date" name="startDate" className='px-2 py-2 border rounded'
-                                onChange={handleDateChange} />
-                            <input type="date" name="endDate" className='px-2 py-2 border rounded'
-                                onChange={handleDateChange} // Update endDate
-                            />
-                        </div>
+                            <h3 className='text-white'>เพิ่มรอบฉาย :</h3>
+                            <div className='flex gap-10'>
+                                <input type="date" name="startDate" value={showDate.startDate} className='px-2 py-2 border rounded'
+                                    onChange={handleDateChange} />
+                                <input type="date" name="endDate" value={showDate.endDate} className='px-2 py-2 border rounded'
+                                    onChange={handleDateChange}
+                                />
+                            </div>
                         </div>
                         <div>
+                            {Errdate && <p>{Errdate}</p>}
                             <h3>โรงหนัง :</h3>
-                            {selectedTheaters.map((theaterId, index) => ( 
-                                <div key={index} className="flex flex-col mb-4">
-                                    <select
-                                        onChange={(e) => handleTheaterChange(index, e.target.value)}
-                                        value={theaterId || ''}
-                                    >
-                                        <option value="" disabled>Select a theater</option>
-                                        {availableTheater.map((theater) => (
-                                            <option key={theater._id} value={theater._id}>
-                                                {theater.theater_name}
-                                            </option>
-                                        ))}
-                                    </select>
 
-                                    {/* Display available times for the selected theater */}
-                                    {theaterId && (
-                                        <div className="available-times">
-                                            <h4>Available Times:</h4>
-                                            <ul>
-                                                {availableTheater.find(t => t._id === theaterId)?.available_times.map((time, idx) => (
-                                                    <li key={idx}>{time}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                            <button
-                                className='text-white'
-                                onClick={addNewSelect}
-                            >
-                                Add new select
+                            <div className="flex flex-col mb-4 text-black">
+                                <select onChange={handleTheaterChange}>
+                                    <option value="" disabled>Select a theater</option>
+                                    {availableTheater && availableTheater.map((theater) => (
+                                        <option key={theater._id} value={theater.theater_name}>
+                                            {theater.theater_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-4">
+
+                                {availableTime.length > 0 ? (
+                                    availableTime.map((time, index) => (
+                                        <button
+                                            key={index}
+                                            className={`my-2 mx-1 duration-200 p-2 w-14 md:w-24 rounded font-bold text-sm md:text-lg cursor-pointer ${selectedTheaters.time?.includes(time) ? "bg-blue-500 text-white" : "bg-gray-200"
+                                                }`}
+                                            onClick={() => addTime(time)} // Handle time selection
+                                        >
+                                            {time}
+                                        </button>
+                                    ))
+                                ) : (
+                                    <p className="text-gray-400">No available times for this theater.</p>
+                                )}
+                            </div>
+                        </div>
+                        <div className='flex justify-end mt-6'>
+                            {Errshowtime && <p className='self-start flex-grow'>{Errshowtime}</p>}
+                            <button className='bg-white  p-2 w-22  rounded-lg flex justify-center mx-4 font-bold hover:scale-90' onClick={handleAddshowtime} >
+                                เพิ่มรอบฉาย
+                            </button>
+                            <button className='bg-red-900 text-white p-2 w-22  rounded-lg flex justify-center hover:scale-90' onClick={() => setShowForm(!showForm)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="40px" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
                             </button>
                         </div>
                     </div>
                 )}
 
                 <div className='flex justify-center'>
-                    <div className='flex flex-wrap justify-center my-6' onClick={() => setShowForm(!showForm)}>
+
+                    <div className='flex flex-wrap justify-center my-6' onClick={handleshowForm}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#fff" className='w-full'>
                             <path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
                         </svg>
