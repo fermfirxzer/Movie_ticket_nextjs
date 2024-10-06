@@ -17,7 +17,7 @@ export async function GET(request, { params }) {
                     as: 'movie'
                 },
                 
-            },{
+            },{ 
                 $lookup:{
                     from:'theaters',
                     localField: 'theater_id',

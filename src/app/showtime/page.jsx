@@ -4,6 +4,9 @@ import React, { useEffect,useState } from 'react';
 import SwiperDate from '@/component/SwiperDate.jsx';
 
 export default function Showtime() {
+
+    
+
     const movies = {
         title: 'Spider-Man: No Way Home',
        

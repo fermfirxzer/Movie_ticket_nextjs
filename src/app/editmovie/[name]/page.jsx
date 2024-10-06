@@ -68,123 +68,18 @@ export default function Edit({ params }) {
                 console.log(error.Message)
             }
         };
-        setErrDate(null);
-        setavailableTheater([]);
-        setAvailableTime([]);   
-        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate&&showDate.startDate<=showDate.endDate) {
-            fetchTheater();
-            setErrDate("date ถูกต้อง");
-        }else if(showDate.startDate>showDate.endDate) {
-            setErrDate("วันที่เริ่ม show ต้องมากกว่าวันที่จบ show");
-        }else if(!showDate.startDate||!showDate.endDate){
-            setErrDate("กรอกวันที่ให้ถูกต้อง")
-        }else{
-            setErrDate("show ต้องอยู่ในช่วงเวลาของหนัง")
-        }
-    }, [showDate.startDate, showDate.endDate, movieStart, movieEnd])
+        fetchTheater();
+    }, [Date.startDate, Date.endDate])
+    const [selectedTheaters, setSelectedTheaters] = useState([]); // Array to hold selected theater IDs and their times
 
-
-
-    const [selectedTheaters, setSelectedTheaters] = useState({
-        Theater: '',
-        time: [],
-    });
-    const [availableTime, setAvailableTime] = useState([]);
-
-    const handleTheaterChange = (e) => {
-        const theaterName = e.target.value;
-        setSelectedTheaters((prevState) => ({
-            ...prevState,
-            Theater: theaterName,
-            time: [],
-        }));
-        const theater = availableTheater.find((theater) => theater.theater_name === theaterName);
-        if (theater) {
-            setAvailableTime(theater.available_times);
-        }
+    const handleTheaterChange = (index, theaterId) => {
+        const updatedTheaters = [...selectedTheaters];
+        updatedTheaters[index] = theaterId; // Update the specific index with the selected theater ID
+        setSelectedTheaters(updatedTheaters);
     };
 
-    console.log(availableTheater);
-
-    const handleshowForm = () => {
-        setShowForm(!showForm);
-        setSelectedTheaters({
-            Theater: '',
-            time: [],
-        });
-    }
-    const [Errshowtime, setErrshowtime] = useState(null);
-    const addTime = (time) => {
-        setSelectedTheaters((prev) => {
-            const currentTime = prev.time || []; // Ensure prev.time is an array (fallback to empty array if undefined)
-            const isTimeSelected = currentTime.includes(time); // Check if the time is already selected
-            return {
-                ...prev,
-                time: isTimeSelected
-                    ? currentTime.filter(t => t !== time) // Remove the time if it's already selected
-                    : [...currentTime, time], // Add the time if it's not selected
-            };
-        });
-    };
-    const handleAddshowtime = async (e) => {
-        e.preventDefault();
-        setErrshowtime(null);
-        try {
-            const response = await fetch(`/api/showtime`, {
-                method: 'POST', // Specify the POST method
-                headers: {
-                    'Content-Type': 'application/json', // Set the content type to JSON
-                },
-                body: JSON.stringify({ showDate, selectedTheaters, Moviename }), // Send the date in the body
-            });
-            if (!response.ok) {
-
-                const errorData = await response.json();
-                setErrshowtime(errorData.Message);
-                return;
-            }
-            setErrshowtime("Add showtime success!")
-        } catch (error) {
-            setErrshowtime(error.Message);
-            console.log(error.Message);
-        }
-    }
-    const DeleteShowtime = async (showtime) => {
-        const result = await Swal.fire({
-            title: 'Are you sure?',
-            text: `You will delete the showtime for ${showtime.theater_name}.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
-        });
-
-        if (result.isConfirmed) {
-            // Perform the delete operation
-            
-            try {
-                const response = await fetch(`/api/showtime`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(showtime),
-                });
-
-                if (response.ok) {
-                    Swal.fire('Deleted!', 'Your showtime has been deleted.', 'success');
-                    setTimeout(() => {
-                        router.reload(); // Reload the page
-                    }, 2000); // 2-second delay
-                } else {
-                    const errorData = await response.json();
-                    Swal.fire('Error!', errorData.Message, 'error');
-                }
-            } catch (error) {
-                Swal.fire('Error!', error.message, 'error');
-            }
-        }
+    const addNewSelect = () => {
+        setSelectedTheaters([...selectedTheaters, null]); // Add a new select with a null value
     };
     return (
         <main className='min-h-screen font-Kanit bg-black'>

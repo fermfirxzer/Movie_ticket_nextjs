@@ -1,221 +1,148 @@
 'use client'
+
 import SwiperDate from "@/component/SwiperDate"
 import Link from 'next/link';
-export default function Admin(){
-    const movies = [
-        {
-          title: 'Venom',
-          MovieId:1,
-          startDate:new Date('2024-09-18'),
-          endDate:new Date('2024-12-30'),
-          imageUrl:
-            'https://m.media-amazon.com/images/M/MV5BZDMyYWU4NzItZDY0MC00ODE2LTkyYTMtMzNkNDdmYmFhZDg0XkEyXkFqcGc@._V1_FMjpg_UX1080_.jpg',
-          duration: '1 ชม. 45 นาที',
-        },
-        {
-          title: 'Spider-Man: No Way Home',
-          MovieId:2,
-          startDate:new Date('2024-12-30'),
-          endDate:new Date('2024-12-31'),
-          imageUrl:
-            'https://th.bing.com/th?id=OIP.6_208hkN2fO_hurqMskt_AHaK-&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-          duration: '2 ชม. 28 นาที',
-        },
-        {
-          title: 'Avatar: The Way of Water',
-          MovieId:3,
-          startDate:new Date('2024-09-18'),
-          endDate:new Date('2024-12-30'),
-          imageUrl:
-            'https://th.bing.com/th?id=ODL.6466795199e92dcba0a833632dc054a4&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-          duration: '3 ชม. 12 นาที',
-         
-        },
-        {
-          title: 'The Batman',
-          MovieId:4,
-          startDate:new Date('2024-09-18'),
-          endDate:new Date('2024-12-30'),
-          imageUrl:
-            'https://th.bing.com/th/id/OIP.Pcnh-i3HfSl-uFa5CQp5qAHaK-?rs=1&pid=ImgDetMain',
-          duration: '2 ชม. 56 นาที',
-         
-        },
-        {
-          title: 'Dune',
-          MovieId:5,
-          startDate:new Date('2024-09-18'),
-          endDate:new Date('2024-12-30'),
-          imageUrl:
-            'https://th.bing.com/th?id=ODL.debbf746710055e9ed3ad6880cc289b1&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-          duration: '2 ชม. 35 นาที',
-        
-        },
-        {
-          title: 'The Matrix Resurrections',
-          MovieId:6,
-          startDate:new Date('2024-09-18'),
-          endDate:new Date('2024-12-30'),
-          imageUrl:
-            'https://th.bing.com/th?id=ODL.debbf746710055e9ed3ad6880cc289b1&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-          duration: '2 ชม. 28 นาที',
-        },
-        {
-          title: 'Dune',
-          MovieId:7,
-          startDate:new Date('2024-09-18'),
-          endDate:new Date('2024-12-30'),
-          imageUrl:
-            'https://th.bing.com/th?id=ODL.debbf746710055e9ed3ad6880cc289b1&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-          duration: '2 ชม. 35 นาที',
-        },
-        {
-          title: 'The Matrix Resurrections',
-          MovieId:8,
-          startDate:new Date('2024-09-18'),
-          endDate:new Date('2024-12-30'),
-          imageUrl:
-            'https://th.bing.com/th?id=ODL.debbf746710055e9ed3ad6880cc289b1&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-          duration: '2 ชม. 28 นาที',
-        },
-      ];
-    
-    
-    
-    const showtimemovie = [
-        { ShowtimeId: 1, MovieId:1 
-            ,  tt1:['12:30','18:30','22:00','12:30','18:30','22:00']
-            ,  tt2:['22:00','1:00']
-            ,  tt3:['22:00','1:00']
-            ,  tt4:['22:00','1:00']
-            ,  tt5:['12:00','21:00'] 
-                                   
-        },
-        { ShowtimeId: 3, MovieId:3
-            ,  tt1:['21:30']
-            ,  tt2:['18:00']
-            ,  tt3:['16:00']
-            ,  tt4:['9:30','12:30',]
-            ,  tt5:['1:00','4:00'] 
-            ,  tt6:['9:30','12:30',]
-            ,  tt7:['1:00','4:00']
-            ,  tt8:['1:00','4:00'] 
-            ,  tt9:['9:30','12:30',]
-            ,  tt10:['1:00','4:00']
-            ,  tt11:['1:00','4:00'] 
-            ,  tt12:['9:30','12:30',]
+import React, { useEffect,useState } from 'react';
+export default function MovieBydate(){
+   
+    const [date,setDate] = useState(new Date().toISOString().split('T')[0]);
+    console.log(date);
+    const handleDateSelect = (date) => {
+        const selectedDate = new Date(date).toISOString().split('T')[0];
+        setDate(selectedDate); // Update the selected date state
+    };
+    const [movies, setMovies] = useState([]);
+    const fetchMovies = async () => {
+        try {
+            const response = await fetch(`/api/moviebydate?date=${date}`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setMovies(data);
+            console.log(data);
           
+           
+        } catch (error) {
+            console.error('Error fetching movies:', error);
         }
-        ,{ ShowtimeId: 2, MovieId:2
-            ,  tt1:[]
-            ,  tt2:[]
-            ,  tt3:[]
-            ,  tt4:[]
-            ,  tt5:['15:00'] 
-            
-        }
-        ,{ ShowtimeId: 4, MovieId:4
-            ,  tt1:[]
-            ,  tt2:[]
-            ,  tt3:[]
-            ,  tt4:[]
-            ,  tt5:['15:00'] 
-            
-        }
-        ,{ ShowtimeId: 5, MovieId:5
-            ,  tt1:[]
-            ,  tt2:[]
-            ,  tt3:[]
-            ,  tt4:[]
-            ,  tt5:['15:00'] 
-            
-        }
-        ,{ ShowtimeId: 6, MovieId:6
-            ,  tt1:[]
-            ,  tt2:[]
-            ,  tt3:[]
-            ,  tt4:[]
-            ,  tt5:['15:00'] 
-            
-        } ,{ ShowtimeId: 7, MovieId:7
-            ,  tt1:[]
-            ,  tt2:[]
-            ,  tt3:[]
-            ,  tt4:[]
-            ,  tt5:['15:00'] 
-            
-        }
-        ,{ ShowtimeId: 8, MovieId:8
-            ,  tt1:[]
-            ,  tt2:[]
-            ,  tt3:[]
-            ,  tt4:[]
-            ,  tt5:['15:00'] 
-            
-        }
-    ];
+    };
+
+    useEffect (() => {
+       fetchMovies()
+      
+    },[date])
+
+
+    const isAdmin  = true;
+
+
+
+    const groupShowtimesByTheater = (movies) => {
+        return movies.reduce((acc, movie) => {
+            const { movie_name, theater_name, show_time , imageUrl , startDate , duration } = movie;
+    
+            // Check if the movie is already in the accumulator
+            const existingMovie = acc.find(movie => movie.movie_name === movie_name);
+            if (existingMovie) {
+                // Check if the theater is already in the movie's theaters array
+                const existingTheater = existingMovie.theaters.find(theater => theater.theater_name === theater_name);
+                if (existingTheater) {
+                    // If the theater exists, push the showtimes into its show_time array
+                    existingTheater.show_time.push(...show_time);
+                } else {
+                    // If the theater doesn't exist, add a new theater entry
+                    existingMovie.theaters.push({
+                        theater_name,
+                        show_time: [...show_time],
+                    });
+                }
+            } else {
+                // If the movie doesn't exist, create a new entry
+                acc.push({
+                    movie_name,
+                    imageUrl, 
+                    startDate,
+                    duration,
+                    theaters: [{
+                        theater_name,
+                        show_time: [...show_time],
+                    }],
+                });
+            }
+            return acc;
+        }, []);
+    };
+    
+    const groupedShowtimes = groupShowtimesByTheater(movies);
+    console.log(groupedShowtimes);
   
-  
+    
     return(
         <main className="my-12 mx-2  md:mx-20 ">
          
             <h1 className='mx-6 my-2  text-white font-Kanit text-3xl'>รอบฉายหนัง</h1>
-            <SwiperDate></SwiperDate>
+            <SwiperDate onDateSelect={handleDateSelect}></SwiperDate>
             <div className="m-6">
-                <div>
-                    {movies.map((movie) => {
-                        const showtimes = showtimemovie.find(showtime => showtime.MovieId === movie.MovieId);
-                        const options = { day: 'numeric', month: 'short', year: 'numeric' };
-                        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(movie.startDate));
-                        return(
-                            <div className="mb-20 md:flex ">
-                                <div className=" md:w-2/5 xl:w-1/5 mr-2   text-xl md:text-2xl ">
-                                 
-                                        <img src={movie.imageUrl} className='w-48 md:w-60 rounded-xl ' alt={movie.title} />
-                                        <div className="flex justify-between md:block my-2" >
-                                            <div className="w-full">
-                                              <div className="text-gold text-lg font-Kanit  w-full md:w-60 ">{formattedDate}</div>
-                                              <div className="text-white font-Kanit  w-full md:w-60 ">{movie.title}</div>
-                                            </div>
-                                           
-                                            <div className="font-bold w-full text-end md:text-start w-full">
-                                                <Link href='edit '>
-                                                    <button className="bg-gold w-14 p-1 rounded-md text-lg hover:scale-90">
-                                                        Edit
-                                                    </button>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                   
-                                       
-                                   
-                                   
-                                </div>
+                 <div>
+                {groupedShowtimes.length === 0 ? (
+                    <div className="text-center text-xl">
+                        No movies available.
+                    </div>
+                ) : (
+                groupedShowtimes.map((movie) => (
+                    <div key={movie.movie_name} className="mb-20 md:flex">
+                        <div className="md:w-2/5 xl:w-1/5 mr-2 text-xl md:text-2xl">
+                            <Link href={`showtime/${movie.movie_name}`}>
+                                <img src={`/uploads/${movie.imageUrl}`} className='w-48 md:w-60 rounded-xl' alt={movie.movie_name} />
                                 
-                                <div className="w-full font-bold font-Kanit text-md md:text-lg mb-5 xl:flex  xl:flex-wrap h-full">
-                                {Object.keys(showtimes)
-                                    .filter(key => key.startsWith('tt') && showtimes[key].length > 0)
-                                    .map((key) => (
-                                        <div key={key} className="text-white bg-bggray mb-2 p-4 rounded-md md:w-4/5 lg:w-4/5 md:mx-12  xl:w-1/3  ">
-                                            <div className="mx-1 md:text-xl">Theater {key.split('tt')}</div>
-                                            <div className="flex flex-wrap">
-                                                {showtimes[key].map((time, index) => (
-                                                    <div key={index} className="m-2 bg-white text-black p-2 w-20  text-center rounded-md hover:bg-gold duration-300 cursor-pointer">
-                                                                              {/* bg-none text-white border border-white */}
-                                                        {time}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        
-                        );
-                      
+                            </Link>
 
-                    })}
-                </div>
+                            <div className="flex justify-between md:block my-2 text-white">
+                                <div className="w-full">
+                            
+                                    <div className=" text-sm font-Kanit w-full md:w-60 justify-between flex flex-wrap ">
+                                        <span className=" w-1/2 text-gold">
+                                            {movie.startDate}
+                                        </span>
+                                        <div className="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg"  height="12px" viewBox="0 -960 960 960" width="12px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" /></svg>
+                                            <p className="mx-1 text-gray-600">{Math.floor(movie.duration / 60)} ชม. {movie.duration % 60} นาที</p>
+                                        </div>
+                                       
+                                    </div>
+                                    <div className=" text-xl font-Kanit w-full md:w-60">{movie.movie_name}</div>
+                                </div>
+                                {isAdmin && (
+                                    <div className="font-bold w-full text-end md:text-start w-full">
+                                        <Link href={`editmovie/${movie.movie_name}`}>
+                                            <button className="bg-gold w-14 p-1 rounded-md text-lg hover:scale-90">
+                                                Edit
+                                            </button>
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="w-full font-bold font-Kanit text-md md:text-lg mb-5 xl:flex xl:flex-wrap h-full">
+                            {movie.theaters.map((theater) => (
+                                <div key={theater.theater_name} className="text-white bg-bggray mb-2 p-4 rounded-md md:w-4/5 lg:w-4/5 md:mx-12 xl:w-1/3">
+                                    <div className="text-md">{theater.theater_name}</div>
+                                    <div className="flex flex-wrap">
+                                        {theater.show_time.map((time, index) => (
+                                            <div key={index} className="m-2 bg-white text-black p-2 w-20 text-center rounded-md hover:bg-gold duration-300 cursor-pointer">
+                                                {time}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))
+            )}
+        </div>
             </div>
           
         </main>
@@ -224,3 +151,4 @@ export default function Admin(){
     )
 
 }
+
