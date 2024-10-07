@@ -50,7 +50,7 @@ export default function Navbar() {
             <div className='p-5 px-12 flex justify-between items-center'>
                 <div className='flex gap-6 items-center'>
                     <Link href="/" className='cursor-pointer text-2xl self-end mr-3'>Movie Ticket</Link>
-                    <Link href="/" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>หนังที่ฉายวันนี้</Link>
+                    <Link href="/moviebydate" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>หนังที่ฉายวันนี้</Link>
                     <Link href="/" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>ภาพยนตร์</Link>
                     <div className='search-box items-center  border-white  border-0.25 rounded-md bg-black gap-1 px-1.5 hidden md:flex ml-4'>
 

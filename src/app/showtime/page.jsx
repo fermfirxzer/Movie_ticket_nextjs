@@ -2,7 +2,7 @@
 
 import React, { useEffect,useState } from 'react';
 import SwiperDate from '@/component/SwiperDate.jsx';
-
+import { loadStripe } from '@stripe/stripe-js';
 export default function Showtime() {
 
     
@@ -121,19 +121,41 @@ export default function Showtime() {
             (bookedSeat) => bookedSeat.seatId === seat
         );
     };
-
-
-
-
     //purchase
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleConfirmPurchase = () => {
-        // Handle ticket purchase logic
-        setIsModalOpen(false);
-        alert('Ticket purchased successfully!');
-        window.location.reload();
+    const stripePromise = loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      );
+      const handleConfirmPurchase = async (e) => {
+        e.preventDefault();
+        
+        try {
+            const response = await fetch(`/api/seat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(null),
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+            const data = await response.json();
+            console.log(data);  
+            if (data.url) {
+             window.location.href = data.url; // Redirect to the session URL
+              } else {
+                console.error('No checkout URL re    turned');
+              }
+            
+        } catch (error) {
+            console.error('There was a problem with the purchase:', error);
+        }
+    
+        console.log("This is confirmPurchase");
     };
+    
     return (
         <main className="mt-16 min-h-screen duration-200 ">
             {/* movie detail  */}
