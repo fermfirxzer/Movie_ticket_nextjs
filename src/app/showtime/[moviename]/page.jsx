@@ -239,7 +239,7 @@ export default function Showtime({ params }) {
                             {showtime.show_time.map((time) => {
                                 const isSelected = selectedIndex === index && selectedShowtime === time;
                                 return (
-                                    <div className={`mx-2 my-2 flex justify-center  hover:bg-[--gold] duration-200 p-2 w-16 md:w-24 rounded 
+                                    <div key={time} className={`mx-2 my-2 flex justify-center  hover:bg-[--gold] duration-200 p-2 w-16 md:w-24 rounded 
                                     font-bold text-sm md:text-lg cursor-pointer ${isSelected ? "bg-gold" : "bg-white"} `}
                                         onClick={() => handleShowtimeClick(showtime.theater_name, time, index)}>
                                         {time}
