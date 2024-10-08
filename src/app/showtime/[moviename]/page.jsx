@@ -158,9 +158,7 @@ export default function Showtime({ params }) {
             setTotalprice(0);
         }
     }, [date, selectedTheater, selectedShowtime]);
-
-
-
+    
     const isSeatBooked = (seat) => {
         return bookedSeats.some(
             (bookedSeat) => bookedSeat.seat_id === seat
