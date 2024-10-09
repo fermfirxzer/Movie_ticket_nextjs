@@ -131,9 +131,12 @@ export default function MovieBydate(){
                                     <div className="text-md">{theater.theater_name}</div>
                                     <div className="flex flex-wrap">
                                         {theater.show_time.map((time, index) => (
-                                            <div key={index} className="m-2 bg-white text-black p-2 w-20 text-center rounded-md hover:bg-gold duration-300 cursor-pointer">
-                                                {time}
-                                            </div>
+                                            <Link href={`showtime/${movie.movie_name}?theater_name=${theater.theater_name}&date=${date}&time=${time}`}>
+                                                <div key={index} className="m-2 bg-white text-black p-2 w-20 text-center rounded-md hover:bg-gold duration-300 cursor-pointer">
+                                                    {time}
+                                                </div>
+                                            </Link>
+                                            
                                         ))}
                                     </div>
                                 </div>

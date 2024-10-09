@@ -4,11 +4,15 @@ import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function SwiperDate({ onDateSelect}){
+export default function SwiperDate({ onDateSelect , selectedDate }){
 
     const [selectedIndex, setSelectedIndex] = useState(-1);
+
+   
+
+
     const handleDateSelect = (date,index) => {
         setSelectedIndex(index);
         onDateSelect(date); // Call the callback with the selected date
@@ -29,7 +33,18 @@ export default function SwiperDate({ onDateSelect}){
         dates.push(date); 
     }
 
+    let matchIndex ;
+    useEffect(() => {
+        if (selectedDate) {
+            matchIndex = dates.findIndex(date => date.toISOString().split('T')[0] === selectedDate);
+            setSelectedIndex(matchIndex);
+        } else {
+            setSelectedIndex(-1); 
+        }
+    }, [selectedDate]);
 
+   
+    
     const newMonth = (date) => {
        let d = date.split(" ");
     
@@ -78,7 +93,7 @@ export default function SwiperDate({ onDateSelect}){
                     {dates.map((date, index) => {
                         const options = { month: 'short', day: 'numeric' };
                         const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
-                        const isSelected = selectedIndex === index;
+                        const isSelected = selectedIndex === index || (matchIndex === index); 
                         return (
                             <SwiperSlide key={index}  onClick={() => handleDateSelect(date,index)}>
                                 {newMonth(formattedDate )}

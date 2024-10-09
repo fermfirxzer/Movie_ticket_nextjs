@@ -3,13 +3,43 @@
 import React, { useEffect,useState } from 'react';
 import SwiperDate from '@/component/SwiperDate.jsx';
 
+
+import {  useSearchParams } from 'next/navigation';
+
+
+
 export default function Showtime({ params }) {
+   
+    const searchParams = useSearchParams(); 
+
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [selectedShowtime, setSelectedShowtime] = useState( null);
+    const [selectedTheater, setSelectedTheater] = useState( null);
+    
+    useEffect(() => {
+        const theater_name = searchParams.get('theater_name');
+        const time = searchParams.get('time');
+        const urlDate = searchParams.get('date');
+
+        if (theater_name) {
+            setSelectedTheater(theater_name);
+        }
+        if (time) {
+            setSelectedShowtime(time);
+        }
+        if (urlDate) {
+            setDate(urlDate);
+        }
+    }, [searchParams]);
+
     const [movies, setMovies] = useState([]);
     const [showtimes, setShowtimes] = useState([]);
     const { moviename } = params;
-    
-    
+
+
+  
+  
+
     
     // Function to handle date selection
     const handleDateSelect = (date) => {
@@ -73,9 +103,7 @@ export default function Showtime({ params }) {
 
 
     // Update the selected showtime and Scroll to booking
-    const [selectedShowtime, setSelectedShowtime] = useState(null);
-    const [selectedTheater, setSelectedTheater] = useState(null);
-    
+   
 
     const [selectedIndex, setSelectedIndex] = useState(null);
     const handleShowtimeClick = (theater_name , time ,index) => {
@@ -195,7 +223,7 @@ export default function Showtime({ params }) {
                 <h1 className='text-white font-Kanit text-2xl'>รอบภาพยนตร์</h1>
             </div>
             {/* slide date */}  
-            <SwiperDate onDateSelect={handleDateSelect}></SwiperDate>
+            <SwiperDate onDateSelect={handleDateSelect} selectedDate={date}></SwiperDate>
 
             {showtimes.length === 0 && 
                 <div className="text-center text-xl mt-12">
@@ -211,7 +239,7 @@ export default function Showtime({ params }) {
                                 const isSelected = selectedIndex === index && selectedShowtime === time;
                                 return(
                                     <div className={`mx-2 my-2 flex justify-center  hover:bg-[--gold] duration-200 p-2 w-16 md:w-24 rounded 
-                                    font-bold text-sm md:text-lg cursor-pointer ${isSelected ? "bg-gold" :  "bg-white"} `}
+                                    font-bold text-sm md:text-lg cursor-pointer ${selectedShowtime === time && showtime.theater_name === selectedTheater ? 'bg-gold' : isSelected ? "bg-gold" :  "bg-white"} `}
                                     onClick={() => handleShowtimeClick(showtime.theater_name , time , index)}>
                                         {time}                 
                                    </div>

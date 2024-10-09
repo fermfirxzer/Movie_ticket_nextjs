@@ -1,30 +1,51 @@
 'use client'
 
 import SwiperComponent from "@/component/SwiperComponent";
+import React, { useState, useEffect } from 'react';
 
 export default function Mainpage(){
+    const [upcomingmovies,setUpcomingmovies] = useState([]);
+    const [ongoingmovies,setOngoingmovies] = useState([]);
+
+    const today = new Date().toISOString().split('T')[0];
+    const fetchMovies = async () => {
+        try {
+            const response = await fetch(`/api/mainpage?date=${today}`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            setUpcomingmovies(data.upcomingmovies); 
+            setOngoingmovies(data.ongoingmovies);
+            console.log(data);
+        } catch (error) {
+            console.error('Error fetching movies:', error);
+        }
+    };
+    
+
+    useEffect(() => {
+        fetchMovies();
+    }, []);
+
+
+
 
     return(
         <main className="bg-black  text-white font-Kanit ml-2  ">
             <div className="md:mx-20">
-                <div className="mb-4 mt-10">
-                    <h1 className="text-3xl mx-5 my-6 lg:mx-9 ">ภาพยนตร์แนะนำ</h1>
-                    <SwiperComponent></SwiperComponent>
-                </div>
                 <div>
                     <h1 className="text-3xl mx-5 my-6 lg:mx-9">กำลังฉาย</h1>
-                    <SwiperComponent></SwiperComponent>
+                    <SwiperComponent movies={ongoingmovies}></SwiperComponent>
                 </div>
-                <div>
+                <div className="my-12">
                     <h1 className="text-3xl mx-5 my-6 lg:mx-9">โปรแกรมหน้า</h1>
-                    <SwiperComponent></SwiperComponent>
+                    <SwiperComponent movies={upcomingmovies}></SwiperComponent>
                 </div>
             </div>
-          
-          
-
-
-            
         </main>
         
     );
