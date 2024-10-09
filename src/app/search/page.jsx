@@ -92,7 +92,7 @@ const Explore = () => {
                             ref={searchInputRef}
                             placeholder="Search for movies..."
                             className="w-full pl-10 px-4 py-2 rounded-md border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-[--gold]"
-                            // onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                         // onKeyDown={handleKeyDown}
                         />
                     </div>
@@ -123,7 +123,7 @@ const Explore = () => {
                 <div className='flex flex-wrap gap-4 align-center  '>
                     {movies.map((movie, index) => (
                         <div key={index} className='flex flex-col w-[40%] md:w-[30%] xl:w-[24%] items-center justify-start '>
-                            <div className=" w-4/5 relative flex flex-col items-center ">
+                            <div className=" w-4/5 relative flex flex-col items-center cursor-pointer">
                                 <div className=' rounded-xl '>
                                     <img src={`/uploads/${movie.imageUrl}`} className='w-full' alt={movie.movie_name} />
                                 </div>

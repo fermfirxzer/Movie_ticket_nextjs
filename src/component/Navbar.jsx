@@ -7,7 +7,6 @@ import { signOut , useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 export default function Navbar() {
     const { data : session } = useSession();
-
     // State to control the visibility of the mobile nav
     const [isMobileNavVisible, setMobileNavVisible] = useState(false);
     const [islogin, setLogin] = useState(true);
@@ -50,7 +49,7 @@ export default function Navbar() {
             <div className='p-5 px-12 flex justify-between items-center'>
                 <div className='flex gap-6 items-center'>
                     <Link href="/" className='cursor-pointer text-2xl self-end mr-3'>Movie Ticket</Link>
-                    <Link href="/" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>หนังที่ฉายวันนี้</Link>
+                    <Link href="/moviebydate" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>หนังที่ฉายวันนี้</Link>
                     <Link href="/" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>ภาพยนตร์</Link>
                     <div className='search-box items-center  border-white  border-0.25 rounded-md bg-black gap-1 px-1.5 hidden md:flex ml-4'>
 
@@ -82,12 +81,12 @@ export default function Navbar() {
                                 <input type="text" className='search text-black p-1 md:w-56 focus:outline-none  rounded-md border-white border-0.5'></input>
                             </div>
 
-                            {islogin ? (<div className='user-box'>
+                            {session ? (<div className='user-box'>
                                 <h3 className='text-xl font-bold'>User</h3>
 
                                 <div className='flex flex-col mt-3 gap-3'>
-                                    <Link href="#" className='hover:underline underline-offset-4 decoration-4'>History</Link>
-                                    <Link onClick={() => signOut()} className='hover:underline underline-offset-4 decoration-4'>Logout</Link>
+                                    <Link href="/history" className='hover:underline underline-offset-4 decoration-4'>History</Link>
+                                    <Link onClick={() => signOut()} className='hover:underline underline-offset-4 decoration-4' href="/">Logout</Link>
                                 </div>
                             </div>) : (
                                 <>
@@ -110,8 +109,8 @@ export default function Navbar() {
                                         <span className='self-end' id="username">{session?.user?.username}</span>
                                     </div>
                                     <hr className='border-gray-700 '></hr>
-                                    <ul className='mt-3'>
-                                        <li className="py-1 px-2 hover:bg-gray-200">History</li>
+                                    <ul className='mt-3 cursor-pointer'>
+                                        <li className="py-1 px-2 hover:bg-gray-200"><Link href="/history">History</Link></li>
                                         <li className="py-1 px-2  hover:bg-gray-200"><a onClick={() => signOut()}>Logout</a></li>
                                     </ul>
                                 </div>

@@ -20,8 +20,6 @@ export async function GET(req) {
             return new Response('Missing parameters', { status: 400 });
         }
 
-        
-      
         const theater = await Theater.findOne({ theater_name:   theater_name });
 
         // If no theater found, return error
@@ -31,12 +29,11 @@ export async function GET(req) {
 
         const seats = await Seat.find({
             theater_id: theater._id,  
-            Date:  { $eq: dateObject },               
+            Date:  { $eq: date },               
             Time: time
           
         }).select('seat_id -_id');;
         return NextResponse.json(seats, { status: 200 });
-
     } catch (error) {
         console.error('Error fetching seats:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
