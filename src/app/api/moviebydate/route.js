@@ -9,7 +9,7 @@ export async function GET(req ) {
         // Connect to MongoDB
         await connectMongoDB();  
         
-
+ 
         const { searchParams } = new URL(req.url);
         const date = searchParams.get('date');
         const moviename = searchParams.get('moviename');

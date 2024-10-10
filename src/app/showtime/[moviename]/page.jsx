@@ -3,14 +3,45 @@
 import React, { useEffect, useState } from 'react';
 import SwiperDate from '@/component/SwiperDate.jsx';
 
+
+import {  useSearchParams } from 'next/navigation';
+
+
+
 export default function Showtime({ params }) {
+   
+    const searchParams = useSearchParams(); 
+
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [selectedShowtime, setSelectedShowtime] = useState( null);
+    const [selectedTheater, setSelectedTheater] = useState( null);
+    
+    useEffect(() => {
+        const theater_name = searchParams.get('theater_name');
+        const time = searchParams.get('time');
+        const urlDate = searchParams.get('date');
+
+        if (theater_name) {
+            setSelectedTheater(theater_name);
+        }
+        if (time) {
+            setSelectedShowtime(time);
+        }
+        if (urlDate) {
+            setDate(urlDate);
+        }
+    }, [searchParams]);
+
     const [movies, setMovies] = useState([]);
     const [showtimes, setShowtimes] = useState([]);
     const { moviename } = params;
 
 
+  
+  
 
+    
+    // Function to handle date selection
     const handleDateSelect = (date) => {
         const selectedDate = new Date(date).toISOString().split('T')[0];
         setDate(selectedDate);
@@ -69,9 +100,7 @@ export default function Showtime({ params }) {
 
 
     // Update the selected showtime and Scroll to booking
-    const [selectedShowtime, setSelectedShowtime] = useState(null);
-    const [selectedTheater, setSelectedTheater] = useState(null);
-
+   
 
     const [selectedIndex, setSelectedIndex] = useState(null);
     const handleShowtimeClick = (theater_name, time, index) => {
@@ -223,8 +252,8 @@ export default function Showtime({ params }) {
             <div className='mx-6 my-2 lg:mx-16'>
                 <h1 className='text-white font-Kanit text-2xl'>รอบภาพยนตร์</h1>
             </div>
-            {/* slide date */}
-            <SwiperDate onDateSelect={handleDateSelect}></SwiperDate>
+            {/* slide date */}  
+            <SwiperDate onDateSelect={handleDateSelect} selectedDate={date}></SwiperDate>
 
             {showtimes.length === 0 &&
                 <div className="text-center text-xl mt-12">
