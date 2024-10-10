@@ -244,9 +244,7 @@ export default function Showtime({ params }) {
                                         onClick={() => handleShowtimeClick(showtime.theater_name, time, index)}>
                                         {time}
                                     </div>
-
                                 )
-
                             })}
                         </div>
 
