@@ -130,6 +130,7 @@ const HistoryPage = () => {
                     hour12: true, // Optional: Show time in 12-hour format (AM/PM)
                   })}
                 </p>
+                <img src="{{ qrCode }}" alt="QR Code" />
               </div>
               
               <hr className='w-full md:w-[48rem]'></hr>

@@ -5,6 +5,7 @@ import { Movie } from "@/../lib/model/movie";
 import { Theater } from "@/../lib/model/theater";
 import mongoose from 'mongoose';
 import { NextResponse } from "next/server";
+import QRCode from 'qrcode';
 
 export async function POST(req) {
     try {
@@ -88,10 +89,30 @@ export async function POST(req) {
             }
         ]);
         
+        if (historyData.length === 0) {
+            return NextResponse.json({ error: 'No history found for the user.' }, { status: 404 });
+        }
 
+        // Generate QR Code for the first history entry (or you can customize which entry to use)
+        const qrData = {
+            history_id: historyData[0]._id,
+            movie: historyData[0].movie,
+            theater_name: historyData[0].theater_name,
+            show_date: historyData[0].show_date,
+            show_time: historyData[0].show_time,
+            seats: historyData[0].seats
+        };
+
+        // Generate the QR code as a data URL
+        const qrCodeDataUrl = await QRCode.toDataURL(JSON.stringify(qrData));
+
+        const responseData = {
+            history: historyData,
+            qrCode: qrCodeDataUrl // Send the QR code as part of the response
+        };
 
         // Return the fetched data as a JSON response
-        return NextResponse.json({ history: historyData }, { status: 200 });
+        return NextResponse.json(responseData, { status: 200 });
 
     } catch (error) {
         console.error("Error fetching history:", error);

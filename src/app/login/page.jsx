@@ -31,6 +31,11 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { username, email, password, confirmPassword } = formData;
+
+        // if(!validatePassword(password)){
+        //     setError("Password must contain at least 1 uppercase and lowercase letter")
+        //     return;
+        // }
         
         if (!username || !email || !password || !confirmPassword) {
             setError("Please add all inputs");
@@ -91,6 +96,12 @@ export default function Login() {
             console.log(error)
         }
     }
+
+    // const validatePassword = (password) => {
+    //     const hasUpperCase = /[A-Z]/.test(password);
+    //     const hasLowerCase = /[a-z]/.test(password);
+    //     return hasUpperCase && hasLowerCase;
+    // }
 
     return (
         <main className="bg-black h-screen flex justify-center items-center font-Kanit">
