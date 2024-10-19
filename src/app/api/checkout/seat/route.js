@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
 
     const body = await req.json();
-    const { selectedSeats, moviename, date, selectedTheater, selectedShowtime, userId,total_amount } = body;
+    const { selectedSeats, moviename, date, selectedTheater, selectedShowtime, username,total_amount } = body;
     console.log(selectedSeats)
     const line_items = Object.entries(selectedSeats).map(([seatId, price]) => ({
       price_data: {
@@ -23,21 +23,22 @@ export async function POST(req) {
       payment_method_types:['card'],
       line_items: line_items, 
       mode: 'payment',
-      success_url: `${req.headers.get('origin')}/showtime?success=true`, // Dynamically set success URL based on origin
-      cancel_url: `${req.headers.get('origin')}/showtime?canceled=true`, 
+      success_url: `${req.headers.get('origin')}/history?success=true`, // Dynamically set success URL based on origin
+      cancel_url: `${req.headers.get('origin')}/history?canceled=true`, 
       metadata: {
         date: date,
         selectedTheater: selectedTheater,
         selectedShowtime: selectedShowtime,
         moviename: decodeURI(moviename),
-        userId: userId,
+        username: username,
         selectedSeats: JSON.stringify(selectedSeats),
         total_amount:total_amount,
+        type: 'seat',
       },
+      
     }
   );
-    // console.log("Stripe Session: ", session);
-    
+
     return NextResponse.json({ url:session.url }, { status: 200 });
 
   } catch (err) {

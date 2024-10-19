@@ -1,10 +1,20 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useMovie } from '@/context/Moviecontext';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import useCheckAdmin from '@/app/utils/checkadmin';
 export default function Edit() {
+    const { data: session, status } = useSession(); 
+    useCheckAdmin();
+//     const router = useRouter();
+//   useEffect(() => {
+//     if (status === 'unauthenticated') {
+//       // Redirect to the main page if not authenticated
+//       router.push('/');
+//     }
+//   }, [status, router]); // 
     const [errmovie, setErrmovie] = useState("");
-    const router = useRouter();
+    
     const insertMovie = async (e) => {
         e.preventDefault();
         setErrmovie(null);
@@ -119,30 +129,30 @@ export default function Edit() {
                     <form className="w-4/5 md:w-2/3 lg:w-1/2 mx-6 my-6" onSubmit={insertMovie}>
                         <div className="mb-4">
                             <label className="block text-gray-700 ">Name</label>
-                            <input type="text" name="movie_name" value={currentMovieInfo.movie_name} onChange={handleInputChange} className="w-full px-3 py-2 border rounded" required />
+                            <input type="text" name="movie_name" value={currentMovieInfo.movie_name} onChange={handleInputChange} className="movie-input" required />
                         </div>
                         <div className="mb-4">
                             <label className="block text-gray-700 ">Description</label>
-                            <textarea name="desc" value={currentMovieInfo.desc} onChange={handleInputChange} className="w-full px-3 py-2 border rounded" rows="4" required />
+                            <textarea name="desc" value={currentMovieInfo.desc} onChange={handleInputChange} className="movie-input" rows="4" required />
                         </div>
                         <div className="mb-4 flex">
                             <div className="w-1/2 mr-2">
                                 <label className="block text-gray-700 ">Price</label>
-                                <input type="number" name="price" value={currentMovieInfo.price} onChange={handleInputChange} className="w-full py-2 border rounded" required />
+                                <input type="number" name="price" value={currentMovieInfo.price} onChange={handleInputChange} className="movie-input" required />
                             </div>
                             <div className="w-1/2">
                                 <label className="block text-gray-700 ">Duration</label>
-                                <input type="text" name="duration" value={currentMovieInfo.duration} onChange={handleInputChange} className="w-full py-2 border rounded" required />
+                                <input type="text" name="duration" value={currentMovieInfo.duration} onChange={handleInputChange} className="movie-input" required />
                             </div>
                         </div>
                         <div className="mb-4 flex">
                             <div className="w-1/2 mr-2">
                                 <label className="block text-gray-700 ">Starting Date</label>
-                                <input type="date" name="startDate" value={currentMovieInfo.startDate} onChange={handleInputChange} className="w-full px-2 py-2 border rounded" required />
+                                <input type="date" name="startDate" value={currentMovieInfo.startDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
                             <div className="w-1/2 ">
                                 <label className="block text-gray-700">End Date</label>
-                                <input type="date" name="endDate" value={currentMovieInfo.endDate} onChange={handleInputChange} className="w-full px-2 py-2 border rounded" required />
+                                <input type="date" name="endDate" value={currentMovieInfo.endDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
                         </div>
                         <div className=' my-6 text-end  font-bold'>

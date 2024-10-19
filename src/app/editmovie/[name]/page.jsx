@@ -3,14 +3,24 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Insertmovie from '@/component/insertmovie'
 import Swal from 'sweetalert2';
-
+import Loading from '@/component/Loading';
+import { useSession } from 'next-auth/react';
+import useCheckAdmin from '@/app/utils/checkadmin';
 export default function Edit({ params }) {
     const [errfetchshowtime, setErrfetchshowtime] = useState("");
-    const router = useRouter();
+    const { data: session, status } = useSession(); // Access session and loading status
+    useCheckAdmin();
+    // const router = useRouter();
+    // useEffect(() => {
+    //     if (session.user.isAdmin==false||status === 'unauthenticated') {
+    //         router.push('/');
+    //     }
+    // }, [status, router]); //
     const { name } = params;
     const [Moviename, setMoviename] = useState(name || null);
     const [Showtime, setShowtime] = useState(null);
     const [Errdate, setErrDate] = useState(null);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchShowtime = async () => {
             try {
@@ -20,7 +30,7 @@ export default function Edit({ params }) {
                 }
                 const data = await response.json();
                 setShowtime(data);
-                // setLoading(false);
+                setLoading(false);
 
             } catch (error) {
                 console.log(error.Message)
@@ -70,15 +80,15 @@ export default function Edit({ params }) {
         };
         setErrDate(null);
         setavailableTheater([]);
-        setAvailableTime([]);   
-        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate&&showDate.startDate<=showDate.endDate) {
+        setAvailableTime([]);
+        if (showDate.startDate && showDate.endDate && movieStart <= showDate.startDate && movieEnd >= showDate.endDate && showDate.startDate <= showDate.endDate) {
             fetchTheater();
             setErrDate("date ถูกต้อง");
-        }else if(!showDate.startDate||!showDate.endDate){
+        } else if (!showDate.startDate || !showDate.endDate) {
             setErrDate("กรุณากรอกวันที่")
-        }else if(showDate.startDate>showDate.endDate) {
+        } else if (showDate.startDate > showDate.endDate) {
             setErrDate("วันที่เริ่ม show ต้องมากกว่าวันที่จบ show");
-        }else{
+        } else {
             setErrDate("show ต้องอยู่ในช่วงเวลาของหนัง")
         }
     }, [showDate.startDate, showDate.endDate, movieStart, movieEnd])
@@ -166,7 +176,6 @@ export default function Edit({ params }) {
 
         if (result.isConfirmed) {
             // Perform the delete operation
-            
             try {
                 const response = await fetch(`/api/showtime`, {
                     method: 'DELETE',
@@ -190,6 +199,9 @@ export default function Edit({ params }) {
             }
         }
     };
+    if (loading) {
+        return <Loading />
+    }
     return (
         <main className='min-h-screen font-Kanit bg-black'>
 
@@ -215,7 +227,7 @@ export default function Edit({ params }) {
                                             </button>
                                         ))}
                                     </div>
-                                    <div className="flex justify-end"onClick={() => DeleteShowtime(showtime)}>
+                                    <div className="flex justify-end" onClick={() => DeleteShowtime(showtime)}>
                                         <button className='bg-red-900 text-white p-2 w-22  rounded-lg flex justify-center hover:scale-90' onClick={() => setShowForm(!showForm)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="40px" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
                                         </button>
@@ -237,9 +249,9 @@ export default function Edit({ params }) {
                                 />
                             </div>
                         </div>
-                        
-                            {Errdate && <p className="text-red-500">*{Errdate}</p>}
-                            {Errdate=="date ถูกต้อง"&&<div> 
+
+                        {Errdate && <p className="text-red-500">*{Errdate}</p>}
+                        {Errdate == "date ถูกต้อง" && <div>
                             <h3>โรงหนัง :</h3>
 
                             <div className="flex flex-col mb-4 text-black">
@@ -269,8 +281,8 @@ export default function Edit({ params }) {
                                     <p className="text-gray-400">No available times for this theater.</p>
                                 )}
                             </div>
-                            </div>}
-                       
+                        </div>}
+
                         <div className='flex justify-end mt-6'>
                             {Errshowtime && <p className='self-start flex-grow'>{Errshowtime}</p>}
                             <button className='bg-white  p-2 w-22  rounded-lg flex justify-center mx-4 font-bold hover:scale-90' onClick={handleAddshowtime} >

@@ -1,11 +1,10 @@
 import { connectMongoDB } from "@/../lib/mongodb.js";
 import { History } from "@/../lib/model/history";
-import { Seat } from "@/../lib/model/seat";
-import { Movie } from "@/../lib/model/movie";
-import { Theater } from "@/../lib/model/theater";
+import { User } from "@/../lib/model/user";
 import mongoose from 'mongoose';
 import { NextResponse } from "next/server";
-
+import QRCode from 'qrcode';
+//get HIstory from User
 export async function POST(req) {
     try {
         // Connect to MongoDB
@@ -13,12 +12,13 @@ export async function POST(req) {
 
         // Parse the request body
         const body = await req.json();
-        const { userId } = body;
-
+        const { username } = body;
+        const user = await User.findOne({ username: username }).select('_id');
         // Fetch the history for the given userId and join with Seat, Movie, and Theater
+
         const historyData = await History.aggregate([
             {
-                $match: { user_id: new mongoose.Types.ObjectId("6704335295b1035f984c082d") }
+                $match: { user_id: user._id }
             },
             {
                 $lookup: {
@@ -64,8 +64,10 @@ export async function POST(req) {
                     purchase_time: { $first: "$purchase_time" },
                     payment_status: { $first: "$payment_status" },
                     movie: { $first: "$movie.movie_name" },
-                    imageUrl:{$first:"$movie.imageUrl"},
-                    duration:{$first:"$movie.duration"},
+                    imageUrl: { $first: "$movie.imageUrl" },
+                    duration: { $first: "$movie.duration" },
+                    qrcode:{$first:"$qrcode"},
+                    qrcode_isscan:{$first:"$qrcode_isscan"},
                 }
             },
             {
@@ -79,19 +81,24 @@ export async function POST(req) {
                     purchase_time: 1,
                     payment_status: 1,
                     movie: 1,
-                    imageUrl:1,
-                    duration:1,
+                    imageUrl: 1,
+                    duration: 1,
+                    qrcode:1,
+                    qrcode_isscan:1,
                 }
             },
             {
                 $sort: { purchase_time: -1 } // -1 for descending (newest first), 1 for ascending (oldest first)
             }
         ]);
+        // if (historyData.length === 0) {
+        //     return NextResponse.json({ error: 'No history found for the user.' }, { status: 404 });
+        // };
+
         
 
-
         // Return the fetched data as a JSON response
-        return NextResponse.json({ history: historyData }, { status: 200 });
+        return NextResponse.json({ historyData: historyData }, { status: 200 });
 
     } catch (error) {
         console.error("Error fetching history:", error);
