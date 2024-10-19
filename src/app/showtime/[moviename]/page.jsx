@@ -15,13 +15,9 @@ export default function Showtime({ params }) {
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [selectedShowtime, setSelectedShowtime] = useState(null);
     const [selectedTheater, setSelectedTheater] = useState(null);
-    const { data : session } = useSession();
-    const [username, setUsername] = useState(null);
-    useEffect(() => {
-        if (session && session.user) {
-          setUsername(session.user.username);
-        }
-      }, [session]);
+    const { data : session,status } = useSession();
+    const [userTier,setUserTier]=useState('');
+
     useEffect(() => {
         const theater_name = searchParams.get('theater_name');
         const time = searchParams.get('time');
@@ -57,9 +53,7 @@ export default function Showtime({ params }) {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const response = await fetch(`/api/movie/${moviename}`, {
-                    method: 'GET',
-                });
+                const response = await fetch(`/api/movie/${moviename}`);
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status}`);
                 }
@@ -67,33 +61,52 @@ export default function Showtime({ params }) {
                 const data = await response.json();
                 setMovies(data);
 
-                console.log(data);
+                
             } catch (error) {
                 console.error('Error fetching movies:', error);
             }
         };
-        fetchMovies();
-        setLoading(false);
-    }, [moviename]);
+        const fetchUserTier=async()=>{
+            if (!session?.user?.username) return;
+            try {
+                const response = await fetch(`/api/promotionTier/getTieruser?username=${session.user.username}`);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                const data = await response.json();
+                // console.log(data.userTier)
+                setUserTier(data.userTier[0])
+                
 
-
-    const fetchShowtime = async () => {
-        if (!date || !movies.movie_name) return;
-
-        try {
-            const response = await fetch(`/api/moviebydate/?moviename=${movies.movie_name}&date=${date}`);
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
+            } catch (error) {
+                console.error('Error fetching movies:', error);
             }
-
-            const data = await response.json();
-            setShowtimes(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching showtimes:', error);
         }
-    };
+        if (status === "authenticated") {
+            fetchUserTier();
+        }
+        fetchMovies();
+        
+        setLoading(false);
+    }, [moviename,session,status]);
+   
     useEffect(() => {
+        const fetchShowtime = async () => {
+            if (!date || !movies.movie_name) return;
+    
+            try {
+                const response = await fetch(`/api/moviebydate/?moviename=${movies.movie_name}&date=${date}`);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+    
+                const data = await response.json();
+                setShowtimes(data);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching showtimes:', error);
+            }
+        };
         if (movies.movie_name) {
             fetchShowtime();
         }
@@ -102,7 +115,7 @@ export default function Showtime({ params }) {
     }, [date, movies.movie_name]);
     console.log(showtimes)
 
-
+    
     // Update the selected showtime and Scroll to booking
 
 
@@ -142,9 +155,10 @@ export default function Showtime({ params }) {
         seats.push(row)
     }
 
-
+    
     const [selectedSeats, setSelectedSeats] = useState({});
     const toggleSeat = (seat) => {
+        
         let price = movies.price;
         if (seat.startsWith("A") || seat.startsWith("B") || seat.startsWith("C")) {
             price += 40;
@@ -157,7 +171,15 @@ export default function Showtime({ params }) {
             delete updatedSeats[seat];
             setSelectedSeats(updatedSeats);
         } else {
-            // Select seat
+            if (Object.keys(selectedSeats).length >= 6) {
+                window.alert(`You can purchase a maximum of 6 seats at a time!`);
+                return;
+            }
+            if(userTier){
+                const discount = parseInt(userTier.discount, 10);
+                const discountAmount = (discount / 100) * price;
+                price = price - parseInt(discountAmount);
+            }
             setSelectedSeats(prevSeats => ({
                 ...prevSeats,
                 [seat]: price, // Add the seat with its price
@@ -167,7 +189,7 @@ export default function Showtime({ params }) {
 
         console.log(selectedSeats);
     };
-
+    console.log(selectedSeats)
     const [bookedSeats, setBookedSeats] = useState([]);
 
     const fetchSeat = async () => {
@@ -204,13 +226,13 @@ export default function Showtime({ params }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleConfirmPurchase = async (e) => {
         e.preventDefault();
-        if(!username){
+        if(!session.user.username){
             window.alert('Please Login before buying a ticket');
             return;
         }
-        const body = { date, selectedTheater, selectedShowtime, moviename, username, selectedSeats, total_amount: totalprice };
+        const body = { date, selectedTheater, selectedShowtime, moviename, username:session.user.username, selectedSeats, total_amount: totalprice };
         try {
-            const response = await fetch(`/api/checkout`, {
+            const response = await fetch(`/api/checkout/seat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -235,6 +257,7 @@ export default function Showtime({ params }) {
     if(loading){
         return <Loading/>
     }
+    
     return (
         <main className="mt-16 min-h-screen duration-200 ">
             {/* movie detail  */}
@@ -271,7 +294,7 @@ export default function Showtime({ params }) {
             }
             <div className='mx-5 my-8 font-Kanit md:mx-20'>
                 {showtimes.map((showtime, index) => (
-                    <div key={showtime.theater_name} className="my-4 font-bold">
+                    <div key={showtime.theater_name} className="my-4 font-bold text-black">
                         <div className="text-xl text-white ">{showtime.theater_name}</div>
                         <div className="flex flex-wrap">
                             {showtime.show_time.map((time) => {
@@ -298,9 +321,12 @@ export default function Showtime({ params }) {
                     
                     <div className="flex flex-col xl:flex-row items-center font-Kanit  w-full " id="booking">
 
-                        <div className=' flex flex-col items-center w-5/6 xl:w-2/3 mt-20'>
+                        <div className=' flex flex-col items-center w-5/6 xl:w-2/3 mt-20 text-white'>
 
-
+                            {userTier&&<div>
+                                
+                                {userTier.tier} ส่วนลด : {userTier.discount} % 
+                                </div>}
                             <div className='w-full xl:w-2/3  h-10 bg-black border-2 border-[--gold] text-white text-2xl items-center justify-center flex mb-12'>
                                 SCREEN
                             </div>
@@ -319,6 +345,7 @@ export default function Showtime({ params }) {
                             ))}
                         </div>
                         <div className='w-[80%] md:w-3/4 xl:w-[30%] border  text-white p-2 md:p-6 my-12 text-sm md:text-lg '>
+                        {userTier&&<h6 className='text-sm text-red-500'>**ส่วนลด : {userTier.discount} % สำหรับสมาชิก {userTier.name}</h6>}
                             <h1 className='font-bold mx-2  text-lg '>SUMMARY</h1>
                             <div className='flex'>
                                 <img src={`/uploads/${movies.imageUrl}`} className='w-40 m-2'></img>
@@ -347,7 +374,7 @@ export default function Showtime({ params }) {
                                     <div className='w-1/2 flex flex-wrap '>
                                         <div className='w-full'>ที่นั่ง : </div>
                                         {Object.entries(selectedSeats).map(([seat, price]) => (
-                                            <div key={seat} className='mr-1'>{`${seat}: $${price},`}</div>
+                                            <div key={seat} className='mr-1'>{`${seat}: ${price}฿,`}</div>
                                         ))}
                                     </div>
                                     <div className='w-1/2 text-end'>

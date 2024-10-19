@@ -34,15 +34,17 @@ const HistoryPage = () => {
         }
 
         const data = await response.json();
-        setpurchase(data.history);
-        console.log(data.history);
+        setpurchase(data.historyData);
       } catch (error) {
         console.error('Error fetching movies:', error);
       } finally {
         setIsLoading(false); // Stop loading
       }
     }
-    fetchhistory();
+    if(username){
+      fetchhistory();
+    }
+    
   }, [username])
   if (isLoading) {
     return <Loading />; // Show loading while fetching data
@@ -50,7 +52,7 @@ const HistoryPage = () => {
   const handleClose = () => {
     setShowMessage(false);
   };
-  
+  console.log(purchase)
   return (
 
     <div className=''>
@@ -87,7 +89,14 @@ const HistoryPage = () => {
                           {purchase.theater_name || 'N/A'}
                         </div>
                       </div>
+                      
                     </div>
+                    {purchase.qrcode&&<div className='ml-auto'>
+                        <img src={purchase.qrcode} width="150px" alt="QR Code" />
+                        </div>}
+                    <div>
+
+                      </div>
                   </div>
                   <div className='flex flex-wrap mx-2 duration-500'>
                     <div className='w-1/2 flex flex-wrap'>
@@ -113,6 +122,7 @@ const HistoryPage = () => {
                     hour12: true, // Optional: Show time in 12-hour format (AM/PM)
                   })}
                 </p>
+
               </div>
 
               <hr className='w-full md:w-[48rem]'></hr>

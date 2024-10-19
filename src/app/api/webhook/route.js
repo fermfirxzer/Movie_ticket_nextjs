@@ -27,9 +27,8 @@ export async function POST(req) {
     case 'checkout.session.completed':
       const session = event.data.object;
       const metadata = session.metadata;
-      console.log('Payment successful for session:', session.id);
-     
-      console.log('Metadata:', metadata);
+      if (metadata.type === 'seat') {
+        console.log('Seat purchase successful for session:', session.id);
       try {
         const origin = req.headers.get('origin');
         const response = await fetch(`http://localhost:3000/api/seat`, {
@@ -48,9 +47,25 @@ export async function POST(req) {
         return NextResponse.json({ error: "Failed to call external API" }, { status: 500 });
       }
       break;
-    // case 'payment_intent.succeeded':
-    //   // console.log('paymant success');
-    //   break;
+    }else if (metadata.type === 'tier') {
+      console.log('Promotion purchase successful for session:', session.id);
+      try {
+        const response = await fetch(`http://localhost:3000/api/promotionTier`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(
+            metadata 
+        ),
+        });
+        const apiResponse = await response.json();
+        console.log("Response from other API:", apiResponse);
+      } catch (apiError) {
+        console.error("Error calling external API:", apiError);
+        return NextResponse.json({ error: "Failed to call external API" }, { status: 500 });
+      }
+    }
     default:
       // console.log(`Unhandled event type: ${event.type}`);
   }

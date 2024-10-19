@@ -35,12 +35,7 @@ export default function Navbar() {
             setMobileNavVisible(false);
             
         }
-        // if (
-        //     userRef.current && !userRef.current.contains(event.target) &&
-        //     usericon.current && !usericon.current.contains(event.target)
-        // ) {
-        //     setShowuser(false);
-        // }
+    
     };
     
     const [Search,setSearch]=useState(null);
@@ -125,6 +120,7 @@ export default function Navbar() {
                                     <Link href="/history"><li className="py-1 px-2 hover:bg-gray-200">History</li></Link>
                                     <Link href="/promotion"><li className="py-1 px-2 hover:bg-gray-200">Promotion</li></Link>
                                         <li className="py-1 px-2  hover:bg-gray-200" onClick={()=>signOut()}>Logout</li>
+                                    {session.user.isAdmin&&<Link href="/scanner"><li className="py-1 px-2 hover:bg-gray-200">Scanner</li></Link>}
                                     </ul>
                                 </div>
                             )}

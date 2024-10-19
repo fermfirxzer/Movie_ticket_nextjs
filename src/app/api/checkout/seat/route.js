@@ -33,7 +33,9 @@ export async function POST(req) {
         username: username,
         selectedSeats: JSON.stringify(selectedSeats),
         total_amount:total_amount,
+        type: 'seat',
       },
+      
     }
   );
 

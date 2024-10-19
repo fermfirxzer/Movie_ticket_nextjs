@@ -5,7 +5,7 @@ import { PromotionHistory } from "@/../lib/model/promotionhistory";
 import { NextResponse } from "next/server";
 import { User } from "@/../lib/model/user";
 
-//get Item and Tier 
+//get Item 
 export async function GET(req) {
     try {
         await connectMongoDB();

@@ -12,29 +12,32 @@ export default function Promotion() {
     const [loading, setLoading] = useState(true);
     const [point, setPoint] = useState(0);
     const [History, setHistory] = useState('');
-
+    const [userTier, setuserTier] = useState('');
+    
     useEffect(() => {
         const fetchData = async () => {
             if (!session?.user?.username) return;
             try {
-                const [pointRes, historyRes, itemRes] = await Promise.all([
-                    fetch(`/api/promotionTier?username=${session.user.username}`),
+                const [pointRes, historyRes, itemRes, userTierRes] = await Promise.all([
+                    fetch(`/api/promotionTier/getpointuser?username=${session.user.username}`),
                     fetch(`/api/promotionhistory?username=${session.user.username}`),
-                    fetch(`/api/promotionItem`)
+                    fetch(`/api/promotionItem`),
+                    fetch(`/api/promotionTier/getTieruser?username=${session.user.username}`),
                 ]);
-    
-                if (!pointRes.ok || !historyRes.ok || !itemRes.ok) {
+
+                if (!pointRes.ok || !historyRes.ok || !itemRes.ok || !userTierRes.ok) {
                     throw new Error('Failed to fetch promotion data.');
                 }
-    
+
                 const pointData = await pointRes.json();
                 const historyData = await historyRes.json();
                 const itemData = await itemRes.json();
-    
+                const userTier = await userTierRes.json();
                 setPoint(pointData.point);
                 setHistory(historyData.History);
                 setItem(itemData.Item);
                 setTier(itemData.Tier);
+                setuserTier(userTier.userTier[0])
                 setLoading(false);
             } catch (error) {
                 console.error(error.message);
@@ -44,10 +47,10 @@ export default function Promotion() {
             fetchData();
         }
     }, [session, status]);
-    
+
     const [selectedSub, setSelectedSub] = useState([]);
     const [selectedRewards, setSelectedRewards] = useState([]);
-    
+
     const [total, setTotal] = useState(0);
     const handleRewardSelect = (rewardId, rewardPoint, rewardName) => {
 
@@ -61,10 +64,10 @@ export default function Promotion() {
                     text: 'คุณไม่สามารถเลือกของรางวัลนี้ได้เพราะแต้มของคุณไม่เพียงพอ!',
                     confirmButtonText: 'ตกลง',
                 });
-                
+
                 return prev; // Do not update selection
             } else {
-                
+
                 setTotal(newTotal); // Update total points
 
                 if (prev.some(reward => reward.rewardId === rewardId)) {
@@ -83,7 +86,6 @@ export default function Promotion() {
             window.alert('Please Login before buying a Items!');
             return;
         }
-        // console.log(selectedRewards)
         try {
             const response = await fetch(`/api/promotionItem`, {
                 method: 'POST',
@@ -95,7 +97,7 @@ export default function Promotion() {
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
-            
+
             window.alert(`Success! You've purchased the item with Point`);
             fetchHistory();
 
@@ -122,23 +124,28 @@ export default function Promotion() {
             window.alert('Please Login before buying a Tier!');
             return;
         }
-        if(!selectedSub){
+        if (!selectedSub) {
             return;
         }
-        
         try {
-            const response = await fetch(`/api/promotionTier`, {
+            const response = await fetch(`/api/checkout/tier`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({username:session.user.username,name:selectedSub.name,price:selectedSub.price,discount:selectedSub.discount,id:selectedSub.id}),
+                body: JSON.stringify({ username: session.user.username, name: selectedSub.name, price: selectedSub.price, id: selectedSub.id }),
             });
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
-            window.alert(`Success! You've purchased the ${selectedSub.name} tier.`);
-            fetchHistory();
+            const data = await response.json();
+
+            if (data.url) {
+                window.location.href = data.url; // Redirect to the session URL
+            } else {
+                console.error('No checkout URL returned');
+            }
+
 
         } catch (error) {
             console.error('There was a problem with the purchase:', error);
@@ -147,16 +154,32 @@ export default function Promotion() {
     if (loading) {
         return <Loading />
     }
+    console.log(userTier)
     return (
         <main className="min-h-screen ">
             <div className="font-Kanit justify-center flex flex-wrap w-4/5 mx-auto" >
 
                 <div className="flex flex-wrap gap-4 text-white">
                     <h1 className="w-full text-3xl  mt-12 ">User : {session?.user?.username}</h1>
+                    {userTier && <div><p> ระดับสมัครสมาชิก : {userTier.tier} ส่วนลด : {userTier.discount}</p>
+                        <p>
+                            หมดอายุ :{' '}
+                            {new Date(userTier.tier_expiration_date).toLocaleDateString('en-EN', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                            })}{' '}
+                            {new Date(userTier.tier_expiration_date).toLocaleTimeString('en-EN', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}
+                        </p>
+                    </div>}
+
                     <h1 className="w-full text-3xl  mt-12 ">ระดับสมัครสมาชิก</h1>
                     {Tier && Tier.map((tier, index) => (
                         <div key={index} className={`duration-300 w-full md:w-[22%] p-2 shadow-lg ${selectedSub.name === tier.name ? 'shadow-gold' : 'shadow-gray-500/50'} hover:shadow-gold h-64 cursor-pointer`}
-                            onClick={() => setSelectedSub({name:tier.name,price:tier.price,discount:tier.promotion,id:tier.id})}>
+                            onClick={() => setSelectedSub({ name: tier.name, price: tier.price, discount: tier.promotion, id: tier.id })}>
                             <div className="bg-red-900 flex w-full rounded-lg p-4 text-white justify-center items-center" >
                                 <h2>{tier.name}</h2>
                                 {selectedSub.name === tier.name && (
@@ -180,7 +203,7 @@ export default function Promotion() {
                                 </div>
                                 <div className="border-b">
                                     <h2>ส่วนลด :</h2>
-                                    <h2>{tier.promotion} %</h2>
+                                    <h2>{tier.discount} %</h2>
                                 </div>
                             </div>
                         </div>
@@ -189,7 +212,6 @@ export default function Promotion() {
                         <div className="bg-red-900  font-bold w-80 p-4 rounded-lg text-center cursor-pointer" onClick={handleTierPurchase}>
                             สมัครสมาชิก
                         </div>
-
                     </div>
                 </div>
 
@@ -224,7 +246,7 @@ export default function Promotion() {
 
                     </div>
                 </div>
-                
+
                 <div className='mt-12 w-[75%] mx-auto text-md'>
                     <div className='text-2xl font-bold mb-4'>
                         <h3>History</h3>
@@ -233,23 +255,23 @@ export default function Promotion() {
                     <div>
                         {History && History.map((history, index) => (
                             <div key={index} className='text-xl'>
-                            <div>
-                                <h3>Order : {index+1}</h3>
-                                {history.items && history.items.map((item, itemIndex) => (
-                                    <div key={itemIndex} className='flex justify-between'>
-                                        <p>{item.name}</p>
-                                        <p>{item.quantity}</p>
+                                <div>
+                                    <h3>Order : {index + 1}</h3>
+                                    {history.items && history.items.map((item, itemIndex) => (
+                                        <div key={itemIndex} className='flex justify-between'>
+                                            <p>{item.name}</p>
+                                            <p>{item.quantity}</p>
+                                        </div>
+                                    ))}
+                                    <div className='mt-2'>
+                                        <p className='text-sm'>Purchase Time: {new Date(history.purchaseTime).toLocaleString()}</p>
+                                        <p className='text-sm'>Total: {history.Total} {history.type === "Item" ? "points" : "bath"}</p>
                                     </div>
-                                ))}
-                                <div className='mt-2'>
-                                <p className='text-sm'>Purchase Time: {new Date(history.purchaseTime).toLocaleString()}</p>
-                                <p className='text-sm'>Total: {history.Total} {history.type === "Item" ? "points" : "bath"}</p>
                                 </div>
-                            </div>
-                            <hr className="mt-4 mb-4"></hr>
+                                <hr className="mt-4 mb-4"></hr>
                             </div>
                         ))}
-                        
+
                     </div>
 
 
