@@ -1,8 +1,6 @@
 import { connectMongoDB } from "@/../lib/mongodb.js";
 import { History } from "@/../lib/model/history";
-import { Seat } from "@/../lib/model/seat";
-import { Movie } from "@/../lib/model/movie";
-import { Theater } from "@/../lib/model/theater";
+import { User } from "@/../lib/model/user";
 import mongoose from 'mongoose';
 import { NextResponse } from "next/server";
 
@@ -13,12 +11,13 @@ export async function POST(req) {
 
         // Parse the request body
         const body = await req.json();
-        const { userId } = body;
-
+        const { username } = body;
+        const user=await User.findOne({username:username}).select('_id');
         // Fetch the history for the given userId and join with Seat, Movie, and Theater
+        
         const historyData = await History.aggregate([
             {
-                $match: { user_id: new mongoose.Types.ObjectId("6704335295b1035f984c082d") }
+                $match: { user_id: user._id}
             },
             {
                 $lookup: {

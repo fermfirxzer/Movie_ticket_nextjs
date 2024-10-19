@@ -45,4 +45,40 @@ button,input,textarea{
   color:black;
 }
 
-
+.login-input{
+  border: 1px solid white; /* Border with white color */
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  margin-bottom: 1rem;
+  background-color: var(--bgsoft); /* Replace this with the actual bgsoft color if not using CSS variables */
+  border-radius: 1rem; /* Rounded corners */
+  padding: 0.375rem;
+  color:white;
+}
+.login-btn{
+  background-color:#7F1D1D; /* bg-red-900 */
+  border-radius: 1rem; /* rounded-2xl */
+  width: 90%; /* w-[90%] */ /* mt-auto */
+  margin-bottom: 1.5rem; /* mb-6 */
+  padding-top: 0.25rem; 
+  padding-bottom: 0.25rem; 
+  margin-left: 1.5rem; 
+  margin-right: 1.5rem;
+  color:white;
+}
+.error{
+  color:red;
+  font-weight:bold;
+  font-size:18px;
+}
+.movie-input{
+  width: 100%;          /* w-full */
+  padding: 0.5rem 0.75rem; /* px-3 py-2 */
+  border: 1px solid #ccc;  /* border */
+  border-radius: 0.25rem;
+  color:black;
+}
+.delete-btn{
+  color:white;
+  background-color:red;
+}

@@ -72,6 +72,9 @@ export async function GET(req ) {
                 $unwind: "$movies"    
             },
             {
+                $sort: { "theater.theater_name": 1 } // Sort by theater name in ascending order
+            },
+            {
                 
                 $project: projectquery
             }

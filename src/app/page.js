@@ -1,37 +1,42 @@
 'use client'
 
+import Loading from "@/component/Loading";
 import SwiperComponent from "@/component/SwiperComponent";
 import React, { useState, useEffect } from 'react';
 
 export default function Mainpage(){
     const [upcomingmovies,setUpcomingmovies] = useState([]);
     const [ongoingmovies,setOngoingmovies] = useState([]);
-
+    const [loading,setLoading]=useState(true);
     const today = new Date().toISOString().split('T')[0];
-    const fetchMovies = async () => {
-        try {
-            const response = await fetch(`/api/mainpage?date=${today}`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-    
-            const data = await response.json();
-            setUpcomingmovies(data.upcomingmovies); 
-            setOngoingmovies(data.ongoingmovies);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching movies:', error);
-        }
-    };
+
     
 
     useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await fetch(`/api/mainpage?date=${today}`, {
+                    method: 'GET',
+                });
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                setUpcomingmovies(data.upcomingmovies); 
+                setOngoingmovies(data.ongoingmovies);
+                setLoading(false);
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+            }
+        };
         fetchMovies();
-    }, []);
+    }, [today]);
 
-
+    if(loading){
+        return <Loading/>
+    }
 
 
     return(

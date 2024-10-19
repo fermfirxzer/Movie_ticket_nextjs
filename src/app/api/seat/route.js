@@ -6,14 +6,17 @@ import { History } from "@/../lib/model/history"; // Assuming you have a History
 import { NextResponse } from "next/server";
 import mongoose from 'mongoose';
 import { Seat } from "../../../../lib/model/seat";
+import { User } from "@/../lib/model/user";
 export async function POST(req) {
     await connectMongoDB();
     const body = await req.json(); // Parse JSON body
-    console.log("This is api seat!!",body);
-
-    const { date, selectedTheater, selectedShowtime, moviename,selectedSeats: selectedSeatsString, userId,total_amount } = body;
+    
+    
+    const { date, selectedTheater, selectedShowtime, moviename,selectedSeats: selectedSeatsString, username,total_amount } = body;
     const selectedSeats = typeof selectedSeatsString === 'string' ? JSON.parse(selectedSeatsString) : selectedSeatsString;
+    console.log(body)
     try {
+        const userId=await User.findOne({username:username}).select('_id');
         const movie_id = await Movie.findOne({ movie_name: decodeURI(moviename) }).select('_id');
         const theater_id = await Theater.findOne({ theater_name: selectedTheater }).select('_id');
         const seatIds = Object.keys(selectedSeats);

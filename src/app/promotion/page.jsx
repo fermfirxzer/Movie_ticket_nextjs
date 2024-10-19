@@ -1,37 +1,56 @@
 
 'use client'
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-
-
+import Loading from '@/component/Loading';
+import { useSession } from 'next-auth/react';
 export default function Promotion() {
 
+    const [Item, setItem] = useState(null);
+    const { data: session, status } = useSession();
+    const [Tier, setTier] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [point, setPoint] = useState(0);
+    const [History, setHistory] = useState('');
 
-
-    const point = 6;
-    const subscriptionTiers = [
-        { name: 'Bronze', price: '98 bath', promotion: '5% off' },
-        { name: 'Silver', price: '198 bath', promotion: '10% off' },
-        { name: 'Gold', price: '298 bath', promotion: '15% off' },
-        { name: 'Platinum', price: '398 bath', promotion: '20% off' },
-    ];
-    const rewards = [
-        { id: 1, name: 'Popcorn M 1 กล่อง', points: 3, imageUrl: 'https://media.istockphoto.com/id/497857462/photo/popcorn-in-bucket.jpg?s=612x612&w=0&k=20&c=16mUWDBsQt4EpO-k3C-OqLiDfuigkawrxS1C6Y0cQuM=' },
-        { id: 2, name: 'Soda M 1 แก้ว', points: 3, imageUrl: 'https://media.istockphoto.com/id/497857462/photo/popcorn-in-bucket.jpg?s=612x612&w=0&k=20&c=16mUWDBsQt4EpO-k3C-OqLiDfuigkawrxS1C6Y0cQuM=' },
-        { id: 3, name: 'Popcorn M 1 กล่อง', points: 3, imageUrl: 'https://media.istockphoto.com/id/497857462/photo/popcorn-in-bucket.jpg?s=612x612&w=0&k=20&c=16mUWDBsQt4EpO-k3C-OqLiDfuigkawrxS1C6Y0cQuM=' },
-        { id: 4, name: 'Soda M 1 แก้ว', points: 3, imageUrl: 'https://media.istockphoto.com/id/497857462/photo/popcorn-in-bucket.jpg?s=612x612&w=0&k=20&c=16mUWDBsQt4EpO-k3C-OqLiDfuigkawrxS1C6Y0cQuM=' },
-        { id: 5, name: 'Popcorn M 1 กล่อง', points: 3, imageUrl: 'https://media.istockphoto.com/id/497857462/photo/popcorn-in-bucket.jpg?s=612x612&w=0&k=20&c=16mUWDBsQt4EpO-k3C-OqLiDfuigkawrxS1C6Y0cQuM=' },
-        { id: 6, name: 'Soda M 1 แก้ว', points: 3, imageUrl: 'https://media.istockphoto.com/id/497857462/photo/popcorn-in-bucket.jpg?s=612x612&w=0&k=20&c=16mUWDBsQt4EpO-k3C-OqLiDfuigkawrxS1C6Y0cQuM=' },
-
-    ];
-    const [selectedSub, setSelectedSub] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!session?.user?.username) return;
+            try {
+                const [pointRes, historyRes, itemRes] = await Promise.all([
+                    fetch(`/api/promotionTier?username=${session.user.username}`),
+                    fetch(`/api/promotionhistory?username=${session.user.username}`),
+                    fetch(`/api/promotionItem`)
+                ]);
+    
+                if (!pointRes.ok || !historyRes.ok || !itemRes.ok) {
+                    throw new Error('Failed to fetch promotion data.');
+                }
+    
+                const pointData = await pointRes.json();
+                const historyData = await historyRes.json();
+                const itemData = await itemRes.json();
+    
+                setPoint(pointData.point);
+                setHistory(historyData.History);
+                setItem(itemData.Item);
+                setTier(itemData.Tier);
+                setLoading(false);
+            } catch (error) {
+                console.error(error.message);
+            }
+        };
+        if (status === "authenticated") {
+            fetchData();
+        }
+    }, [session, status]);
+    
+    const [selectedSub, setSelectedSub] = useState([]);
     const [selectedRewards, setSelectedRewards] = useState([]);
-    const [ShowNeedpoint, setShowNeedpoint] = useState(false);
-    const [total, setTotal] = useState(0); 
-    const handleRewardSelect = (rewardId,rewardPoint) => {
-      
-        console.log(total);
+    
+    const [total, setTotal] = useState(0);
+    const handleRewardSelect = (rewardId, rewardPoint, rewardName) => {
+
         setSelectedRewards((prev) => {
             const newTotal = prev.includes(rewardId) ? total - rewardPoint : total + rewardPoint;
 
@@ -42,33 +61,105 @@ export default function Promotion() {
                     text: 'คุณไม่สามารถเลือกของรางวัลนี้ได้เพราะแต้มของคุณไม่เพียงพอ!',
                     confirmButtonText: 'ตกลง',
                 });
-                setShowNeedpoint(true); // Show warning
+                
                 return prev; // Do not update selection
             } else {
-                setShowNeedpoint(false); // Hide warning
+                
                 setTotal(newTotal); // Update total points
-                if (prev.includes(rewardId)) {
+
+                if (prev.some(reward => reward.rewardId === rewardId)) {
                     // Remove the reward if already selected
-                    return prev.filter((id) => id !== rewardId);
+                    return prev.filter(reward => reward.rewardId !== rewardId);
                 } else {
-                    // Add the reward
-                    return [...prev, rewardId];
+                    // Add the reward (store both rewardId and rewardName)
+                    return [...prev, { rewardId, rewardName }];
                 }
             }
         });
     };
+    const handleitemPurchase = async (e) => {
+        e.preventDefault();
+        if (!session.user.username) {
+            window.alert('Please Login before buying a Items!');
+            return;
+        }
+        // console.log(selectedRewards)
+        try {
+            const response = await fetch(`/api/promotionItem`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ item_id: selectedRewards, username: session.user.username, total: total }),
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+            
+            window.alert(`Success! You've purchased the item with Point`);
+            fetchHistory();
+
+        } catch (error) {
+            console.error('There was a problem with the purchase:', error);
+        }
+    };
+    const fetchHistory = async () => {
+        if (!session?.user?.username) return;
+        try {
+            const response = await fetch(`/api/promotionhistory?username=${session.user.username}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch promotion history.');
+            }
+            const historyData = await response.json();
+            setHistory(historyData.History); // Update the history state with new data
+        } catch (error) {
+            console.error('Error fetching history:', error.message);
+        }
+    };
+    const handleTierPurchase = async (e) => {
+        e.preventDefault();
+        if (!session.user.username) {
+            window.alert('Please Login before buying a Tier!');
+            return;
+        }
+        if(!selectedSub){
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/promotionTier`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username:session.user.username,name:selectedSub.name,price:selectedSub.price,discount:selectedSub.discount,id:selectedSub.id}),
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+            window.alert(`Success! You've purchased the ${selectedSub.name} tier.`);
+            fetchHistory();
+
+        } catch (error) {
+            console.error('There was a problem with the purchase:', error);
+        }
+    };
+    if (loading) {
+        return <Loading />
+    }
     return (
         <main className="min-h-screen ">
-            <div className="font-Kanit justify-center flex flex-wrap" > 
-                
-                <div className="flex flex-wrap w-4/5 gap-4 text-white">
+            <div className="font-Kanit justify-center flex flex-wrap w-4/5 mx-auto" >
+
+                <div className="flex flex-wrap gap-4 text-white">
+                    <h1 className="w-full text-3xl  mt-12 ">User : {session?.user?.username}</h1>
                     <h1 className="w-full text-3xl  mt-12 ">ระดับสมัครสมาชิก</h1>
-                    {subscriptionTiers.map((tier, index) => (
-                        <div key={index} className={`duration-300 w-full md:w-[22%] p-2 shadow-lg ${selectedSub === tier.name ? 'shadow-gold' : 'shadow-gray-500/50' } hover:shadow-gold h-64 cursor-pointer`}
-                        onClick={() => setSelectedSub(tier.name)}>
+                    {Tier && Tier.map((tier, index) => (
+                        <div key={index} className={`duration-300 w-full md:w-[22%] p-2 shadow-lg ${selectedSub.name === tier.name ? 'shadow-gold' : 'shadow-gray-500/50'} hover:shadow-gold h-64 cursor-pointer`}
+                            onClick={() => setSelectedSub({name:tier.name,price:tier.price,discount:tier.promotion,id:tier.id})}>
                             <div className="bg-red-900 flex w-full rounded-lg p-4 text-white justify-center items-center" >
                                 <h2>{tier.name}</h2>
-                                {selectedSub === tier.name && (
+                                {selectedSub.name === tier.name && (
                                     <div className="mt-1 mx-1">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -84,69 +175,87 @@ export default function Promotion() {
                             </div>
                             <div className="p-4">
                                 <div className="border-b mb-4">
-                                    <h2>Monthly Price</h2>
+                                    <h2>ราคาต่อเดือน :</h2>
                                     <h2>{tier.price}</h2>
                                 </div>
                                 <div className="border-b">
-                                    <h2>Promotion</h2>
-                                    <h2>{tier.promotion}</h2>
+                                    <h2>ส่วนลด :</h2>
+                                    <h2>{tier.promotion} %</h2>
                                 </div>
                             </div>
                         </div>
                     ))}
-                    <div className="w-full md:w-[90%] flex justify-center mt-12">
-                        <div className="bg-red-900  font-bold w-80 p-4 rounded-lg text-center cursor-pointer">
+                    <div className="w-full md:w-[90%] flex justify-center mt-12" >
+                        <div className="bg-red-900  font-bold w-80 p-4 rounded-lg text-center cursor-pointer" onClick={handleTierPurchase}>
                             สมัครสมาชิก
                         </div>
-                       
+
                     </div>
                 </div>
-              
-                <div className="flex flex-wrap w-4/5 gap-8 text-white text-lg justify-center md:justify-start">
-                    <div className="w-[85%] flex justify-between">
+
+                <div className="flex flex-wrap gap-8 text-white text-lg justify-center md:justify-start">
+                    <div className="w-[85%] mx-auto flex justify-between">
                         <h1 className="text-3xl mt-12">แลกของรางวัล</h1>
                         <h1 className="text-3xl mt-12">{point} points</h1>
                     </div>
-                    {rewards.map((reward) => (
-                        <div key={reward.id} className={`duration-200 w-60 lg:w-1/4 xl:w-1/5 p-2 shadow-lg shadow-gray-500/50 cursor-pointer ${selectedRewards.includes(reward.id) ? 'opacity-50' : ''}`}
-                           >
-                            <div className="p-4">
-                                <img className="" src={reward.imageUrl} alt={reward.name} />
-                                <div className="my-4 flex justify-between">
-                                    <h2 className="w-4/5">{reward.name}</h2>
-                                    <h2>{reward.points} แต้ม</h2>
-                                </div>
-                                <div
-                                    className={`bg-red-900 rounded-lg p-2 text-white text-center cursor-pointer ${selectedRewards.includes(reward.id) ? 'opacity-50' : ''}`}
-                                    onClick={() => handleRewardSelect(reward.id,reward.points)}
-                                >
-                                    {selectedRewards.includes(reward.id) ? 'เลือกแล้ว' : 'เลือก'}
+                    <div className='mx-auto flex flex-wrap justify-center md:justify-start'>
+                        {Item && Item.map((reward) => (
+                            <div key={reward.id} className={`duration-200 w-60 lg:w-1/4 xl:w-1/5 p-2 shadow-lg shadow-gray-500/50 cursor-pointer ${selectedRewards.some(selected => selected.rewardId === reward.id) ? 'opacity-50' : ''}`}>
+                                <div className="p-4">
+                                    <img className="" src={reward.imageUrl} alt={reward.name} />
+                                    <div className="my-4 flex justify-between">
+                                        <h2 className="w-4/5">{reward.name}</h2>
+                                        <h2>{reward.points} แต้ม</h2>
+                                    </div>
+                                    <div
+                                        className={`bg-red-900 rounded-lg p-2 text-white text-center cursor-pointer ${selectedRewards.some(selected => selected.rewardId === reward.id) ? 'opacity-50' : ''}`}
+                                        onClick={() => handleRewardSelect(reward.id, reward.points, reward.name)}
+                                    >
+                                        {selectedRewards.some(selected => selected.rewardId === reward.id) ? 'เลือกแล้ว' : 'เลือก'}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                     <div className="w-full md:w-[90%] flex justify-center mt-12">
-                        <div className="bg-red-900  font-bold w-80 p-4 rounded-lg text-center cursor-pointer ">
+                        ))}
+                    </div>
+                    <div className="w-full flex justify-center mt-12">
+                        <div onClick={handleitemPurchase} className="bg-red-900  font-bold w-80 p-4 rounded-lg text-center cursor-pointer ">
                             แลกรับของรางวัล
                         </div>
-                       
+
                     </div>
                 </div>
-                {/* {ShowNeedpoint && 
-                    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center font-Kanit ">
-                        <div className= "bg-white w-1/3 h-80 flex justify-center items-center text-2xl">
-                            <h1>แต้มไม่เพียงพอ</h1>
-                            <h1></h1>
-                        </div>
-                       
+                
+                <div className='mt-12 w-[75%] mx-auto text-md'>
+                    <div className='text-2xl font-bold mb-4'>
+                        <h3>History</h3>
+                        <hr className="mt-2"></hr>
                     </div>
-                
-                
-                } */}
-            
-            
+                    <div>
+                        {History && History.map((history, index) => (
+                            <div key={index} className='text-xl'>
+                            <div>
+                                <h3>Order : {index+1}</h3>
+                                {history.items && history.items.map((item, itemIndex) => (
+                                    <div key={itemIndex} className='flex justify-between'>
+                                        <p>{item.name}</p>
+                                        <p>{item.quantity}</p>
+                                    </div>
+                                ))}
+                                <div className='mt-2'>
+                                <p className='text-sm'>Purchase Time: {new Date(history.purchaseTime).toLocaleString()}</p>
+                                <p className='text-sm'>Total: {history.Total} {history.type === "Item" ? "points" : "bath"}</p>
+                                </div>
+                            </div>
+                            <hr className="mt-4 mb-4"></hr>
+                            </div>
+                        ))}
+                        
+                    </div>
+
+
+                </div>
             </div>
         </main>
-       
+
     )
 }

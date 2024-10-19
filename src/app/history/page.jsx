@@ -1,52 +1,23 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Loading from '@/component/Loading';
+import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 const HistoryPage = () => {
-  const movies = {
-    title: 'Spider-Man: No Way Home',
-    startDate: '17 DEC 2021',
-    endDate: '30 DEC 2021',
-    imageUrl: 'https://th.bing.com/th?id=OIP.6_208hkN2fO_hurqMskt_AHaK-&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-    duration: '2 ชม. 28 นาที',
-    desc: 'Eddie and Venom are on the run...',
-    price: 120
-  };
 
-  const selectedSeats = [
-    "L8",
-    "L1",
-    "L2",
-    "L3",
-    "L4",
-    "L5",
-    "H12",
-    "H11",
-    "H10",
-    "H15",
-    "J15",
-    "J16"
-  ];
-  const purchaseHistory = [{
-    title: 'Spider-Man: No Way Home',
-    startDate: '17 DEC 2021',
-    endDate: '30 DEC 2021',
-    imageUrl: 'https://th.bing.com/th?id=OIP.6_208hkN2fO_hurqMskt_AHaK-&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-    duration: '2 ชม. 28 นาที',
-    desc: 'Eddie and Venom are on the run...',
-    price: 120
-  }, {
-    title: 'Spider-Man: No Way Home',
-    startDate: '17 DEC 2021',
-    endDate: '30 DEC 2021',
-    imageUrl: 'https://th.bing.com/th?id=OIP.6_208hkN2fO_hurqMskt_AHaK-&w=135&h=201&c=10&rs=1&qlt=90&o=6&dpr=1.3&pid=13.1',
-    duration: '2 ชม. 28 นาที',
-    desc: 'Eddie and Venom are on the run...',
-    price: 120
-  }
-  ]
   const [purchase, setpurchase] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userId, setUserId] = useState("66f7e6c337fee75a371303a0");
+  const [username, setUsername] = useState(null);
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session && session.user) {
+      setUsername(session.user.username);
+    }
+  }, [session]);
+  const searchParams = useSearchParams();
+  const success = searchParams.get('success') === 'true';
+  const canceled= searchParams.get('canceled') === 'true';
+  const [showMessage, setShowMessage] = useState(success||canceled);
   useEffect(() => {
     const fetchhistory = async () => {
       try {
@@ -55,7 +26,7 @@ const HistoryPage = () => {
           headers: {
             'Content-Type': 'application/json', // Set the content type to JSON
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ username }),
         });
 
         if (!response.ok) {
@@ -67,21 +38,33 @@ const HistoryPage = () => {
         console.log(data.history);
       } catch (error) {
         console.error('Error fetching movies:', error);
-      }finally {
+      } finally {
         setIsLoading(false); // Stop loading
       }
     }
     fetchhistory();
-  }, [userId])
+  }, [username])
   if (isLoading) {
     return <Loading />; // Show loading while fetching data
   }
+  const handleClose = () => {
+    setShowMessage(false);
+  };
+  
   return (
 
     <div className=''>
       <div className="font-Kanit p-6 min-h-screen">
         <div className="flex flex-col justify-center font-Kanit">
-          <h3 className="text-center text-2xl mb-3">ประวัติการซื้อ</h3>
+          <h3 className="text-center text-2xl mb-5">ประวัติการซื้อ</h3>
+          {showMessage && (
+            <div className={`${success ? 'bg-green-700':'bg-red-700'} text-white p-4 w-[45%] flex justify-between rounded-md mx-auto items-center mb-12`}>
+              <span>{success?"You buy ticket success!":"Please Try again you payment is failed!"}</span>
+              <button onClick={handleClose} className="ml-4 bg-red-600 px-2 py-1 rounded">
+                Close
+              </button>
+            </div>
+          )}
 
           {purchase && purchase.map((purchase, index) => (
             <div key={index} className='mx-auto'>
@@ -123,7 +106,7 @@ const HistoryPage = () => {
                   Purchase Time: {new Date(purchase.purchase_time).toLocaleString('en-US', {
                     month: 'long',
                     year: 'numeric',
-                     // e.g., October
+                    // e.g., October
                     day: 'numeric',
                     hour: 'numeric',
                     minute: 'numeric',
@@ -131,7 +114,7 @@ const HistoryPage = () => {
                   })}
                 </p>
               </div>
-              
+
               <hr className='w-full md:w-[48rem]'></hr>
             </div>
           ))}

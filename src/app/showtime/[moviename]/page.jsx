@@ -2,20 +2,26 @@
 
 import React, { useEffect, useState } from 'react';
 import SwiperDate from '@/component/SwiperDate.jsx';
+import Loading from '@/component/Loading.jsx';
 
-
-import {  useSearchParams } from 'next/navigation';
-
+import { useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 
 export default function Showtime({ params }) {
-   
-    const searchParams = useSearchParams(); 
 
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [selectedShowtime, setSelectedShowtime] = useState( null);
-    const [selectedTheater, setSelectedTheater] = useState( null);
+    const searchParams = useSearchParams();
     
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [selectedShowtime, setSelectedShowtime] = useState(null);
+    const [selectedTheater, setSelectedTheater] = useState(null);
+    const { data : session } = useSession();
+    const [username, setUsername] = useState(null);
+    useEffect(() => {
+        if (session && session.user) {
+          setUsername(session.user.username);
+        }
+      }, [session]);
     useEffect(() => {
         const theater_name = searchParams.get('theater_name');
         const time = searchParams.get('time');
@@ -35,12 +41,8 @@ export default function Showtime({ params }) {
     const [movies, setMovies] = useState([]);
     const [showtimes, setShowtimes] = useState([]);
     const { moviename } = params;
+    const [loading,setLoading]=useState(true);
 
-
-  
-  
-
-    
     // Function to handle date selection
     const handleDateSelect = (date) => {
         const selectedDate = new Date(date).toISOString().split('T')[0];
@@ -51,25 +53,27 @@ export default function Showtime({ params }) {
     };
 
     // Fetch movies data
-    const fetchMovies = async () => {
-        try {
-            const response = await fetch(`/api/movie/${moviename}`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            setMovies(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching movies:', error);
-        }
-    };
 
     useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await fetch(`/api/movie/${moviename}`, {
+                    method: 'GET',
+                });
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+    
+                const data = await response.json();
+                setMovies(data);
+
+                console.log(data);
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+            }
+        };
         fetchMovies();
+        setLoading(false);
     }, [moviename]);
 
 
@@ -100,7 +104,7 @@ export default function Showtime({ params }) {
 
 
     // Update the selected showtime and Scroll to booking
-   
+
 
     const [selectedIndex, setSelectedIndex] = useState(null);
     const handleShowtimeClick = (theater_name, time, index) => {
@@ -143,7 +147,7 @@ export default function Showtime({ params }) {
     const toggleSeat = (seat) => {
         let price = movies.price;
         if (seat.startsWith("A") || seat.startsWith("B") || seat.startsWith("C")) {
-            price += 40; // Additional charge for A, B, or C rows
+            price += 40;
         } else if (seat.startsWith("D") || seat.startsWith("E") || seat.startsWith("F") || seat.startsWith("G") || seat.startsWith("H") || seat.startsWith("I")) {
             price += 20;
         }
@@ -187,21 +191,24 @@ export default function Showtime({ params }) {
             setTotalprice(0);
         }
     }, [date, selectedTheater, selectedShowtime]);
-    
     const isSeatBooked = (seat) => {
         return bookedSeats.some(
             (bookedSeat) => bookedSeat.seat_id === seat
         );
     };
+    
 
 
-
-    const [useId, setUserId] = useState("66f7e6c337fee75a371303a0");
+    
     const [totalprice, setTotalprice] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleConfirmPurchase = async (e) => {
         e.preventDefault();
-        const body = { date, selectedTheater, selectedShowtime, moviename, useId, selectedSeats,total_amount:totalprice };
+        if(!username){
+            window.alert('Please Login before buying a ticket');
+            return;
+        }
+        const body = { date, selectedTheater, selectedShowtime, moviename, username, selectedSeats, total_amount: totalprice };
         try {
             const response = await fetch(`/api/checkout`, {
                 method: 'POST',
@@ -225,7 +232,9 @@ export default function Showtime({ params }) {
             console.error('There was a problem with the purchase:', error);
         }
     };
-
+    if(loading){
+        return <Loading/>
+    }
     return (
         <main className="mt-16 min-h-screen duration-200 ">
             {/* movie detail  */}
@@ -252,7 +261,7 @@ export default function Showtime({ params }) {
             <div className='mx-6 my-2 lg:mx-16'>
                 <h1 className='text-white font-Kanit text-2xl'>รอบภาพยนตร์</h1>
             </div>
-            {/* slide date */}  
+            {/* slide date */}
             <SwiperDate onDateSelect={handleDateSelect} selectedDate={date}></SwiperDate>
 
             {showtimes.length === 0 &&
@@ -282,12 +291,11 @@ export default function Showtime({ params }) {
             </div>
 
 
-
-
             {/* booking and  summary */}
             {selectedShowtime && showtimes.length !== 0 && (
                 <div className="mx-5 my-20 font-Kanit md:mx-16">
                     <hr className="border-t-2 border-gray-300 my-4" />
+                    
                     <div className="flex flex-col xl:flex-row items-center font-Kanit  w-full " id="booking">
 
                         <div className=' flex flex-col items-center w-5/6 xl:w-2/3 mt-20'>
@@ -353,9 +361,6 @@ export default function Showtime({ params }) {
                     </div>
                 </div>
             )}
-
-
-
 
 
             {/* Modal */}

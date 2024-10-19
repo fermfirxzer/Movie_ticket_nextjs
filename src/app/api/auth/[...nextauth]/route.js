@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
 import { connectMongoDB } from "../../../../../lib/mongodb";
-import User from "../../../../../lib/model/user";
+import {User} from "../../../../../lib/model/user";
 import bcrypt from "bcryptjs";
 
 const authOptions = { 
@@ -16,7 +16,7 @@ const authOptions = {
 
             try {
                 await connectMongoDB();
-                const user = await User.findOne({ username });
+                const user = await User.findOne({ username:username });
 
                 if(!user) {
                     return null;
@@ -48,6 +48,9 @@ const authOptions = {
 
             if (user) {
                 token.username = user.username;
+                token.email = user.email;
+                token.isAdmin = user.isAdmin;
+                
             }
             return token
         },
@@ -55,6 +58,9 @@ const authOptions = {
 
             if (token) {
                 session.user.username = token.username;
+                session.user.email = token.email; // Email is added to session here
+                session.user.isAdmin = token.isAdmin;
+                
             }
             return session;
         }
