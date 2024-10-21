@@ -31,7 +31,7 @@ export async function POST(req) {
         console.log('Seat purchase successful for session:', session.id);
       try {
         const origin = req.headers.get('origin');
-        const response = await fetch(`/api/seat`, {
+        const response = await fetch(`https://movie-ticket-nextjs-8r92hevsk-fermfirxzers-projects.vercel.app/api/seat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export async function POST(req) {
     }else if (metadata.type === 'tier') {
       console.log('Promotion purchase successful for session:', session.id);
       try {
-        const response = await fetch(`/api/promotionTier`, {
+        const response = await fetch(`https://movie-ticket-nextjs-8r92hevsk-fermfirxzers-projects.vercel.app/api/promotionTier`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
