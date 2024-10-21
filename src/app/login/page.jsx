@@ -28,7 +28,7 @@ export default function Login() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleRegisterSubmit = async (e) => {
         e.preventDefault();
         const { username, email, password, confirmPassword } = formData;
 
@@ -36,13 +36,11 @@ export default function Login() {
             setError("Please add all inputs");
             return;
         }
-
+        
         if (password !== confirmPassword) {
             setError("Passwords do not match!");
             return;
         }
-
-
         try {
             const res = await fetch("http://localhost:3000/api/register", {
                 method: "POST",
@@ -55,7 +53,7 @@ export default function Login() {
             const data = await res.json();
 
             if (res.ok) {
-                setError("");
+                setError(data.Message);
                 setFormData({
                     username: "",
                     email: "",
@@ -63,9 +61,10 @@ export default function Login() {
                     confirmPassword: "",
                 });
             } else {
-                setError(data.message || "Registration failed");
+                setError(data.Message || "Registration failed");
             }
         } catch (error) {
+            setError(error.Message)
             setError("An unexpected error occurred. Please try again.");
         }
     };
@@ -80,7 +79,7 @@ export default function Login() {
                 redirect: false,
             })
             if (res.error) {
-                setError("Invalid credentials");
+                setError("User or Password incorrect!");
                 return;
             }
             router.replace("/")
@@ -101,12 +100,12 @@ export default function Login() {
                     <div className="flex justify-center">
                         <span
                             className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg   ${login ? 'bg-black' : 'bg-[#1B181A]'}`}
-                            onClick={() => setLogin(true)}>
+                            onClick={() => {setLogin(true),setError('')}}>
                             เข้าสู่ระบบ
                         </span>
                         <span
                             className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg ${!login ? 'bg-black' : 'bg-[#1B181A]'}`}
-                            onClick={() => setLogin(false)}
+                            onClick={() => {setLogin(false),setError('')}}
                         >
                             สมัครสมาชิก
                         </span>
@@ -135,13 +134,13 @@ export default function Login() {
                             <button type="submit" className="login-btn">
                                 เข้าสู่ระบบ
                             </button>
-                            {error && <p className="text-red-600">{error}</p>}
+                            {error && <p className="text-red-600 text-center">{error}</p>}
                         </form>
                     )}
 
                     {/* Registration Form */}
                     {!login && (
-                        <form onSubmit={handleSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-center">
+                        <form onSubmit={handleRegisterSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-center">
                             <label className="mx-6 mt-6 mb-2">Username</label>
                             <input
                                 type="text"
@@ -149,6 +148,8 @@ export default function Login() {
                                 value={formData.username || ""}
                                 onChange={handleChange}
                                 className="login-input"
+                                pattern="[A-Za-z0-9]{3,15}"
+                                title="Username must be between 3 to 15 characters long and can only contain letters and numbers."
                             />
                             <label className="mx-6 mb-2">Email</label>
                             <input
@@ -157,6 +158,8 @@ export default function Login() {
                                 value={formData.email || ""}
                                 onChange={handleChange}
                                 className="login-input"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                title="Please enter a valid email address."
                             />
                             <label className="mx-6 mb-2">Password</label>
                             <input
@@ -165,6 +168,8 @@ export default function Login() {
                                 value={formData.password || ""}
                                 onChange={handleChange}
                                 className="login-input"
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$"
+                                title="Password must be 8-20 characters long, include at least one uppercase, one lowercase letter, one number.can't using spacies letter"
                             />
                             <label className="mx-6 mb-2">Confirm Password</label>
                             <input
@@ -173,6 +178,8 @@ export default function Login() {
                                 value={formData.confirmPassword || ""}
                                 onChange={handleChange}
                                 className="login-input"
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$"
+                                title="Confirm password must match the criteria for the password."
                             />
                             <div className="mx-6">
                                 <input
@@ -185,7 +192,7 @@ export default function Login() {
                             <button type="submit" className="login-btn mt-12">
                                 สมัครสมาชิก
                             </button>
-                            {error && <p className="text-red-600">{error}</p>}
+                            {error && <p className="text-red-600 text-center">{error}</p>}
                         </form>
                     )}
                     </div>

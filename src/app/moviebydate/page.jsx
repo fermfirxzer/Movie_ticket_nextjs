@@ -3,9 +3,11 @@
 import SwiperDate from "@/component/SwiperDate"
 import Link from 'next/link';
 import React, { useEffect,useState } from 'react';
+import { useSession } from 'next-auth/react';
 export default function MovieBydate(){
    
     const [date,setDate] = useState(new Date().toISOString().split('T')[0]);
+    const { data: session } = useSession();
     console.log(date);
     const handleDateSelect = (date) => {
         const selectedDate = new Date(date).toISOString().split('T')[0];
@@ -35,7 +37,7 @@ export default function MovieBydate(){
     },[date])
 
 
-    const isAdmin  = true;
+    
 
 
 
@@ -114,7 +116,7 @@ export default function MovieBydate(){
                                     </div>
                                     <div className=" text-xl font-Kanit w-full md:w-60">{movie.movie_name}</div>
                                 </div>
-                                {isAdmin && (
+                                {session?.user?.isAdmin && (
                                     <div className="font-bold w-full text-end md:text-start">
                                         <Link href={`editmovie/${movie.movie_name}`}>
                                             <button className="bg-gold w-14 p-1 rounded-md text-lg hover:scale-90">

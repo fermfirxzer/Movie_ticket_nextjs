@@ -32,8 +32,7 @@ export const POST = async (req, res) => {
       // Continue with uploading the new image, even if deleting the old one fails
     }
   }
-
-  // Proceed with writing the new file
+// Proceed with writing the new file
   try {
     await writeFile(filePath, buffer);
     return NextResponse.json({ Message: "Success", imageUrl: filename, status: 201 });

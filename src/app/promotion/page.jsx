@@ -1,4 +1,3 @@
-
 'use client'
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -7,7 +6,7 @@ import { useSession } from 'next-auth/react';
 export default function Promotion() {
 
     const [Item, setItem] = useState(null);
-    const { data: session, status } = useSession();
+    const { data: session, sessionLoading } = useSession();
     const [Tier, setTier] = useState(null);
     const [loading, setLoading] = useState(true);
     const [point, setPoint] = useState(0);
@@ -16,38 +15,47 @@ export default function Promotion() {
     
     useEffect(() => {
         const fetchData = async () => {
-            if (!session?.user?.username) return;
             try {
-                const [pointRes, historyRes, itemRes, userTierRes] = await Promise.all([
-                    fetch(`/api/promotionTier/getpointuser?username=${session.user.username}`),
-                    fetch(`/api/promotionhistory?username=${session.user.username}`),
-                    fetch(`/api/promotionItem`),
-                    fetch(`/api/promotionTier/getTieruser?username=${session.user.username}`),
-                ]);
-
-                if (!pointRes.ok || !historyRes.ok || !itemRes.ok || !userTierRes.ok) {
-                    throw new Error('Failed to fetch promotion data.');
+                // Fetch promotion items
+                const itemRes = await fetch(`/api/promotionItem`);
+                if (!itemRes.ok) {
+                    throw new Error('Failed to fetch items.');
                 }
-
-                const pointData = await pointRes.json();
-                const historyData = await historyRes.json();
                 const itemData = await itemRes.json();
-                const userTier = await userTierRes.json();
-                setPoint(pointData.point);
-                setHistory(historyData.History);
                 setItem(itemData.Item);
                 setTier(itemData.Tier);
-                setuserTier(userTier.userTier[0])
-                setLoading(false);
+    
+                // Now fetch user-specific data if they are logged in
+                if (session?.user?.username) {
+                    const [pointRes, historyRes, userTierRes] = await Promise.all([
+                        fetch(`/api/promotionTier/getpointuser?username=${session.user.username}`),
+                        fetch(`/api/promotionhistory?username=${session.user.username}`),
+                        fetch(`/api/promotionTier/getTieruser?username=${session.user.username}`),
+                    ]);
+    
+                    if (!pointRes.ok || !historyRes.ok || !userTierRes.ok) {
+                        throw new Error('Failed to fetch promotion data.');
+                    }
+    
+                    const pointData = await pointRes.json();
+                    const historyData = await historyRes.json();
+                    const userTier = await userTierRes.json();
+                    setPoint(pointData.point);
+                    setHistory(historyData.History);
+                    setuserTier(userTier.userTier[0]);
+                }
             } catch (error) {
                 console.error(error.message);
+            } finally {
+                setLoading(false);
             }
         };
-        if (status === "authenticated") {
+    
+        // Only call fetchData if session loading is complete
+        if (!sessionLoading) {
             fetchData();
         }
-    }, [session, status]);
-
+    }, [session, sessionLoading]);
     const [selectedSub, setSelectedSub] = useState([]);
     const [selectedRewards, setSelectedRewards] = useState([]);
 
@@ -124,6 +132,7 @@ export default function Promotion() {
             window.alert('Please Login before buying a Tier!');
             return;
         }
+    
         if (!selectedSub) {
             return;
         }

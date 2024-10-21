@@ -43,11 +43,12 @@ const HistoryPage = () => {
     }
     if(username){
       fetchhistory();
+    }else{
+      setIsLoading(false);
     }
-    
   }, [username])
   if (isLoading) {
-    return <Loading />; // Show loading while fetching data
+    return <Loading />;
   }
   const handleClose = () => {
     setShowMessage(false);
@@ -91,14 +92,18 @@ const HistoryPage = () => {
                       </div>
                       
                     </div>
-                    {purchase.qrcode&&<div className='ml-auto'>
+                    <div className='ml-auto'>
+                    {purchase.qrcode&&<div className={`${purchase.qrcode_isscan ?'opacity-10': '' }`}>
                         <img src={purchase.qrcode} width="150px" alt="QR Code" />
+                        
                         </div>}
+                        {purchase.qrcode_isscan&& <p className='text-sm text-red-600'>* Ticket Already User!</p>}
+                      </div>
                     <div>
 
                       </div>
                   </div>
-                  <div className='flex flex-wrap mx-2 duration-500'>
+                  <div className='flex flex-wrap mx-2'>
                     <div className='w-1/2 flex flex-wrap'>
                       <div className='w-full'>ที่นั่ง :</div>
                       {purchase.seats.map((selectedSeat, seatIndex) => (
@@ -110,16 +115,19 @@ const HistoryPage = () => {
                       <span>{purchase.total_amount} บาท</span>
                     </div>
                   </div>
+                  <div className='text-sm mx-2 mt-2'>
+                    วันที่ : {purchase.show_date} เวลา :{purchase.show_time}
+                  </div>
                 </div>
-                <p className="mt-4">
+                <p className="mt-4 text-sm">
                   Purchase Time: {new Date(purchase.purchase_time).toLocaleString('en-US', {
                     month: 'long',
                     year: 'numeric',
-                    // e.g., October
+                  
                     day: 'numeric',
                     hour: 'numeric',
                     minute: 'numeric',
-                    hour12: true, // Optional: Show time in 12-hour format (AM/PM)
+                    hour12: true, 
                   })}
                 </p>
 

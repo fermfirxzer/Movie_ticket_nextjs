@@ -7,20 +7,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Pagination from '@/component/Pagination';
 import { useSearchParams } from 'next/navigation'
+import { useSession } from 'next-auth/react';
 const Explore = () => {
     const [movies, setMovies] = useState([]);
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState(searchParams.get('moviename')||'');
     const [orderBy, setOrderBy] = useState('');
-    
-    const isAdmin = true;
+    const { data: session,status } = useSession();
     const itemsPerPage = 12;
     const [totalItems, setTotalItems] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const searchInputRef = useRef(null);
 
-
+    const [sessionData, setSessionData] = useState(null);
 
 
 
@@ -58,9 +58,9 @@ const Explore = () => {
         setCurrentPage(pageNumber);
     };
     const handleClick = (movie_name) => {
-        // setMovieId(movieId);
-
-        if (isAdmin) {
+        
+        // console.log('Session:', session.user);
+        if (session?.user?.isAdmin) {
             router.push(`/editmovie/${movie_name}`);
         } else {
             router.push(`/showtime/${movie_name}`);
@@ -98,7 +98,7 @@ const Explore = () => {
                 </div>
 
                 <div className='search-body  my-6'>
-                    {isAdmin &&
+                    {session?.user?.isAdmin &&
                         <button className='bg-white text-black hover:scale-90 p-2 rounded-md mx-2 ml-auto flex' onClick={handleAddClick}>เพิ่มหนัง</button>
                     }
                     <div className='flex justify-between items-center'>
@@ -127,12 +127,12 @@ const Explore = () => {
                     ) : (movies.map((movie, index) => (
                         <div key={index} className='flex flex-col w-[40%] md:w-[30%] xl:w-[24%] items-center justify-start '>
                             <div className=" w-4/5 relative flex flex-col items-center cursor-pointer">
-                                <div className=' rounded-xl '>
-                                    <img src={`/uploads/${movie.imageUrl}`} className='w-full' alt={movie.movie_name} />
+                                <div className=' rounded-xl'>
+                                    <img src={`/uploads/${movie.imageUrl}`} className='w-96 h-96 object-cover' alt={movie.movie_name} />
                                 </div>
 
 
-                                <Link href='showtime'></Link>
+                            
                                 <div onClick={(e) => handleClick(movie.movie_name)}>
                                     <div className="absolute inset-0 bg-black bg-opacity-70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
                                         <input type="button" value="ดูเพิ่มเติม" className='bg-gray-100 text-black w-4/6 rounded cursor-pointer' />
