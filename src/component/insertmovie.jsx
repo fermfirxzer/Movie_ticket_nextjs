@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import Loading from '@/component/Loading';
 const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
-    const [errmovie, setErrmovie] = useState("test");
+    const [errmovie, setErrmovie] = useState("");
     
     const router = useRouter();
     const [loading, setLoading] = useState(true);

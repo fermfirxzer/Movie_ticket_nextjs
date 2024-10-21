@@ -15,14 +15,14 @@ export async function POST(req) {
         });
 
         if (existingUser) {
-            return NextResponse.json({ message: "Username or Email already exists" }, { status: 400 });
+            return NextResponse.json({ Message: "Username or Email already exists" }, { status: 400 });
         }
 
         await User.create({ username , password : hashPassword , email })
 
-        return NextResponse.json({ message : "Register Complete" } , { status : 201});
+        return NextResponse.json({ Message : "Register Complete" } , { status : 201});
         
     } catch (error) {
-        return NextResponse.json({ message : "Error to Register" } , { status : 500 })
+        return NextResponse.json({ Message : "Error to Register" } , { status : 500 })
     }
 }

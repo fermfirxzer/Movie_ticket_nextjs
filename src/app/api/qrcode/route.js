@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req, res) {
   try { await connectMongoDB();
+    console.log("Tih");
     const body = await req.json();
     console.log(body)
     const { history_id } = body.data;

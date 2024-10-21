@@ -1,5 +1,3 @@
-// components/QrScanner.jsx
-
 "use client"; // Use this directive for client-side components in Next.js
 
 import { useEffect, useRef, useState } from 'react';
@@ -63,14 +61,13 @@ const QrScannerComponent = () => {
     const handleFileChange = async (e) => {
         console.log("This is file change")
         const file = e.target.files[0];
-        // setQrResult('');
         if (file) {
             console.log(file);
             try {
                 const result = await QrScanner.scanImage(file, { returnDetailedScanResult: true });
                 const dataObject=await JSON.parse(result.data);
                 
-                setQrResult(dataObject);
+                
                 
                 await scanQRCode(dataObject);
                 e.target.value = ''; 
@@ -160,7 +157,7 @@ const QrScannerComponent = () => {
                 className="border p-2 rounded mb-4"
             />
             <b>Detected QR code from history_id =: </b>
-            {qrResult&&<span>{qrResult.history_id}</span>}
+            {qrResult&&<div><p>{qrResult}</p><br></br><span>{qrResult.history_id}</span></div>}
             <div>
                 {Err&&<div className='text-xl text-red-500 text-center'>{Err}
                     </div>}

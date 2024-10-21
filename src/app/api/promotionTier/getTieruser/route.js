@@ -45,10 +45,7 @@ export async function GET(request) {
             }
         ]);
         
-        if (userTier.length === 0) {
-            return NextResponse.json({ Message: 'No active tier found for user.' }, { status: 404 });
-        }
-
+       
         return NextResponse.json({ userTier:userTier }, { status: 200 });
     } catch (error) {
         console.error(error); // Log the error for debugging

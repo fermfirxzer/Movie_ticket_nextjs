@@ -6,7 +6,7 @@ import useCheckAdmin from '@/app/utils/checkadmin';
 export default function Edit() {
     const { data: session, status } = useSession(); 
     useCheckAdmin();
-//     const router = useRouter();
+    const router = useRouter();
 //   useEffect(() => {
 //     if (status === 'unauthenticated') {
 //       // Redirect to the main page if not authenticated
@@ -32,20 +32,18 @@ export default function Edit() {
                 method: 'POST',
                 body: formData,
             });
-            // console.log(imageResponse.json())
             const imageData = await imageResponse.json();
-            console.log(imageData.imageUrl);
-            setCurrentMovieInfo({
+            const updatedMovieInfo = {
                 ...currentMovieInfo,
                 imageUrl: imageData.imageUrl,
-            });
+            };
 
             const movieResponse = await fetch('/api/movie', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(currentMovieInfo),
+                body: JSON.stringify(updatedMovieInfo),
             });
             const movieData = await movieResponse.json()
             setErrmovie(movieData.Message);
