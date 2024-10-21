@@ -30,7 +30,7 @@ export async function POST(req) {
       if (metadata.type === 'seat') {
         console.log('Seat purchase successful for session:', session.id);
       try {
-        const origin = req.headers.get('origin');
+
         const response = await fetch(`http://localhost:3000/api/seat`, {
           method: 'POST',
           headers: {

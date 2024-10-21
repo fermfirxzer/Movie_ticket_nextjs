@@ -5,7 +5,9 @@
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Loading from '@/component/Loading';
 import Pagination from '@/component/Pagination';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react';
 const Explore = () => {
@@ -167,4 +169,10 @@ const Explore = () => {
     );
 };
 
-export default Explore;
+export default function HistoryPageWrapper() {
+    return (
+      <Suspense fallback={<Loading />}>
+        <Explore />
+      </Suspense>
+    );
+  }

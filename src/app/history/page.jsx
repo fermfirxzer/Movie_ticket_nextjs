@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,Suspense  } from 'react';
 import Loading from '@/component/Loading';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
@@ -143,4 +143,10 @@ const HistoryPage = () => {
   );
 };
 
-export default HistoryPage;
+export default function HistoryPageWrapper() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <HistoryPage />
+    </Suspense>
+  );
+}
