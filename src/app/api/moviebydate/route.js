@@ -3,16 +3,14 @@ import { Movie } from "@/../lib/model/movie.js";
 import { Showtime } from "@/../lib/model/showtime";
 import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'; 
+
 export async function GET(req ) {
+    const { searchParams } = new URL(req.url);
+        const date = searchParams.get('date');
+        const moviename = searchParams.get('moviename');
     try {
         // Connect to MongoDB
         await connectMongoDB();  
-        
- 
-        const { searchParams } = new URL(req.url);
-        const date = searchParams.get('date');
-        const moviename = searchParams.get('moviename');
         const matchquery = {
             startDate: { $lte: date },
             endDate: { $gte: date }

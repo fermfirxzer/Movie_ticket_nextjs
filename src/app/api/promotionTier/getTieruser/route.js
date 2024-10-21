@@ -2,11 +2,12 @@ import { connectMongoDB } from "@/../lib/mongodb.js"; // Ensure you have a utili
 import { NextResponse } from "next/server";
 import { User } from "../../../../../lib/model/user";
 
-export const dynamic = 'force-dynamic'; 
+
 export async function GET(request) {
+    const { searchParams } = new URL(request.url);
+    const username = searchParams.get('username');
     try {
-        const { searchParams } = new URL(request.url);
-        const username = searchParams.get('username');
+       
         await connectMongoDB();
     
         const user = await User.findOne({ username: username }); // Fetch the user by username

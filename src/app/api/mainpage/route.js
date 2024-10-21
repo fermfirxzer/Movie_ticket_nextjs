@@ -3,16 +3,12 @@ import { Movie } from "@/../lib/model/movie.js";
 
 import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'; 
 export async function GET(req ) {
+    const { searchParams } = new URL(req.url);
+    const date = searchParams.get('date');
     try {
         // Connect to MongoDB
         await connectMongoDB();  
-        
- 
-        const { searchParams } = new URL(req.url);
-        const date = searchParams.get('date');
-        console.log(date)
         if (!date) {
             return new Response('Date parameter is missing', { status: 400 });
         }

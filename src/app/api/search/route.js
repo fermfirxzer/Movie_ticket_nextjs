@@ -4,18 +4,19 @@ import { NextResponse } from "next/server";
 
 export const dynamic = 'force-dynamic'; 
 export async function GET(req) {
-    try {
-        // Connect to MongoDB
-        await connectMongoDB();    
-
-        // Use the URL constructor to parse the request URL
-        const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(req.url);
         const name = searchParams.get('name') || '';
         const page = parseInt(searchParams.get('page')) || 1; 
         const limit = parseInt(searchParams.get('limit')) || 12; 
         const skip = (page - 1) * limit; 
         const orderBy = searchParams.get('orderBy') ;
         const sortDirection = orderBy === 'asc' ? 1 : -1;
+    try {
+        // Connect to MongoDB
+        await connectMongoDB();    
+
+        // Use the URL constructor to parse the request URL
+        
         
         let movies;
         let totalCount;

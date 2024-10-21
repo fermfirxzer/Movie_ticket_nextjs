@@ -3,18 +3,18 @@ import { Seat } from "@/../lib/model/seat";
 import { Theater } from "@/../lib/model/theater"; // Import your Theater model
 import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'; 
 export async function GET(req) {
+    const { searchParams } = new URL(req.url);
+    const theater_name = searchParams.get('theater_name'); // Get the theater name
+    const date = searchParams.get('date');
+    const time = searchParams.get('time');
+    const dateObject = new Date(date);
     try {
         // Connect to MongoDB
         await connectMongoDB();  
         
         // Extract query parameters
-        const { searchParams } = new URL(req.url);
-        const theater_name = searchParams.get('theater_name'); // Get the theater name
-        const date = searchParams.get('date');
-        const time = searchParams.get('time');
-        const dateObject = new Date(date);
+       
         // Check for missing parameters
         if (!theater_name || !date|| !time) {
             return new Response('Missing parameters', { status: 400 });
