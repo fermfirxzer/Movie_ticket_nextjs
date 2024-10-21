@@ -3,7 +3,7 @@ import { Seat } from "@/../lib/model/seat";
 import { Theater } from "@/../lib/model/theater"; // Import your Theater model
 import { NextResponse } from "next/server";
 
-
+export const dynamic = 'force-dynamic'; 
 export async function GET(req) {
     try {
         // Connect to MongoDB

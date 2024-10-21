@@ -2,6 +2,7 @@ import { connectMongoDB } from "@/../lib/mongodb.js"; // Ensure you have a utili
 import { NextResponse } from "next/server";
 import { User } from "../../../../../lib/model/user";
 
+export const dynamic = 'force-dynamic'; 
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);

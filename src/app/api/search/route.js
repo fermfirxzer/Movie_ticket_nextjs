@@ -2,6 +2,7 @@ import { connectMongoDB } from "@/../lib/mongodb.js";
 import { Movie } from "@/../lib/model/movie.js"; 
 import { NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic'; 
 export async function GET(req) {
     try {
         // Connect to MongoDB
