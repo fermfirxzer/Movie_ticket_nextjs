@@ -61,7 +61,7 @@ const Explore = () => {
     };
     const handleClick = (movie_name) => {
         
-        // console.log('Session:', session.user);
+        if (status === 'loading') return;
         if (session?.user?.isAdmin) {
             router.push(`/editmovie/${movie_name}`);
         } else {

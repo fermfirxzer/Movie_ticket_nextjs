@@ -14,8 +14,6 @@ export async function GET(req) {
     try {
         // Connect to MongoDB
         await connectMongoDB();    
-
-        // Use the URL constructor to parse the request URL
         
         
         let movies;
