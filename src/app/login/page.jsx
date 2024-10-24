@@ -99,12 +99,12 @@ export default function Login() {
                 <div className="w-full">
                     <div className="flex justify-center">
                         <span
-                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg   ${login ? 'bg-black' : 'bg-[#1B181A]'}`}
+                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg ${login ? 'bg-[#1B181A] text-white' : 'bg-black text-white'}`}
                             onClick={() => {setLogin(true),setError('')}}>
                             เข้าสู่ระบบ
                         </span>
                         <span
-                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg ${!login ? 'bg-black' : 'bg-[#1B181A]'}`}
+                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg ${login ? 'bg-black text-white' : 'bg-[#1B181A] text-white'}`}
                             onClick={() => {setLogin(false),setError('')}}
                         >
                             สมัครสมาชิก
