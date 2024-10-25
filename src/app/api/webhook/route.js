@@ -31,7 +31,7 @@ export async function POST(req) {
         console.log('Seat purchase successful for session:', session.id);
       try {
 
-        const response = await fetch(`http://localhost:3000/api/seat`, {
+        const response = await fetch(`https://movie-ticket-nextjs-1.onrender.com/api/seat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export async function POST(req) {
     }else if (metadata.type === 'tier') {
       console.log('Promotion purchase successful for session:', session.id);
       try {
-        const response = await fetch(`http://localhost:3000/api/promotionTier`, {
+        const response = await fetch(`https://movie-ticket-nextjs-1.onrender.com/api/promotionTier`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
