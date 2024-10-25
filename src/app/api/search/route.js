@@ -28,11 +28,11 @@ export async function GET(req) {
            
             movies = await Movie.find({
                 movie_name: { $regex: name, $options: "i" }
-            }).sort({ startDate: sortDirection }).skip(skip).limit(limit);
+            }).sort({ startDate: sortDirection, _id: 1 }).skip(skip).limit(limit);
         } else {
            
             totalCount = await Movie.countDocuments();
-            movies = await Movie.find().sort({ startDate: sortDirection }).skip(skip).limit(limit);
+            movies = await Movie.find().sort({ startDate: sortDirection, _id: 1 }).skip(skip).limit(limit);
         }
 
        
