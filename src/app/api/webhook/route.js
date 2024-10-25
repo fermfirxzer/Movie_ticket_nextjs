@@ -33,7 +33,7 @@ export async function POST(req) {
         console.log('Seat purchase successful for session:', session.id);
       try {
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout/api/seat`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export async function POST(req) {
       console.log('Promotion purchase successful for session:', session.id);
       console.log(metadata);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout/api/promotionTier`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/promotionTier`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
