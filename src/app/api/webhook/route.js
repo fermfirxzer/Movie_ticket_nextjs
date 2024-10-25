@@ -24,14 +24,16 @@ export async function POST(req) {
 
   // Handle the event type
   switch (event.type) {
+
     case 'checkout.session.completed':
       const session = event.data.object;
       const metadata = session.metadata;
+      console.log(metadata);
       if (metadata.type === 'seat') {
         console.log('Seat purchase successful for session:', session.id);
       try {
 
-        const response = await fetch(`https://movie-ticket-nextjs-1.onrender.com/api/seat`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -49,8 +51,9 @@ export async function POST(req) {
       break;
     }else if (metadata.type === 'tier') {
       console.log('Promotion purchase successful for session:', session.id);
+      console.log(metadata);
       try {
-        const response = await fetch(`https://movie-ticket-nextjs-1.onrender.com/api/promotionTier`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/promotionTier`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

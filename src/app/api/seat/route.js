@@ -15,7 +15,8 @@ export async function POST(req) {
 
     const { date, selectedTheater, selectedShowtime, moviename, selectedSeats: selectedSeatsString, username, total_amount } = body;
     const selectedSeats = typeof selectedSeatsString === 'string' ? JSON.parse(selectedSeatsString) : selectedSeatsString;
-
+    console.log("This is seat api");
+    console.log(body);
 
     try {
         const userId = await User.findOne({ username: username }).select('_id point');
