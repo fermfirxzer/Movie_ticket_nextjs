@@ -226,7 +226,7 @@ export default function Showtime({ params }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleConfirmPurchase = async (e) => {
         e.preventDefault();
-        if(!session.user.username){
+        if(!session?.user?.username){
             window.alert('Please Login before buying a ticket');
             return;
         }
