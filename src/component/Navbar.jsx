@@ -38,7 +38,7 @@ export default function Navbar() {
     
     };
     
-    const [Search,setSearch]=useState(null);
+    const [Search,setSearch]=useState('');
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);

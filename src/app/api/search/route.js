@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export const dynamic = 'force-dynamic'; 
 export async function GET(req) {
     const { searchParams } = new URL(req.url);
-        const name = searchParams.get('name') || '';
+        const name = searchParams.get('name');
         const page = parseInt(searchParams.get('page')) || 1; 
         const limit = parseInt(searchParams.get('limit')) || 12; 
         const skip = (page - 1) * limit; 
