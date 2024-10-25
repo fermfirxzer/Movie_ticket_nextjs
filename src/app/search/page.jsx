@@ -14,7 +14,7 @@ const Explore = () => {
     const [movies, setMovies] = useState([]);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [searchQuery, setSearchQuery] = useState(searchParams.get('moviename')||'');
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('moviename')||' ');
     const [orderBy, setOrderBy] = useState('');
     const { data: session,status } = useSession();
     const itemsPerPage = 12;
