@@ -12,7 +12,7 @@ export async function POST(req) {
   let event;
   try {
     const body = await req.text(); // Get the raw body
-    // console.log("Request body:", body);
+    console.log("Request body:", body);
 
     // Verify the signature
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
