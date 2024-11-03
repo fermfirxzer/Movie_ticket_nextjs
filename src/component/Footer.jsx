@@ -10,9 +10,9 @@ const Footer = () => {
             <div>
               <h3 className="font-bold text-xl mb-4">Movie Ticket</h3>
               <ul className='flex flex-col gap-3 text-md'>
-                <li><a href="#" className="hover:underline underline-offset-2 decoration-2">หนังที่ฉายวันนี้</a></li>
-                <li><a href="#" className="hover:underline underline-offset-2 decoration-2">ภาพยนตร์</a></li>
-                <li><a href="#" className="hover:underline underline-offset-2 decoration-2">กำลังจะมา</a></li>
+                <li><a href="/" className="hover:underline underline-offset-2 decoration-2">หน้าแรก</a></li>
+                <li><a href="/moviebydate" className="hover:underline underline-offset-2 decoration-2">หนังที่ฉายวันนี้</a></li>
+                <li><a href="/search" className="hover:underline underline-offset-2 decoration-2">ค้นหา</a></li>
               </ul>
             </div>
           </div>

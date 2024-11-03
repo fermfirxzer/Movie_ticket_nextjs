@@ -33,7 +33,7 @@ export default function Login() {
         const { username, email, password, confirmPassword } = formData;
 
         if (!username || !email || !password || !confirmPassword) {
-            setError("Please add all inputs");
+            setError("Please fill all inputs");
             return;
         }
         
@@ -99,12 +99,12 @@ export default function Login() {
                 <div className="w-full">
                     <div className="flex justify-center">
                         <span
-                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg   ${login ? 'bg-black' : 'bg-[#1B181A]'}`}
+                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg ${login ? 'bg-[#1B181A] text-white' : 'bg-black text-white'}`}
                             onClick={() => {setLogin(true),setError('')}}>
                             เข้าสู่ระบบ
                         </span>
                         <span
-                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg ${!login ? 'bg-black' : 'bg-[#1B181A]'}`}
+                            className={`w-1/2 h-9 p-6 flex justify-center items-center rounded-t-lg ${login ? 'bg-black text-white' : 'bg-[#1B181A] text-white'}`}
                             onClick={() => {setLogin(false),setError('')}}
                         >
                             สมัครสมาชิก
@@ -121,6 +121,8 @@ export default function Login() {
                                 value={usernamelogin}
                                 onChange={(e) => setUsernamelogin(e.target.value)}
                                 className="login-input"
+                                pattern="[A-Za-z0-9]{3,15}"
+                                title="Username must be between 3 to 15 characters long and can only contain letters and numbers."
                             />
                             <label className="mx-6 mb-2">Password</label>
                             <input
@@ -129,6 +131,8 @@ export default function Login() {
                                 value={passwordlogin}
                                 onChange={(e) => setPasswordlogin(e.target.value)}
                                 className="login-input"
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z\d]{8,20}$"
+                                title="Password must be 8-20 characters long, include at least one uppercase, one lowercase letter, one number.can't using spacies letter"
                             />
                             <div className="flex-grow"></div>
                             <button type="submit" className="login-btn">
@@ -158,7 +162,7 @@ export default function Login() {
                                 value={formData.email || ""}
                                 onChange={handleChange}
                                 className="login-input"
-                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                pattern="[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}"
                                 title="Please enter a valid email address."
                             />
                             <label className="mx-6 mb-2">Password</label>

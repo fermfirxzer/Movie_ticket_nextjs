@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
-  // console.log("Webhook route called");
+  console.log("Webhook route called");
 
   const signature = req.headers.get('stripe-signature'); // Fix syntax
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
