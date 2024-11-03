@@ -7,28 +7,46 @@ const QrScannerComponent = () => {
     const videoRef = useRef(null);
     const [camHasCamera, setCamHasCamera] = useState(false);
     const [camHasFlash, setCamHasFlash] = useState(false);
-    const [qrResult, setQrResult] = useState('None');
+    const [qrResult, setQrResult] = useState([]);
+    // const []
     const [flashState, setFlashState] = useState('off');
     const [scanner, setScanner] = useState(null);
     const [selectedCamera, setSelectedCamera] = useState('environment');
-    const [Err,setErr]=useState('');
+    const [Err, setErr] = useState('');
     useEffect(() => {
-        const qrScanner = new QrScanner(videoRef.current, (result) => {
-        
-            const dataObject=JSON.parse(result.data);
-            setQrResult(dataObject);
-            console.log(result);
-            console.log(dataObject)
-        }, {
-            highlightScanRegion: true,
-            highlightCodeOutline: true,
-        });
+        let isScanningAllowed=true;
+        const qrScanner = new QrScanner(
+            videoRef.current,
+            async (scanResult) => {
+                if (!isScanningAllowed) return; // Skip if scanning is temporarily disabled
+
+                isScanningAllowed=false;
+                try {
+                    const dataObject = JSON.parse(scanResult.data);
+                    setQrResult(dataObject.history_id);
+
+
+
+                    await scanQRCode(dataObject);
+                    setTimeout(() => {
+                        isScanningAllowed = true;
+                    }, 3000);
+
+                } catch (error) {
+                    setQrResult(error.Message || 'No QR code found.');
+                }
+            },
+            {
+                highlightScanRegion: true,
+                highlightCodeOutline: true,
+            }
+        );
 
         qrScanner.start().then(() => {
-            QrScanner.hasCamera().then(hasCamera => {
+            QrScanner.hasCamera().then((hasCamera) => {
                 setCamHasCamera(hasCamera);
             });
-            qrScanner.hasFlash().then(hasFlash => {
+            qrScanner.hasFlash().then((hasFlash) => {
                 setCamHasFlash(hasFlash);
             });
             setScanner(qrScanner);
@@ -65,16 +83,16 @@ const QrScannerComponent = () => {
             console.log(file);
             try {
                 const result = await QrScanner.scanImage(file, { returnDetailedScanResult: true });
-                const dataObject=await JSON.parse(result.data);
-                
-                
-                
+                const dataObject = await JSON.parse(result.data);
+
+
+                setQrResult(dataObject.history_id)
                 await scanQRCode(dataObject);
-                e.target.value = ''; 
+                e.target.value = '';
             } catch (error) {
                 setQrResult(error || 'No QR code found.');
             }
-            
+
         }
     };
     const scanQRCode = async (qrData) => {
@@ -84,9 +102,9 @@ const QrScannerComponent = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ data:qrData }),
+                body: JSON.stringify({ data: qrData }),
             });
-    
+
             const data = await response.json();
             window.alert(data.Message);
             setErr(data.Message);
@@ -95,7 +113,7 @@ const QrScannerComponent = () => {
             window.alert(err.Message);
             console.log('Error fetching QR code data:', err);
         }
-        
+
     };
 
     return (
@@ -133,7 +151,7 @@ const QrScannerComponent = () => {
             </div>
             <div className="mb-4">
                 <b>Detected QR code: </b>
-                {qrResult&&<span>{qrResult.history_id}</span>}
+                {qrResult && <span>{qrResult.history_id}</span>}
             </div>
             <div className="flex space-x-2">
                 <button
@@ -156,11 +174,11 @@ const QrScannerComponent = () => {
                 onChange={handleFileChange}
                 className="border p-2 rounded mb-4"
             />
-            <b>Detected QR code from history_id =: </b>
-            {qrResult&&<div><p>{qrResult}</p><br></br><span>{qrResult.history_id}</span></div>}
+
+            {qrResult && <div className='font-bold'><p>Detected QR code from history_id : {qrResult}</p><br></br><span>{qrResult.history_id}</span></div>}
             <div>
-                {Err&&<div className='text-xl text-red-500 text-center'>{Err}
-                    </div>}
+                {Err && <div className='text-xl text-red-500 text-center'>{Err}
+                </div>}
             </div>
         </div>
     );

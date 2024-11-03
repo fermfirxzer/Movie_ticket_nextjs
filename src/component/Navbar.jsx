@@ -38,7 +38,7 @@ export default function Navbar() {
     
     };
     
-    const [Search,setSearch]=useState(null);
+    const [Search,setSearch]=useState('');
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -76,7 +76,7 @@ export default function Navbar() {
                     </ul>
                 </div>
                 {isMobileNavVisible && (
-                    <div className='fixed top-0 right-0 h-screen w-[350px] z-[999] bg-black shadow-lg backdrop-blur-md md:hidden opacity-80 font-bold' ref={mobileNavRef}>
+                    <div className='fixed top-0 right-0 h-screen w-[350px] z-[999] bg-black md:hidden opacity-100 font-bold text-xl' ref={mobileNavRef}>
                         <div className='flex flex-col justify-start text-white p-6 gap-5'>
                             <div className='self-end cursor-pointer' onClick={(e) => setMobileNavVisible(false)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className='w-6 h-6' fill="currentColor"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg></div>
                             <Link href="/" onClick={(e)=>setMobileNavVisible(false)}  className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 flex items-center'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className='w-4 h-3' fill="currentColor"><path d="M3.4 81.7c-7.9 15.8-1.5 35 14.3 42.9L280.5 256 17.7 387.4C1.9 395.3-4.5 414.5 3.4 430.3s27.1 22.2 42.9 14.3l320-160c10.8-5.4 17.7-16.5 17.7-28.6s-6.8-23.2-17.7-28.6l-320-160c-15.8-7.9-35-1.5-42.9 14.3z" /></svg>หน้าแรก</Link>

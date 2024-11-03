@@ -76,11 +76,14 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
     };
     console.log(currentMovieInfo)
     const updateMovie = async (event) => {
-        event.preventDefault(); // Prevent default form submission
-        
+        event.preventDefault();
+        if(currentMovieInfo.startDate>currentMovieInfo.endDate){
+            setErrmovie("startDate ของหนังต้องมากกว่า endDate");
+            return;
+        }
         try {
             let updatedMovieInfo = { ...currentMovieInfo };
-
+            
             // If there's an image file to upload, upload it first
             if (currentMovieInfo.imagePath && currentMovieInfo.imageFile) {
                 const formData = new FormData();

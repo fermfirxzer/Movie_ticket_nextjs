@@ -72,11 +72,14 @@ const HistoryPage = () => {
           {purchase && purchase.map((purchase, index) => (
             <div key={index} className='mx-auto'>
               <div className="bg-gray-800 text-white p-6 rounded-xl shadow-lg w-full mb-5">
-                <div className='w-full border text-white p-2 text-sm md:text-lg'>
+                <div className='w-full border text-white p-2 text-sm md:text-lg md:flex-nowrap'>
                   <h1 className='font-bold mx-2'>{purchase.title}</h1>
-                  <div className='flex'>
-                    <img src={`/uploads/${purchase.imageUrl}`} className='m-2 w-40' alt={purchase.movie} />
-                    <div className='flex flex-col mt-2 mx-2'>
+                  <div className='flex flex-wrap'>
+                    <div className='w-1/2 md:w-1/3'>
+
+                     <img src={`/uploads/${purchase.imageUrl}`} className='m-2 w-40' alt={purchase.movie} />
+                    </div>
+                    <div className='flex flex-col items-end text-end w-1/2 md:w-1/3 md:items-start md:text-start'>
                       <p className='font-bold text-lg'>{purchase.movie}</p>
                       <div className='flex items-center'>
                         <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center" height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF">
@@ -84,17 +87,17 @@ const HistoryPage = () => {
                         </svg>
                         <p>{Math.floor(purchase.duration / 60)}h {purchase.duration % 60}m</p>
                       </div>
-                      <div className='mt-2'>
+                      <div>
                         <p>Theater</p>
-                        <div className="flex justify-center items-center bg-white p-2 w-24 h-10 rounded font-bold md:text-lg text-black">
+                        <div className="flex justify-center items-center bg-white  w-24 h-10 rounded font-bold md:text-lg text-black">
                           {purchase.theater_name || 'N/A'}
                         </div>
                       </div>
                       
                     </div>
-                    <div className='ml-auto'>
+                    <div className='w-full ml-2 mt-4 md:mx-0 md:mt-0 md:w-1/3 md:justify-end flex'>
                     {purchase.qrcode&&<div className={`${purchase.qrcode_isscan ?'opacity-10': '' }`}>
-                        <img src={purchase.qrcode} width="150px" alt="QR Code" />
+                        <img src={purchase.qrcode} className="w-[110px] md:w-[150px]" alt="QR Code" />
                         
                         </div>}
                         {purchase.qrcode_isscan&& <p className='text-sm text-red-600'>* Ticket Already User!</p>}
