@@ -24,26 +24,22 @@ export default function Navbar() {
 
     // Function to handle clicks outside of mobile nav
     const handleClickOutside = (event) => {
-        
         if (
             mobileNavRef.current &&
             !mobileNavRef.current.contains(event.target) &&
             burgerRef.current &&
             !burgerRef.current.contains(event.target)
-            
         ) {
             setMobileNavVisible(false);
             
         }
     
     };
-    
-    const [Search,setSearch]=useState('');
-
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+    const [Search,setSearch]=useState('');
     const handlesearch=(e)=>{
         if (e.key === 'Enter') {
             setMobileNavVisible(false);
@@ -65,9 +61,13 @@ export default function Navbar() {
                         <input type="text" className='search text-white opacity-100 p-1 w-64 focus:outline-none bg-black' value={Search} onChange={(e) => setSearch(e.target.value)} onKeyDown={handlesearch}></input>
                     </div>
                 </div>
-        
-                <div
-                    className='burger md:hidden'
+                <div className='search hidden md:hidden f:flex f:justify-start'>
+                    <div className='search-box items-center  border-white border-0.25 rounded-md bg-black gap-1 px-3 flex'>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className='w-4 h-4'><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill='white' /></svg>
+                        <input type="text" className='search text-white opacity-100 p-1 w-64 focus:outline-none bg-black' value={Search} onChange={(e) => setSearch(e.target.value)} onKeyDown={handlesearch}></input>
+                    </div>
+                </div>
+                <div className='burger md:hidden'
                     onClick={toggleMobileNav} ref={burgerRef}>
                     <ul className='flex gap-1 flex-col cursor-pointer'>
                         <li className='border-white border-b-2 w-5'></li>
@@ -104,7 +104,7 @@ export default function Navbar() {
                         </div>
                     </div>
                 )}
-
+                
                 <div className='hidden md:flex md:gap-8 '>
                     {session ? (
                         <div className='relative '>

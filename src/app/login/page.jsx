@@ -173,7 +173,8 @@ export default function Login() {
                                 onChange={handleChange}
                                 className="login-input"
                                 pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$"
-                                title="Password must be 8-20 characters long, include at least one uppercase, one lowercase letter, one number.can't using spacies letter"
+                                title="Password must be 8-20 characters long, include at least one uppercase, 
+                                one lowercase letter, one number.can't using spacies letter"
                             />
                             <label className="mx-6 mb-2">Confirm Password</label>
                             <input
