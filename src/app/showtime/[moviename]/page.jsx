@@ -138,7 +138,9 @@ export default function Showtime({ params }) {
             }
 
         }
-    }, [selectedShowtime]); // Run effect whenever selectedShowtime changes
+    }, [selectedShowtime]); 
+    
+    // Run effect whenever selectedShowtime changes
 
 
     //SEAT
