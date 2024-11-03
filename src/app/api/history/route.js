@@ -72,7 +72,8 @@ export async function POST(req) {
             },
             {
                 $project: {
-                    history_id: "$_id", // Rename _id to history_id
+                    _id: 0,
+                    
                     theater_name: 1,
                     show_date: 1,
                     show_time: 1,

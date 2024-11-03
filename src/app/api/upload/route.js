@@ -41,3 +41,58 @@ export const POST = async (req, res) => {
     return NextResponse.json({ Message: "Failed", status: 500 });
   }
 };
+// import { NextResponse } from "next/server";
+// import { v2 as cloudinary } from 'cloudinary';
+
+// // Configure Cloudinary with your credentials
+// cloudinary.config({
+//   cloud_name: 'dc1uaed4l',
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
+
+// export const POST = async (req) => {
+//   const formData = await req.formData();
+
+//   const file = formData.get("image"); // Get image file from form data
+//   const currentImage = formData.get("currentImage"); // Get the current image URL (if any)
+
+//   if (!file) {
+//     return NextResponse.json({ error: "No files received." }, { status: 400 });
+//   }
+
+//   // Convert the image to buffer  
+//   const buffer = Buffer.from(await file.arrayBuffer());
+//   const originalFilename = file.name.replaceAll(" ", "_");
+//   try {
+//     // Upload the file buffer to Cloudinary
+//     const result = await cloudinary.uploader.upload_stream(
+//       { 
+//         folder: "Movie_ticket", // Specify the folder
+//         resource_type: 'auto', // Automatically detect the resource type (image, video, etc.)
+//         public_id: originalFilename,
+//         timeout: 60000,// Set the public_id to the original filename
+//       },
+//       (error, cloudinaryResult) => {
+//         if (error) {
+//           console.error("Error uploading to Cloudinary:", error);
+//           return NextResponse.json({ error: "Failed to upload to Cloudinary." }, { status: 500 });
+//         }
+
+//         // Return the Cloudinary URL
+//         return NextResponse.json({
+//           message: "Success",
+//           imageUrl: cloudinaryResult.secure_url, // Return the Cloudinary URL
+//           status: 201,
+//         });
+//       }
+//     );
+
+//     // Write the buffer to the Cloudinary stream
+//     buffer.pipe(result);
+
+//   } catch (error) {
+//     console.error("Error occurred while uploading to Cloudinary:", error);
+//     return NextResponse.json({ message: "Failed to upload to Cloudinary", status: 500 });
+//   }
+// };

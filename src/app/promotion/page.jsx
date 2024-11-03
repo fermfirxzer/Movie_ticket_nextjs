@@ -64,7 +64,7 @@ export default function Promotion() {
 
         setSelectedRewards((prev) => {
             const newTotal = prev.includes(rewardId) ? total - rewardPoint : total + rewardPoint;
-
+            console.log(newTotal)
             if (newTotal > point) {
                 Swal.fire({
                     icon: 'error',
@@ -76,12 +76,14 @@ export default function Promotion() {
                 return prev; // Do not update selection
             } else {
 
-                setTotal(newTotal); // Update total points
+             // Update total points
 
                 if (prev.some(reward => reward.rewardId === rewardId)) {
                     // Remove the reward if already selected
+                    setTotal(total-rewardPoint);
                     return prev.filter(reward => reward.rewardId !== rewardId);
                 } else {
+                    setTotal(newTotal);
                     // Add the reward (store both rewardId and rewardName)
                     return [...prev, { rewardId, rewardName }];
                 }
@@ -90,7 +92,7 @@ export default function Promotion() {
     };
     const handleitemPurchase = async (e) => {
         e.preventDefault();
-        if (!session.user.username) {
+        if (!session?.user?.username) {
             window.alert('Please Login before buying a Items!');
             return;
         }
@@ -163,7 +165,7 @@ export default function Promotion() {
     if (loading) {
         return <Loading />
     }
-    console.log(userTier)
+    
     return (
         <main className="min-h-screen ">
             <div className="font-Kanit justify-center flex flex-wrap w-4/5 mx-auto" >

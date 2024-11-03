@@ -20,7 +20,7 @@ const Explore = () => {
     const itemsPerPage = 12;
     const [totalItems, setTotalItems] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const searchInputRef = useRef(null);
+   
 
     const [sessionData, setSessionData] = useState(null);
 
@@ -30,6 +30,7 @@ const Explore = () => {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
+                
                 const response = await fetch(`/api/search?name=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}&orderBy=${orderBy}`, {
                     method: 'GET',
                 });
@@ -50,18 +51,12 @@ const Explore = () => {
     }, [currentPage, searchQuery, orderBy]);
 
 
-    const handleSearchClick = () => {
-        setCurrentPage(1);
-        setSearchQuery(searchInputRef.current.value);
-        console.log(searchQuery);
-    };
-
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
     const handleClick = (movie_name) => {
         
-        // console.log('Session:', session.user);
+        if (status === 'loading') return;
         if (session?.user?.isAdmin) {
             router.push(`/editmovie/${movie_name}`);
         } else {
@@ -82,19 +77,19 @@ const Explore = () => {
             <div className='font-Kanit mx-8 lg:mx-40 xl:mx-56'>
                 <div className="lg:mx-9 mt-6 flex justify-center px-24 md:px-0">
                     <div className="relative w-full md:w-1/2 lg:w-1/3">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer" onClick={handleSearchClick}>
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M17 10A7 7 0 1 1 3 10a7 7 0 0 1 14 0z" />
                             </svg>
                         </div>
                         <input
                             type="text"
-                            ref={searchInputRef}
-                            value={searchQuery}
+                            
+                            value={searchQuery||''}
                             placeholder="Search for movies..."
                             className="w-full pl-10 px-4 py-2 rounded-md border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-[--gold]"
                             onChange={(e) => setSearchQuery(e.target.value)}
-
+                            pattern=''
                         />
                     </div>
                 </div>
