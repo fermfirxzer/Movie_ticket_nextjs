@@ -15,7 +15,7 @@ export async function GET(req) {
         // Connect to MongoDB
         await connectMongoDB();    
         
-        
+         
         let movies;
         let totalCount;
 
@@ -25,7 +25,6 @@ export async function GET(req) {
                 movie_name: { $regex: name, $options: "i" } // Case-insensitive search
             });
 
-           
             movies = await Movie.find({
                 movie_name: { $regex: name, $options: "i" }
             }).sort({ startDate: sortDirection, _id: 1 }).skip(skip).limit(limit);

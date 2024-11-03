@@ -337,8 +337,14 @@ export default function Showtime({ params }) {
                                     {rowSeats.map((seat) => (
                                         <div key={seat} id={seat} onClick={!isSeatBooked(seat) ? () => toggleSeat(seat) : undefined}
                                             className={`cursor-pointer text-center rounded mr-1 md:m-1 w-8 h-6 md:h-10 md:w-10  text-white rounded-t-2xl
-                                            ${isSeatBooked(seat) ? 'bg-gray-900 cursor-not-allowed' : selectedSeats[seat] != null ? 'bg-[--gold]' : 'bg-red-900 '}`}
-                                        ></div>
+                                            ${isSeatBooked(seat) ? 'bg-gray-900 cursor-not-allowed' 
+                                                    : selectedSeats[seat] != null ? 'bg-[--gold]' 
+                                                    : rowIndex <= 2 ? 'bg-red-700' 
+                                                    : rowIndex <= 8 ? 'bg-blue-700' 
+                                                    : 'bg-purple-700'}`}>
+                                               
+                                        </div>
+                                        
                                     ))}
                                     <span className='mx-1'>{letters[rowIndex]}</span>
                                 </div>

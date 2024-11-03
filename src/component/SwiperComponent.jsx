@@ -38,7 +38,8 @@ const SwiperComponent = ({movies}) => {
     >
    
       {movies.map((movie, index) => {
-       
+      
+      ;
 
         return (
           <SwiperSlide key={index}>

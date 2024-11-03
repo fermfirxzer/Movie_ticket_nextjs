@@ -50,7 +50,7 @@ const Explore = () => {
 
     }, [currentPage, searchQuery, orderBy]);
 
-
+ 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
