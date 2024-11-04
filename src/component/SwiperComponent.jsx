@@ -47,7 +47,7 @@ const SwiperComponent = ({movies}) => {
               <div className="relative flex flex-col items-center w-full" id="movie-card">
                 <img src={`uploads/${movie.imageUrl}`} className='w-4/5 rounded-xl' alt={movie.movie_name} />
                 <Link href={`showtime/${movie.movie_name}`} id="hover-container">
-                  <div className="absolute inset-0 bg-black bg-opacity-70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
+                  <div className="opacity-0 hover:opacity-100 absolute inset-0 bg-black bg-opacity-70 text-white  transition-opacity duration-300 flex flex-col justify-center items-center">
                     <input type="button" value="ดูเพิ่มเติม" className='bg-gray-100 text-black w-4/6 rounded cursor-pointer' />
                   </div>
                 </Link>
