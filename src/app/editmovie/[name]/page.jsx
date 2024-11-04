@@ -206,7 +206,7 @@ export default function Edit({ params }) {
         <main className='min-h-screen font-Kanit bg-black'>
 
             <Insertmovie moviename={Moviename} setMovieStart={setMovieStart} setMovieEnd={setMovieEnd} />
-            <div className='container mx-auto'>
+            <div className='container mx-auto text-white'>
                 <h4 className='text-2xl font-bold'>รอบการฉายของหนัง : {decodeURIComponent(Moviename)}</h4>
                 <h3>{errfetchshowtime && (errfetchshowtime)}</h3>
                 <div className='w-[100%] flex flex-col gap-12 mx-auto font-bold text-lg mt-4'>
@@ -238,13 +238,13 @@ export default function Edit({ params }) {
                     ))}
                 </div>
                 {showForm && (
-                    <div className='w-[100%] flex flex-col gap-12 mx-auto font-bold text-lg mt-4'>
+                    <div className='w-[100%] flex flex-col gap-12 mx-auto font-bold text-lg mt-4 '>
                         <div>
                             <h3 className='text-white'>เพิ่มรอบฉาย :</h3>
                             <div className='flex gap-10'>
-                                <input type="date" name="startDate" value={showDate.startDate} className='px-2 py-2 border rounded'
+                                <input type="date" name="startDate" value={showDate.startDate} className='px-2 py-2 border rounded text-black'
                                     onChange={handleDateChange} />
-                                <input type="date" name="endDate" value={showDate.endDate} className='px-2 py-2 border rounded'
+                                <input type="date" name="endDate" value={showDate.endDate} className='px-2 py-2 border rounded text-black'
                                     onChange={handleDateChange}
                                 />
                             </div>
@@ -270,7 +270,7 @@ export default function Edit({ params }) {
                                     availableTime.map((time, index) => (
                                         <button
                                             key={index}
-                                            className={`my-2 mx-1 duration-200 p-2 w-14 md:w-24 rounded font-bold text-sm md:text-lg cursor-pointer ${selectedTheaters.time?.includes(time) ? "bg-blue-500 text-white" : "bg-gray-200"
+                                            className={`my-2 mx-1 text-black duration-200 p-2 w-14 md:w-24 rounded font-bold text-sm md:text-lg cursor-pointer ${selectedTheaters.time?.includes(time) ? "bg-blue-500 text-white" : "bg-gray-200"
                                                 }`}
                                             onClick={() => addTime(time)} // Handle time selection
                                         >
@@ -285,7 +285,7 @@ export default function Edit({ params }) {
 
                         <div className='flex justify-end mt-6'>
                             {Errshowtime && <p className='self-start flex-grow'>{Errshowtime}</p>}
-                            <button className='bg-white  p-2 w-22  rounded-lg flex justify-center mx-4 font-bold hover:scale-90' onClick={handleAddshowtime} >
+                            <button className='bg-white  text-black p-2 w-22  rounded-lg flex justify-center mx-4 font-bold hover:scale-90' onClick={handleAddshowtime} >
                                 เพิ่มรอบฉาย
                             </button>
                             <button className='bg-red-900 text-white p-2 w-22  rounded-lg flex justify-center hover:scale-90' onClick={() => setShowForm(!showForm)}>

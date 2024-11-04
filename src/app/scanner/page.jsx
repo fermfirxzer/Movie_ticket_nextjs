@@ -117,7 +117,7 @@ const QrScannerComponent = () => {
     };
 
     return (
-        <div className="p-4">
+        <div className="p-4 text-white">
             <h1 className="text-2xl font-bold mb-4">Scan from WebCam:</h1>
             <div className="mb-4">
                 <video ref={videoRef} className="border rounded w-full" />
@@ -131,7 +131,7 @@ const QrScannerComponent = () => {
                 <select
                     value={selectedCamera}
                     onChange={handleCameraChange}
-                    className="border p-2 rounded"
+                    className="border p-2 rounded text-black"
                 >
                     <option value="environment">Environment Facing (default)</option>
                     <option value="user">User Facing</option>
