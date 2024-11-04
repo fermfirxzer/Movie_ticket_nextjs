@@ -89,7 +89,7 @@ const Explore = () => {
                             placeholder="Search for movies..."
                             className="w-full pl-10 px-4 py-2 rounded-md border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-[--gold]"
                             onChange={(e) => setSearchQuery(e.target.value)}
-
+                            pattern=''
                         />
                     </div>
                 </div>

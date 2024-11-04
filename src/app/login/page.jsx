@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function Login() {
     const { data: session } = useSession();
-    if (session) redirect("/");
+    if (session) window.location.href = "/";
 
     const [login, setLogin] = useState(true);
     const [showPass, setShowPass] = useState(false);
@@ -42,7 +42,7 @@ export default function Login() {
             return;
         }
         try {
-            const res = await fetch("http://localhost:3000/api/register", {
+            const res = await fetch("/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export default function Login() {
             }
         } catch (error) {
             setError(error.Message)
-            setError("An unexpected error occurred. Please try again.");
+            
         }
     };
 
@@ -82,8 +82,7 @@ export default function Login() {
                 setError("User or Password incorrect!");
                 return;
             }
-            router.replace("/")
-
+            window.location.href = "/";
         } catch (error) {
             console.log(error)
         }
@@ -173,7 +172,8 @@ export default function Login() {
                                 onChange={handleChange}
                                 className="login-input"
                                 pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$"
-                                title="Password must be 8-20 characters long, include at least one uppercase, one lowercase letter, one number.can't using spacies letter"
+                                title="Password must be 8-20 characters long, include at least one uppercase, 
+                                one lowercase letter, one number.can't using spacies letter"
                             />
                             <label className="mx-6 mb-2">Confirm Password</label>
                             <input

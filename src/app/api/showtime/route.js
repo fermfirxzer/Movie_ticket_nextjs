@@ -30,7 +30,6 @@ export async function GET(request) {
         const theatersNotInShowtime = await Theater.find({
             _id: { $nin: theaterIdsInShowtime }
         });
-
         return NextResponse.json(theatersNotInShowtime, { status: 200 });
     } catch (error) {
         console.error(error);
