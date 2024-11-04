@@ -8,16 +8,21 @@ const HistoryPage = () => {
   const [purchase, setpurchase] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [username, setUsername] = useState(null);
-  const { data: session } = useSession();
-  useEffect(() => {
-    if (session && session.user) {
-      setUsername(session.user.username);
-    }
-  }, [session]);
+  const { data: session,status } = useSession();
+  // useEffect(() => {
+  //   if (session && session.user) {
+  //     setUsername(session.user.username);
+  //   }
+  // }, [session]);
   const searchParams = useSearchParams();
   const success = searchParams.get('success') === 'true';
   const canceled= searchParams.get('canceled') === 'true';
   const [showMessage, setShowMessage] = useState(success||canceled);
+  useEffect(() => {
+    if (status != "loading"&&session && session.user) {
+        setUsername(session.user.username);
+    }
+}, [status, session]);
   useEffect(() => {
     const fetchhistory = async () => {
       try {
@@ -46,7 +51,7 @@ const HistoryPage = () => {
     }else{
       setIsLoading(false);
     }
-  }, [username])
+  }, [username,status,session])
   if (isLoading) {
     return <Loading />;
   }

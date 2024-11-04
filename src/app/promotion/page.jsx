@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 export default function Promotion() {
 
     const [Item, setItem] = useState(null);
-    const { data: session, sessionLoading } = useSession();
+    const { data: session,status } = useSession();
     const [Tier, setTier] = useState(null);
     const [loading, setLoading] = useState(true);
     const [point, setPoint] = useState(0);
@@ -52,10 +52,10 @@ export default function Promotion() {
         };
     
         // Only call fetchData if session loading is complete
-        if (!sessionLoading) {
+        if (status != "loading") {
             fetchData();
         }
-    }, [session, sessionLoading]);
+    }, [session, status]);
     const [selectedSub, setSelectedSub] = useState([]);
     const [selectedRewards, setSelectedRewards] = useState([]);
 
@@ -94,6 +94,9 @@ export default function Promotion() {
         e.preventDefault();
         if (!session?.user?.username) {
             window.alert('Please Login before buying a Items!');
+            return;
+        }
+        if (selectedRewards.length === 0) {
             return;
         }
         try {
@@ -167,7 +170,7 @@ export default function Promotion() {
     }
     
     return (
-        <main className="min-h-screen ">
+        <main className="min-h-screen text-white">
             <div className="font-Kanit justify-center flex flex-wrap w-4/5 mx-auto" >
 
                 <div className="flex flex-wrap gap-4 text-white">

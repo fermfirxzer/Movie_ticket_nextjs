@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function Login() {
     const { data: session } = useSession();
-    if (session) redirect("/");
+    if (session) window.location.href = "/";
 
     const [login, setLogin] = useState(true);
     const [showPass, setShowPass] = useState(false);
@@ -82,8 +82,7 @@ export default function Login() {
                 setError("User or Password incorrect!");
                 return;
             }
-            router.replace("/")
-
+            window.location.href = "/";
         } catch (error) {
             console.log(error)
         }
