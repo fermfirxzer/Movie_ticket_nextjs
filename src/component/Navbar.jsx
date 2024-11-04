@@ -49,7 +49,7 @@ export default function Navbar() {
         }
     }
     return (
-        <nav className='mx-auto text-white'>
+        <nav id="navbar" className='mx-auto'>
             <div className='p-5 px-12 flex justify-between items-center'>
                 <div className='flex gap-6 items-center'>
                     <Link href="/" className='cursor-pointer text-2xl mr-3'>Movie Ticket</Link>

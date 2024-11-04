@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import QrScanner from 'qr-scanner';
-
+import useCheckAdmin from '@/app/utils/checkadmin';
 const QrScannerComponent = () => {
     const videoRef = useRef(null);
     const [camHasCamera, setCamHasCamera] = useState(false);
     const [camHasFlash, setCamHasFlash] = useState(false);
     const [qrResult, setQrResult] = useState([]);
-    // const []
+    useCheckAdmin();
     const [flashState, setFlashState] = useState('off');
     const [scanner, setScanner] = useState(null);
     const [selectedCamera, setSelectedCamera] = useState('environment');

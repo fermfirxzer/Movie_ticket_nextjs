@@ -115,6 +115,7 @@ export default function Login() {
                         <form onSubmit={handleLoginSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-start h-[24rem]">
                             <label className="mx-6 mt-6 mb-2">Username</label>
                             <input
+
                                 type="text"
                                 name="username"
                                 value={usernamelogin}
@@ -125,6 +126,7 @@ export default function Login() {
                             />
                             <label className="mx-6 mb-2">Password</label>
                             <input
+
                                 type="password"
                                 name="password"
                                 value={passwordlogin}

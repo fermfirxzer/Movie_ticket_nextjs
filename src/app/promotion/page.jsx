@@ -51,7 +51,7 @@ export default function Promotion() {
             }
         };
     
-        // Only call fetchData if session loading is complete
+        
         if (status != "loading") {
             fetchData();
         }
