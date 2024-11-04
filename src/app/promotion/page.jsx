@@ -3,16 +3,17 @@ import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import Loading from '@/component/Loading';
 import { useSession } from 'next-auth/react';
+
 export default function Promotion() {
 
     const [Item, setItem] = useState(null);
-    const { data: session,status } = useSession();
+    const { data: session, status } = useSession();
     const [Tier, setTier] = useState(null);
     const [loading, setLoading] = useState(true);
     const [point, setPoint] = useState(0);
     const [History, setHistory] = useState('');
     const [userTier, setuserTier] = useState('');
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -24,7 +25,7 @@ export default function Promotion() {
                 const itemData = await itemRes.json();
                 setItem(itemData.Item);
                 setTier(itemData.Tier);
-    
+
                 // Now fetch user-specific data if they are logged in
                 if (session?.user?.username) {
                     const [pointRes, historyRes, userTierRes] = await Promise.all([
@@ -32,11 +33,11 @@ export default function Promotion() {
                         fetch(`/api/promotionhistory?username=${session.user.username}`),
                         fetch(`/api/promotionTier/getTieruser?username=${session.user.username}`),
                     ]);
-    
+
                     if (!pointRes.ok || !historyRes.ok || !userTierRes.ok) {
                         throw new Error('Failed to fetch promotion data.');
                     }
-    
+
                     const pointData = await pointRes.json();
                     const historyData = await historyRes.json();
                     const userTier = await userTierRes.json();
@@ -50,8 +51,8 @@ export default function Promotion() {
                 setLoading(false);
             }
         };
-    
-        
+
+
         if (status != "loading") {
             fetchData();
         }
@@ -76,11 +77,11 @@ export default function Promotion() {
                 return prev; // Do not update selection
             } else {
 
-             // Update total points
+                // Update total points
 
                 if (prev.some(reward => reward.rewardId === rewardId)) {
                     // Remove the reward if already selected
-                    setTotal(total-rewardPoint);
+                    setTotal(total - rewardPoint);
                     return prev.filter(reward => reward.rewardId !== rewardId);
                 } else {
                     setTotal(newTotal);
@@ -131,27 +132,58 @@ export default function Promotion() {
             console.error('Error fetching history:', error.message);
         }
     };
+
+
     const handleTierPurchase = async (e) => {
         e.preventDefault();
-        if (!session.user.username) {
-            window.alert('Please Login before buying a Tier!');
+
+        if (!session?.user?.username) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Please Login',
+                text: 'Please Login before buying a Tier!',
+            });
             return;
         }
-    
+
         if (!selectedSub) {
             return;
         }
+
+        // Check if userTier is not null and prompt for confirmation
+        if (userTier !== null) {
+            const result = await Swal.fire({
+                title: 'คุณมีสมาชิกอยู่แล้ว',
+                text: 'ต้องการซื้อใหม่ใช่หรือไม่',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, purchase',
+                cancelButtonText: 'Cancel',
+            });
+
+            if (!result.isConfirmed) {
+                return; // Exit if user cancels
+            }
+        }
+
         try {
             const response = await fetch(`/api/checkout/tier`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username: session.user.username, name: selectedSub.name, price: selectedSub.price, id: selectedSub.id }),
+                body: JSON.stringify({
+                    username: session.user.username,
+                    name: selectedSub.name,
+                    price: selectedSub.price,
+                    id: selectedSub.id,
+                }),
             });
+
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
+
             const data = await response.json();
 
             if (data.url) {
@@ -160,15 +192,16 @@ export default function Promotion() {
                 console.error('No checkout URL returned');
             }
 
-
         } catch (error) {
             console.error('There was a problem with the purchase:', error);
         }
     };
+
+
     if (loading) {
         return <Loading />
     }
-    
+
     return (
         <main className="min-h-screen text-white">
             <div className="font-Kanit justify-center flex flex-wrap w-4/5 mx-auto" >
