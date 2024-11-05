@@ -119,7 +119,7 @@ export default function MovieBydate(){
                                 {session?.user?.isAdmin && (
                                     <div className="font-bold w-full text-end md:text-start">
                                         <Link href={`editmovie/${movie.movie_name}`}>
-                                            <button className="bg-gold w-14 p-1 rounded-md text-lg hover:scale-90">
+                                            <button className="text-black bg-gold w-14 p-1 rounded-md text-lg hover:scale-90">
                                                 Edit
                                             </button>
                                         </Link>

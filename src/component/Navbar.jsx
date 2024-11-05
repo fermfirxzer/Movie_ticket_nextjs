@@ -49,7 +49,7 @@ export default function Navbar() {
         }
     }
     return (
-        <nav className='mx-auto'>
+        <nav id="navbar" className='mx-auto'>
             <div className='p-5 px-12 flex justify-between items-center'>
                 <div className='flex gap-6 items-center'>
                     <Link href="/" className='cursor-pointer text-2xl mr-3'>Movie Ticket</Link>
@@ -95,6 +95,7 @@ export default function Navbar() {
                                     <Link href="/history" className='hover:underline underline-offset-4 decoration-4'>History</Link>
                                     <Link href="/promotion" className='hover:underline underline-offset-4 decoration-4'>Promotion</Link>
                                     <Link href="/" onClick={() => signOut()} className='hover:underline underline-offset-4 decoration-4'>Logout</Link>
+                                    {session.user.isAdmin&&<Link href="/scanner">Scanner</Link>}
                                 </div>
                             </div>) : (
                                 <Link href="/login" onClick={(e)=>setMobileNavVisible(false)}>
@@ -120,7 +121,7 @@ export default function Navbar() {
                                     <Link href="/history"><li className="py-1 px-2 hover:bg-gray-200">History</li></Link>
                                     <Link href="/promotion"><li className="py-1 px-2 hover:bg-gray-200">Promotion</li></Link>
                                         <li className="py-1 px-2  hover:bg-gray-200" onClick={()=>signOut()}>Logout</li>
-                                    {session.user.isAdmin&&<Link href="/scanner"><li className="py-1 px-2 hover:bg-gray-200">Scanner</li></Link>}
+                                    {session?.user?.isAdmin&&<Link href="/scanner"><li className="py-1 px-2 hover:bg-gray-200">Scanner</li></Link>}
                                     </ul>
                                 </div>
                             )}

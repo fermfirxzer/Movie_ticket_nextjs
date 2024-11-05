@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function Login() {
     const { data: session } = useSession();
-    if (session) redirect("/");
+    if (session) window.location.href = "/";
 
     const [login, setLogin] = useState(true);
     const [showPass, setShowPass] = useState(false);
@@ -42,7 +42,7 @@ export default function Login() {
             return;
         }
         try {
-            const res = await fetch("http://localhost:3000/api/register", {
+            const res = await fetch("/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export default function Login() {
             }
         } catch (error) {
             setError(error.Message)
-            setError("An unexpected error occurred. Please try again.");
+            
         }
     };
 
@@ -82,8 +82,7 @@ export default function Login() {
                 setError("User or Password incorrect!");
                 return;
             }
-            router.replace("/")
-
+            window.location.href = "/";
         } catch (error) {
             console.log(error)
         }
@@ -116,6 +115,7 @@ export default function Login() {
                         <form onSubmit={handleLoginSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-start h-[24rem]">
                             <label className="mx-6 mt-6 mb-2">Username</label>
                             <input
+
                                 type="text"
                                 name="username"
                                 value={usernamelogin}
@@ -126,6 +126,7 @@ export default function Login() {
                             />
                             <label className="mx-6 mb-2">Password</label>
                             <input
+
                                 type="password"
                                 name="password"
                                 value={passwordlogin}
@@ -162,7 +163,7 @@ export default function Login() {
                                 value={formData.email || ""}
                                 onChange={handleChange}
                                 className="login-input"
-                                pattern="[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                                 title="Please enter a valid email address."
                             />
                             <label className="mx-6 mb-2">Password</label>

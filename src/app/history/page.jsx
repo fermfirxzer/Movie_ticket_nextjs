@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect,Suspense  } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Loading from '@/component/Loading';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
@@ -8,16 +8,21 @@ const HistoryPage = () => {
   const [purchase, setpurchase] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [username, setUsername] = useState(null);
-  const { data: session } = useSession();
-  useEffect(() => {
-    if (session && session.user) {
-      setUsername(session.user.username);
-    }
-  }, [session]);
+  const { data: session, status } = useSession();
+  // useEffect(() => {
+  //   if (session && session.user) {
+  //     setUsername(session.user.username);
+  //   }
+  // }, [session]);
   const searchParams = useSearchParams();
   const success = searchParams.get('success') === 'true';
-  const canceled= searchParams.get('canceled') === 'true';
-  const [showMessage, setShowMessage] = useState(success||canceled);
+  const canceled = searchParams.get('canceled') === 'true';
+  const [showMessage, setShowMessage] = useState(success || canceled);
+  useEffect(() => {
+    if (status != "loading" && session && session.user) {
+      setUsername(session.user.username);
+    }
+  }, [status, session]);
   useEffect(() => {
     const fetchhistory = async () => {
       try {
@@ -41,12 +46,12 @@ const HistoryPage = () => {
         setIsLoading(false); // Stop loading
       }
     }
-    if(username){
+    if (username) {
       fetchhistory();
-    }else{
+    } else {
       setIsLoading(false);
     }
-  }, [username])
+  }, [username, status, session])
   if (isLoading) {
     return <Loading />;
   }
@@ -61,8 +66,8 @@ const HistoryPage = () => {
         <div className="flex flex-col justify-center font-Kanit">
           <h3 className="text-center text-2xl mb-5">ประวัติการซื้อ</h3>
           {showMessage && (
-            <div className={`${success ? 'bg-green-700':'bg-red-700'} text-white p-4 w-[45%] flex justify-between rounded-md mx-auto items-center mb-12`}>
-              <span>{success?"You buy ticket success!":"Please Try again you payment is failed!"}</span>
+            <div className={`${success ? 'bg-green-700' : 'bg-red-700'} text-white p-4 w-[45%] flex justify-between rounded-md mx-auto items-center mb-12`}>
+              <span>{success ? "You buy ticket success!" : "Please Try again you payment is failed!"}</span>
               <button onClick={handleClose} className="ml-4 bg-red-600 px-2 py-1 rounded">
                 Close
               </button>
@@ -77,7 +82,7 @@ const HistoryPage = () => {
                   <div className='flex flex-wrap'>
                     <div className='w-1/2 md:w-1/3'>
 
-                     <img src={`/uploads/${purchase.imageUrl}`} className='m-2 w-40' alt={purchase.movie} />
+                      <img src={`/uploads/${purchase.imageUrl}`} className='m-2 w-40' alt={purchase.movie} />
                     </div>
                     <div className='flex flex-col items-end text-end w-1/2 md:w-1/3 md:items-start md:text-start'>
                       <p className='font-bold text-lg'>{purchase.movie}</p>
@@ -93,18 +98,18 @@ const HistoryPage = () => {
                           {purchase.theater_name || 'N/A'}
                         </div>
                       </div>
-                      
-                    </div>
-                    <div className='w-full ml-2 mt-4 md:mx-0 md:mt-0 md:w-1/3 md:justify-end flex'>
-                    {purchase.qrcode&&<div className={`${purchase.qrcode_isscan ?'opacity-10': '' }`}>
-                        <img src={purchase.qrcode} className="w-[110px] md:w-[150px]" alt="QR Code" />
-                        
-                        </div>}
-                        {purchase.qrcode_isscan&& <p className='text-sm text-red-600'>* Ticket Already User!</p>}
-                      </div>
-                    <div>
 
+                    </div>
+                    <div className='w-full ml-2 mt-4 md:mx-0 md:mt-0 md:w-1/3 md:justify-start md:items-end flex flex-col'>
+                    <div>
+                      {purchase.qrcode && <div className={`${purchase.qrcode_isscan ? 'opacity-10' : ''}`}>
+                        <img src={purchase.qrcode} className="w-[110px] md:w-[150px]" alt="QR Code" />
+
+                      </div>}
+                      {purchase.qrcode_isscan && <p className='text-sm text-red-600'>* Ticket Already User!</p>}
                       </div>
+                    </div>
+
                   </div>
                   <div className='flex flex-wrap mx-2'>
                     <div className='w-1/2 flex flex-wrap'>
@@ -126,11 +131,11 @@ const HistoryPage = () => {
                   Purchase Time: {new Date(purchase.purchase_time).toLocaleString('en-US', {
                     month: 'long',
                     year: 'numeric',
-                  
+
                     day: 'numeric',
                     hour: 'numeric',
                     minute: 'numeric',
-                    hour12: true, 
+                    hour12: true,
                   })}
                 </p>
 

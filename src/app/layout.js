@@ -20,17 +20,19 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`antialiased`}>
         <SessionLayout>
+          <header>
             <nav>
               <Navbar />
             </nav>
-            <main>
-              <AuthProvider>
-                {children}
-              </AuthProvider>
-            </main>
-            <footer>
-              <Footer />
-            </footer>
+          </header>
+          <main>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </main>
+          <footer>
+            <Footer />
+          </footer>
         </SessionLayout>
       </body>
     </html>

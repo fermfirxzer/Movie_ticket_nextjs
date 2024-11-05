@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import QrScanner from 'qr-scanner';
-
+import useCheckAdmin from '@/app/utils/checkadmin';
 const QrScannerComponent = () => {
     const videoRef = useRef(null);
     const [camHasCamera, setCamHasCamera] = useState(false);
     const [camHasFlash, setCamHasFlash] = useState(false);
     const [qrResult, setQrResult] = useState([]);
-    // const []
+    useCheckAdmin();
     const [flashState, setFlashState] = useState('off');
     const [scanner, setScanner] = useState(null);
     const [selectedCamera, setSelectedCamera] = useState('environment');
@@ -117,7 +117,7 @@ const QrScannerComponent = () => {
     };
 
     return (
-        <div className="p-4">
+        <div className="p-4 text-white">
             <h1 className="text-2xl font-bold mb-4">Scan from WebCam:</h1>
             <div className="mb-4">
                 <video ref={videoRef} className="border rounded w-full" />
@@ -131,7 +131,7 @@ const QrScannerComponent = () => {
                 <select
                     value={selectedCamera}
                     onChange={handleCameraChange}
-                    className="border p-2 rounded"
+                    className="border p-2 rounded text-black"
                 >
                     <option value="environment">Environment Facing (default)</option>
                     <option value="user">User Facing</option>

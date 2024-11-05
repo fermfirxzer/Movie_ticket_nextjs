@@ -175,7 +175,7 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
     return (
         <div>
 
-            <div className="xl:flex xl:flex-wrap   bg-bggray py-12 justify-center md:justify-start p-2 md:mx-40 ">
+            <div className="xl:flex xl:flex-wrap   bg-bggray  justify-center md:justify-start  md:mx-40 ">
                 <div className='flex w-full p-10'>
                     <p className='text-white mt-5 w-80 md:w-full mx-10 text-3xl font-bold'>ข้อมูลหนัง</p>
                     {currentMovieInfo._id && (<button type="submit" className='delete-btn hover:scale-90 w-16 p-2 rounded-md mr-0 2xl:mr-36' onClick={deleteMovie}>ลบ</button>)}
@@ -192,37 +192,37 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
                         </div>
                         <input id="fileInput" type="file" accept="image/*" className='hidden' name="imagePath" onChange={handleImageChange} />
                     </div>
-                    <form className="w-4/5 md:w-2/3 lg:w-1/2 mx-6 my-6" onSubmit={updateMovie}>
+                    <form className="w-4/5 md:w-2/3 lg:w-1/2 mx-6 my-6 text-white" onSubmit={updateMovie}>
                         <div className="mb-4">
-                            <label className="block text-gray-700 ">Name</label>
+                            <label className="block ">Name</label>
                             <input type="text" name="movie_name" value={currentMovieInfo.movie_name} onChange={handleInputChange} className="movie-input" required />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 ">Description</label>
+                            <label className="block ">Description</label>
                             <textarea name="desc" value={currentMovieInfo.desc} onChange={handleInputChange} className="movie-input" rows="4" required />
                         </div>
                         <div className="mb-4 flex">
                             <div className="w-1/2 mr-2">
-                                <label className="block text-gray-700 ">Price</label>
+                                <label className="block ">Price</label>
                                 <input type="number" name="price" value={currentMovieInfo.price} onChange={handleInputChange} className="movie-input" required />
                             </div>
                             <div className="w-1/2">
-                                <label className="block text-gray-700 ">Duration</label>
+                                <label className="block">Duration</label>
                                 <input type="text" name="duration" value={currentMovieInfo.duration} onChange={handleInputChange} className="movie-input" required />
                             </div>
                         </div>
                         <div className="mb-4 flex">
                             <div className="w-1/2 mr-2">
-                                <label className="block text-gray-700 ">Starting Date</label>
+                                <label className="block ">Starting Date</label>
                                 <input type="date" name="startDate" value={currentMovieInfo.startDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
                             <div className="w-1/2 ">
-                                <label className="block text-gray-700">End Date</label>
+                                <label className="block ">End Date</label>
                                 <input type="date" name="endDate" value={currentMovieInfo.endDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
                         </div>
                         <div className=' my-6 text-end  font-bold'>
-                            <button type="submit" className='bg-white hover:scale-90  w-16 p-2 rounded-md mx-2 '>ยืนยัน</button>
+                            <button type="submit" className='bg-white text-black hover:scale-90  w-16 p-2 rounded-md mx-2 '>ยืนยัน</button>
                             <button className='bg-red-900 text-white  hover:scale-90  w-16 p-2 rounded-md'>ยกเลิก</button>
                         </div>
                     </form>

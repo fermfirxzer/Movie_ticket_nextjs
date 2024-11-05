@@ -34,6 +34,8 @@ body {
   }
 }
 
+* { font-family : 'Kanit' , 'sans-serif'}
+
 .font-Kanit {
   font-family: 'Kanit', sans-serif;
 }
@@ -41,8 +43,8 @@ body {
 .header{
 
 }
-button,input,textarea{
-  color:black;
+input,textarea{
+  font-size :16px;
 }
 
 .login-input{
@@ -50,11 +52,12 @@ button,input,textarea{
   margin-left: 1.5rem;
   margin-right: 1.5rem;
   margin-bottom: 1rem;
-  background-color: var(--bgsoft); /* Replace this with the actual bgsoft color if not using CSS variables */
-  border-radius: 1rem; /* Rounded corners */
+  background-color: var(--bgsoft);    /* Replace this with the actual bgsoft color if not using CSS variables */
+  border-radius: 1rem;              /* Rounded corners */
   padding: 0.375rem;
   color:white;
 }
+
 .login-btn{
   background-color:#7F1D1D; /* bg-red-900 */
   border-radius: 1rem; /* rounded-2xl */
@@ -66,11 +69,14 @@ button,input,textarea{
   margin-right: 1.5rem;
   color:white;
 }
+
 .error{
   color:red;
   font-weight:bold;
   font-size:18px;
 }
+
+
 .movie-input{
   width: 100%;          /* w-full */
   padding: 0.5rem 0.75rem; /* px-3 py-2 */
@@ -81,4 +87,16 @@ button,input,textarea{
 .delete-btn{
   color:white;
   background-color:red;
+}
+#navbar{
+  color:white;
+}
+
+input::placeholder{
+  color:gray;
+  opacity:0.5;
+}
+
+#row+#row{
+  
 }

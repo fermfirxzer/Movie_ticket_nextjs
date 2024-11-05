@@ -1,7 +1,4 @@
-
-
 'use client';
-
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -50,7 +47,7 @@ const Explore = () => {
 
     }, [currentPage, searchQuery, orderBy]);
 
-
+ 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };

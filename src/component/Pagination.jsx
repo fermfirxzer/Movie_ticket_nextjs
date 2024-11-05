@@ -34,10 +34,10 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
     // };
 
     return (
-        <div className="flex items-center justify-center mt-4">
+        <div className="flex items-center justify-center mt-4 text-white">
             <button
                 className="px-3 py-2 mx-1 bg-gray-600 rounded hover:bg-gray-400 text-xl"
-                onClick={() => handleClick(currentPage - 1)} 
+                onClick={() => handleClick(currentPage - 1)}
                 disabled={currentPage === 1}
             >
                 &lt;
@@ -45,12 +45,13 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => 
 
 
             <span className="mx-3">
-                หน้า {currentPage} จาก {totalPages}
+                หน้า {currentPage} จาก {totalPages === 0 ? 1 : totalPages}
             </span>
+
 
             <button
                 className="px-3 py-2 mx-1 bg-gray-600 rounded hover:bg-gray-400 text-xl"
-                onClick={() => handleClick(currentPage + 1)} 
+                onClick={() => handleClick(currentPage + 1)}
                 disabled={currentPage === totalPages}
             >
                 &gt;
