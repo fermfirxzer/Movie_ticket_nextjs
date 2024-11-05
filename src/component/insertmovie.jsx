@@ -222,7 +222,7 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
                             </div>
                         </div>
                         <div className=' my-6 text-end  font-bold'>
-                            <button type="submit" className='bg-white hover:scale-90  w-16 p-2 rounded-md mx-2 '>ยืนยัน</button>
+                            <button type="submit" className='bg-white text-black hover:scale-90  w-16 p-2 rounded-md mx-2 '>ยืนยัน</button>
                             <button className='bg-red-900 text-white  hover:scale-90  w-16 p-2 rounded-md'>ยกเลิก</button>
                         </div>
                     </form>
