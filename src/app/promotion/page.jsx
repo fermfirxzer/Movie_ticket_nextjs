@@ -59,7 +59,7 @@ export default function Promotion() {
     }, [session, status]);
     const [selectedSub, setSelectedSub] = useState([]);
     const [selectedRewards, setSelectedRewards] = useState([]);
-
+    
     const [total, setTotal] = useState(0);
     const handleRewardSelect = (rewardId, rewardPoint, rewardName) => {
 
@@ -145,13 +145,12 @@ export default function Promotion() {
             });
             return;
         }
-
         if (!selectedSub) {
             return;
         }
-
+        
         // Check if userTier is not null and prompt for confirmation
-        if (userTier !== null) {
+        if (userTier) {
             const result = await Swal.fire({
                 title: 'คุณมีสมาชิกอยู่แล้ว',
                 text: 'ต้องการซื้อใหม่ใช่หรือไม่',
