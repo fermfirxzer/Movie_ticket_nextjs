@@ -1,21 +1,13 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
 import Insertmovie from '@/component/insertmovie'
 import Swal from 'sweetalert2';
 import Loading from '@/component/Loading';
-import { useSession } from 'next-auth/react';
 import useCheckAdmin from '@/app/utils/checkadmin';
 export default function Edit({ params }) {
     const [errfetchshowtime, setErrfetchshowtime] = useState("");
-    const { data: session, status } = useSession(); // Access session and loading status
     useCheckAdmin();
-    // const router = useRouter();
-    // useEffect(() => {
-    //     if (session.user.isAdmin==false||status === 'unauthenticated') {
-    //         router.push('/');
-    //     }
-    // }, [status, router]); //
     const { name } = params;
     const [Moviename, setMoviename] = useState(name || null);
     const [Showtime, setShowtime] = useState(null);
@@ -57,16 +49,19 @@ export default function Edit({ params }) {
         }));
 
     }
+    console.log(Showtime)
     const [movieStart, setMovieStart] = useState('');
     const [movieEnd, setMovieEnd] = useState('');
+    const [AvalibleSub, setAvalibleSub] = useState('');
     const [availableTheater, setavailableTheater] = useState(null);
+    const [selectedSub, setSelectedSub] = useState('');
     useEffect(() => {
         const fetchTheater = async () => {
             try {
                 const response = await fetch(`/api/showtime?startDate=${showDate.startDate}&endDate=${showDate.endDate}`, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json', // Set the content type to JSON
+                        'Content-Type': 'application/json',
                     },
                 });
                 if (!response.ok) {
@@ -129,14 +124,21 @@ export default function Edit({ params }) {
         setSelectedTheaters((prev) => {
             const currentTime = prev.time || []; // Ensure prev.time is an array (fallback to empty array if undefined)
             const isTimeSelected = currentTime.includes(time); // Check if the time is already selected
+            const updatedTime = isTimeSelected
+                ? currentTime.filter(t => t !== time) // Remove the time if it's already selected
+                : [...currentTime, time]; // Add the time if it's not selected
+    
+            // Sort the updatedTime array
+            const sortedTime = updatedTime.sort();
+    
             return {
                 ...prev,
-                time: isTimeSelected
-                    ? currentTime.filter(t => t !== time) // Remove the time if it's already selected
-                    : [...currentTime, time], // Add the time if it's not selected
+                time: sortedTime,
             };
         });
+        console.log(selectedTheaters)
     };
+    
     const handleAddshowtime = async (e) => {
         e.preventDefault();
         setErrshowtime(null);
@@ -146,10 +148,9 @@ export default function Edit({ params }) {
                 headers: {
                     'Content-Type': 'application/json', // Set the content type to JSON
                 },
-                body: JSON.stringify({ showDate, selectedTheaters, Moviename }), // Send the date in the body
+                body: JSON.stringify({ showDate, selectedTheaters, Moviename, selectedSub }), // Send the date in the body
             });
             if (!response.ok) {
-
                 const errorData = await response.json();
                 setErrshowtime(errorData.Message);
                 return;
@@ -173,7 +174,6 @@ export default function Edit({ params }) {
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!',
         });
-
         if (result.isConfirmed) {
             // Perform the delete operation
             try {
@@ -205,8 +205,12 @@ export default function Edit({ params }) {
     return (
         <main className='min-h-screen font-Kanit bg-black'>
 
-            <Insertmovie moviename={Moviename} setMovieStart={setMovieStart} setMovieEnd={setMovieEnd} />
+            <Insertmovie setAvalibleSub={setAvalibleSub} moviename={Moviename} setMovieStart={setMovieStart} setMovieEnd={setMovieEnd} />
+
             <div className='container mx-auto text-white'>
+                <div className='my-12'>
+
+                </div>
                 <h4 className='text-2xl font-bold'>รอบการฉายของหนัง : {decodeURIComponent(Moviename)}</h4>
                 <h3>{errfetchshowtime && (errfetchshowtime)}</h3>
                 <div className='w-[100%] flex flex-col gap-12 mx-auto font-bold text-lg mt-4'>
@@ -219,7 +223,10 @@ export default function Edit({ params }) {
 
                             {showtimeGroup.showtimes.map((showtime, index) => (
                                 <div key={showtime._id}>
-                                    <h4>{showtime.theater_name}</h4>
+                                    <div className='flex gap-4 mt-2'>
+                                    <h4>{showtime.theater_name} </h4>
+                                    {showtime.Sub && <h4>Sub :  {showtime.Sub}</h4>}
+                                    </div>
                                     <div className='flex gap-8 p-3 '>
                                         {showtime.show_time.map((time, timeIndex) => (
                                             <button key={timeIndex} className="text-white my-2 mx-1 border-2 border-gray-600 duration-200 p-2 w-14 md:w-24 rounded font-bold text-sm md:text-lg cursor-pointer">
@@ -252,9 +259,17 @@ export default function Edit({ params }) {
 
                         {Errdate && <p className="text-red-500">*{Errdate}</p>}
                         {Errdate == "date ถูกต้อง" && <div>
-                            <h3>โรงหนัง :</h3>
+                            <select className='text-black text-md' onChange={(e) => setSelectedSub(e.target.value)}>
+                                <option value="">กรุณาเลือก Sub สำหรับหนัง</option>
+                                {AvalibleSub && AvalibleSub.map((item, index) => (
+                                    <option key={index} value={item}>
+                                        {item}
+                                    </option>
+                                ))}
+                            </select>
+                            <h3 className='mt-8'>โรงหนัง :</h3>
 
-                            <div className="flex flex-col mb-4 text-black">
+                            <div className="flex flex-col mb-4 text-black mt-4">
                                 <select onChange={handleTheaterChange}>
                                     <option value="">Select a theater</option>
                                     {availableTheater && availableTheater.map((theater) => (
@@ -304,6 +319,7 @@ export default function Edit({ params }) {
                         <div className='text-white'>{!showForm ? "เพิ่มรอบฉาย" : "ยกเลิก"}</div>
                     </div>
                 </div>
+
             </div>
         </main>
 

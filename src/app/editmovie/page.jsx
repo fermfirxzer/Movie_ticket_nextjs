@@ -1,20 +1,15 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import useCheckAdmin from '@/app/utils/checkadmin';
+import Image from 'next/image';
+import Tag from '@/component/Movie_Tag';
+import Sub from '@/component/Movie_Sub';
 export default function Edit() {
-    const { data: session, status } = useSession(); 
     useCheckAdmin();
     const router = useRouter();
-//   useEffect(() => {
-//     if (status === 'unauthenticated') {
-//       // Redirect to the main page if not authenticated
-//       router.push('/');
-//     }
-//   }, [status, router]); // 
     const [errmovie, setErrmovie] = useState("");
-    
+
     const insertMovie = async (e) => {
         e.preventDefault();
         setErrmovie(null);
@@ -22,11 +17,12 @@ export default function Edit() {
             setErrmovie("Image required");
             return;
         }
-        if(currentMovieInfo.startDate>currentMovieInfo.endDate){
+        if (currentMovieInfo.startDate > currentMovieInfo.endDate) {
             setErrmovie("startDate ของหนังต้องมากกว่า endDate");
         }
         const formData = new FormData();
         formData.append('image', currentMovieInfo.imageFile);
+        console.log(currentMovieInfo)
         try {
             const imageResponse = await fetch('/api/upload', {
                 method: 'POST',
@@ -37,8 +33,7 @@ export default function Edit() {
                 ...currentMovieInfo,
                 imageUrl: imageData.imageUrl,
             };
-
-            const movieResponse = await fetch('/api/movie', {
+            const movieResponse = await fetch('/api/movie/insertmovie', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -69,8 +64,11 @@ export default function Edit() {
         desc: '',
         price: '',
         imageFile: null,
+        Sub: [],
+        Age: '',
+        Tags: [],
     });
-
+    console.log(currentMovieInfo)
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCurrentMovieInfo({
@@ -97,30 +95,24 @@ export default function Edit() {
         }
 
     };
-
-
+    
     return (
         <main className='min-h-screen font-Kanit bg-black'>
 
-            <div className="xl:flex xl:flex-wrap   bg-bggray py-12 justify-center md:justify-start p-2 md:mx-40 ">
+            <div className="xl:flex xl:flex-wrap bg-bggray py-12 justify-center lg:justify-start p-2 mx-12 md:mx-20 ">
                 <div className='flex w-full p-10'>
                     <p className='text-white mt-5 w-80 md:w-full mx-10 text-3xl font-bold'>ข้อมูลหนัง</p>
                     {currentMovieInfo._id && (<button type="submit" className='bg-white hover:scale-90 w-16 p-2 rounded-md mx-2' onClick={deleteMovie}>ลบ</button>)}
                 </div>
-                <div className='flex flex-wrap  xl:w-full justify-center lg:justify-start'>
-
-                    <div className=" mx-6 mt-6 mb-2 w-80 h-80 ">
+                <div className='flex flex-wrap  w-full justify-center lg:justify-start'>
+                    <div className=" mx-6 mt-6 mb-2 w-80 h-80">
                         <div onClick={handleClick} className="cursor-pointer w-full  h-full bg-black p-1 rounded-xl ">
+                            <div className='relative w-full h-full object-contain rounded-lg'>
+                                <Image src={currentMovieInfo.imagePath
+                                    ? currentMovieInfo.imagePath
+                                    : "https://1146890965.rsc.cdn77.org/web/newux/assets/images/default-newArticle@3x.png"} fill={true} alt="movieImage" />
+                            </div>
 
-                            <img
-                                src={
-                                    currentMovieInfo.imagePath
-                                        ? currentMovieInfo.imagePath
-                                        : "https://1146890965.rsc.cdn77.org/web/newux/assets/images/default-newArticle@3x.png"
-                                }
-                                alt="Movie Image"
-                                className="w-full h-full object-contain rounded-lg"
-                            />
                         </div>
                         <input id="fileInput" type="file" accept="image/*" className='hidden' name="imagePath" onChange={handleImageChange} />
                     </div>
@@ -153,18 +145,26 @@ export default function Edit() {
                                 <input type="date" name="endDate" value={currentMovieInfo.endDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
                         </div>
+                        <Sub selectedSub={currentMovieInfo.Sub} setSelectedSub={(newSub) => setCurrentMovieInfo({ ...currentMovieInfo, Sub: newSub })}
+                            selectedAge={currentMovieInfo.Age} setselectedAge={(newAge) => setCurrentMovieInfo({ ...currentMovieInfo, Age: newAge })} />
                         <div className=' my-6 text-end  font-bold'>
                             <button type="submit" className='bg-white text-black hover:scale-90  w-16 p-2 rounded-md mx-2'>ยืนยัน</button>
                             <button className='bg-red-900 text-white  hover:scale-90  w-16 p-2 rounded-md'>ยกเลิก</button>
                         </div>
+                        {errmovie &&
+                            <div className='text-red-600 text-xl text-center'>
+                                {errmovie}
+                            </div>
+                        }
                     </form>
+                    
 
                 </div>
-                {errmovie &&
-                    <div className='text-red-600 text-center'>
-                        {errmovie}
-                    </div>
-                }
+
+
+
+
+
             </div>
 
         </main>

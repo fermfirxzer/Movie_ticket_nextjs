@@ -3,7 +3,6 @@ import { History } from "@/../lib/model/history";
 import { User } from "@/../lib/model/user";
 import mongoose from 'mongoose';
 import { NextResponse } from "next/server";
-import QRCode from 'qrcode';
 //get HIstory from User
 export async function POST(req) {
     try {
@@ -14,7 +13,6 @@ export async function POST(req) {
         const body = await req.json();
         const { username } = body;
         const user = await User.findOne({ username: username }).select('_id');
-        // Fetch the history for the given userId and join with Seat, Movie, and Theater
 
         const historyData = await History.aggregate([
             {
@@ -54,6 +52,17 @@ export async function POST(req) {
                 $unwind: "$movie" // Unwind the movie data
             },
             {
+                $lookup:{
+                    from:"showtimes",
+                    localField:"showtime_id",
+                    foreignField:"_id",
+                    as:"showtime",
+                }
+            },
+            {
+                $unwind:"$showtime"
+            },
+            {
                 $group: {
                     _id: "$_id", // Group by history_id
                     theater_name: { $first: "$theater.theater_name" }, // Get theater name
@@ -68,6 +77,7 @@ export async function POST(req) {
                     duration: { $first: "$movie.duration" },
                     qrcode:{$first:"$qrcode"},
                     qrcode_isscan:{$first:"$qrcode_isscan"},
+                    sub:{$first:"$showtime.Sub"},   
                 }
             },
             {
@@ -86,6 +96,7 @@ export async function POST(req) {
                     duration: 1,
                     qrcode:1,
                     qrcode_isscan:1,
+                    sub:1,
                 }
             },
             {

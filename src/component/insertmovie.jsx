@@ -3,14 +3,16 @@ import React, { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
+import Sub from './Movie_Sub';
 import Loading from '@/component/Loading';
-const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
+import Tag from './Movie_Tag';
+const Insertmovie = ({ moviename,setAvalibleSub, setMovieStart, setMovieEnd }) => {
     const [errmovie, setErrmovie] = useState("");
-    
+
     const router = useRouter();
     const [loading, setLoading] = useState(true);
-    const [Moviename, setMoviename] = useState(moviename  || null);
-    
+    const [Moviename, setMoviename] = useState(moviename || null);
+
     useEffect(() => {
         if (Moviename) {
             const fetchMovie = async () => {
@@ -21,7 +23,8 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
                     }
                     const data = await response.json();
                     setCurrentMovieInfo(data);
-                    setMovieStart(data.startDate);  
+                    setAvalibleSub(data.Sub);
+                    setMovieStart(data.startDate);
                     setMovieEnd(data.endDate);
                     setLoading(false);
 
@@ -33,7 +36,7 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
             };
             fetchMovie();
         }
-    }, [Moviename, setMovieStart, setMovieEnd]);
+    }, [Moviename, setAvalibleSub,setMovieStart, setMovieEnd]);
 
     const [currentMovieInfo, setCurrentMovieInfo] = useState({
         movie_id: '',
@@ -46,6 +49,9 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
         price: '',
         imageFile: null,
         imagePath: '',
+        Tag: [],
+        Sub: [],
+        Age: '',
     });
 
     const handleInputChange = (e) => {
@@ -77,13 +83,12 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
     console.log(currentMovieInfo)
     const updateMovie = async (event) => {
         event.preventDefault();
-        if(currentMovieInfo.startDate>currentMovieInfo.endDate){
+        if (currentMovieInfo.startDate > currentMovieInfo.endDate) {
             setErrmovie("startDate ของหนังต้องมากกว่า endDate");
             return;
         }
         try {
             let updatedMovieInfo = { ...currentMovieInfo };
-            
             // If there's an image file to upload, upload it first
             if (currentMovieInfo.imagePath && currentMovieInfo.imageFile) {
                 const formData = new FormData();
@@ -105,28 +110,27 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
                     imageUrl: imageData.imageUrl,
                 };
             }
-
-            // Now proceed with updating the movie information
-            const response = await fetch(`/api/movie`, {
+            const response = await fetch(`/api/movie/insertmovie`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(updatedMovieInfo), // Use the updated movie info with the image URL
+                body: JSON.stringify(updatedMovieInfo), 
             });
-
+            const data = await response.json();
             if (response.ok) {
-                const data = await response.json();
+                
                 console.log(data);
                 setErrmovie('Movie updated successfully');
                 setTimeout(() => {
+                    setErrmovie("");
                     router.push(`/editmovie/${data.movie_name}`);
                 }, 3000);
             } else {
-                setErrmovie('Failed to update movie');
+                setErrmovie(data.Message);
             }
         } catch (error) {
-            setErrmovie(error.Message);
+            setErrmovie(error.Message||"An occur Error!");
         }
     };
     const deleteMovie = async (e) => {
@@ -170,12 +174,12 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
 
     }
     if (loading) {
-        return <Loading/>
+        return <Loading />
     }
     return (
         <div>
 
-            <div className="xl:flex xl:flex-wrap   bg-bggray  justify-center md:justify-start  md:mx-40 ">
+            <div className="xl:flex xl:flex-wrap   bg-bggray  justify-center md:justify-center  md:mx-40 ">
                 <div className='flex w-full p-10'>
                     <p className='text-white mt-5 w-80 md:w-full mx-10 text-3xl font-bold'>ข้อมูลหนัง</p>
                     {currentMovieInfo._id && (<button type="submit" className='delete-btn hover:scale-90 w-16 p-2 rounded-md mr-0 2xl:mr-36' onClick={deleteMovie}>ลบ</button>)}
@@ -220,22 +224,26 @@ const Insertmovie = ({ moviename, setMovieStart, setMovieEnd }) => {
                                 <label className="block ">End Date</label>
                                 <input type="date" name="endDate" value={currentMovieInfo.endDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
+
                         </div>
+                        <Sub selectedSub={currentMovieInfo.Sub} setSelectedSub={(newSub) => setCurrentMovieInfo({ ...currentMovieInfo, Sub: newSub })}
+                            selectedAge={currentMovieInfo.Age} setselectedAge={(newAge) => setCurrentMovieInfo({ ...currentMovieInfo, Age: newAge })} />
+                        {errmovie &&
+                            <div className='error text-center mt-4 mx-auto'>
+                                {errmovie}
+                            </div>
+                        }
                         <div className=' my-6 text-end  font-bold'>
-                            <button type="submit" className='bg-white text-black hover:scale-90  w-16 p-2 rounded-md mx-2 '>ยืนยัน</button>
+                            <button type="submit" className='bg-white text-black hover:scale-90  w-16 p-2 rounded-md mx-2'>ยืนยัน</button>
                             <button className='bg-red-900 text-white  hover:scale-90  w-16 p-2 rounded-md'>ยกเลิก</button>
                         </div>
                     </form>
-                    
+                    <Tag selectedTags={currentMovieInfo.Tag} setSelectedTags={(newTags) => setCurrentMovieInfo({ ...currentMovieInfo, Tag: newTags })} moviename={Moviename} />
 
                 </div>
-                
-                {errmovie &&
-                        <div className='error text-center mx-auto'>
-                            {errmovie}
-                        </div>
-                    }
-                
+
+
+
             </div>
         </div>
 

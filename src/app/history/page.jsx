@@ -79,14 +79,15 @@ const HistoryPage = () => {
               <div className="bg-gray-800 text-white p-6 rounded-xl shadow-lg w-full mb-5">
                 <div className='w-full border text-white p-2 text-sm md:text-lg md:flex-nowrap'>
                   <h1 className='font-bold mx-2'>{purchase.title}</h1>
-                  <div className='flex flex-wrap'>
-                    <div className='w-1/2 md:w-1/3'>
+                  <div className='flex flex-wrap justify-between'>
+
+                    <div className='w-1/2 flex gap-8'>
 
                       <img src={`/uploads/${purchase.imageUrl}`} className='m-2 w-40' alt={purchase.movie} />
-                    </div>
+                    
                     <div className='flex flex-col items-end text-end w-1/2 md:w-1/3 md:items-start md:text-start'>
                       <p className='font-bold text-lg'>{purchase.movie}</p>
-                      <div className='flex items-center'>
+                      <div className='flex'>
                         <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 flex items-center" height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF">
                           <path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" />
                         </svg>
@@ -97,8 +98,9 @@ const HistoryPage = () => {
                         <div className="flex justify-center items-center bg-white  w-24 h-10 rounded font-bold md:text-lg text-black">
                           {purchase.theater_name || 'N/A'}
                         </div>
+                        {purchase.sub&&<p className='mt-2'>Sub : {purchase.sub}</p>}
                       </div>
-
+                      </div>
                     </div>
                     <div className='w-full ml-2 mt-4 md:mx-0 md:mt-0 md:w-1/3 md:justify-start md:items-end flex flex-col'>
                     <div>

@@ -16,7 +16,6 @@ export async function GET(request, { params }) {
                     foreignField: '_id',
                     as: 'movie'
                 },
-                
             },{ 
                 $lookup:{
                     from:'theaters',
@@ -44,7 +43,8 @@ export async function GET(request, { params }) {
                         show_id: "$show_id",
                         theater_id: "$theater_id",
                         theater_name:"$theaters.theater_name",
-                        show_time: "$show_time"
+                        show_time: "$show_time",
+                        Sub:"$Sub",
                     }},
                 }
             },{
