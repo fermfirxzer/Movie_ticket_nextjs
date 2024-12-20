@@ -53,8 +53,7 @@
             const selectedDate = new Date(date).toISOString().split('T')[0];
             setDate(selectedDate);
             setSelectedSeats([]);
-            setSelectedIndex('');
-
+            setTotalprice(0);
         };
 
         useEffect(() => {
@@ -123,7 +122,6 @@
 
 
 
-        const [selectedIndex, setSelectedIndex] = useState(null);
         
         
         const handleShowtimeClick = (theater_name, time, index,Sub,show_id) => {
@@ -134,7 +132,6 @@
                 Sub:Sub,
                 Showid:show_id,
             })
-            setSelectedIndex(index)
         };
         
         useEffect(() => {
