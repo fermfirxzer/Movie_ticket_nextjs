@@ -22,9 +22,11 @@ export async function GET(req ) {
             matchquery["movies.movie_name"] = { $regex: moviename ,$options : "i" };
             Object.assign(projectquery, {
                 theater_name: "$theater.theater_name",
-                show_time: "$show_time"
+                show_time: "$show_time",
+                Sub:"$Sub"
             });
-        }else{
+        }
+        else{
             Object.assign(projectquery, {
                 theater_name: "$theater.theater_name",
                 show_time: "$show_time",
@@ -70,7 +72,7 @@ export async function GET(req ) {
                 $unwind: "$movies"    
             },
             {
-                $sort: { "theater.theater_name": 1 } // Sort by theater name in ascending order
+                $sort: { "theater.theater_name": 1,"showtime.availble_times":1 } // Sort by theater name in ascending order
             },
             {
                 

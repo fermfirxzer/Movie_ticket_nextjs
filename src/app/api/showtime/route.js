@@ -38,8 +38,9 @@ export async function GET(request) {
 }
 export async function POST(request) {
     try {
-        const body = await request.json(); // Get the JSON body
-        const { showDate, selectedTheaters, Moviename } = body;
+        const body = await request.json(); 
+        const { showDate, selectedTheaters, Moviename,selectedSub } = body;
+        if(!selectedSub)return NextResponse.json({ Message: 'Missing Filed Required' }, { status: 400 });;
         const decodeMoviename=decodeURIComponent(Moviename);
         const movie = await Movie.findOne({ movie_name: decodeMoviename });
         if (!movie) {
@@ -51,8 +52,7 @@ export async function POST(request) {
             return NextResponse.json({ Message: 'Theater not found' }, { status: 404 });
         }
         const theaterId=theater._id;
-        
-       
+
         const showtimes = await Showtime.aggregate([
             {
                 $match: {
@@ -73,6 +73,7 @@ export async function POST(request) {
             show_time: selectedTheaters.time,
             startDate: showDate.startDate,
             endDate: showDate.endDate,
+            Sub:selectedSub,
         };
 
         // Use insertOne instead of insertMany since you are inserting a single document

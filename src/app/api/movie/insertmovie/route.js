@@ -5,13 +5,16 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
     try {
         const movieData = await request.json();
-        console.log(movieData)
-
-        if (!movieData.movie_name || !movieData.startDate || !movieData.endDate || !movieData.price || !movieData.duration || !movieData.desc || !movieData.imageUrl) {
+        
+        if (!movieData.movie_name || !movieData.startDate || !movieData.endDate || !movieData.price || !movieData.duration || !movieData.desc || !movieData.imageUrl||!movieData.Age||!movieData.Sub) {
             return NextResponse.json({ Message: 'Missing required fields' }, { status: 400 });
         }
-        if (movieData.startDate > movieData.endDate) {
-
+        movieData.price = Number(movieData.price);
+        movieData.duration = Number(movieData.duration);
+        if (isNaN(movieData.price) || isNaN(movieData.duration)) {
+            return NextResponse.json({ Message: 'Price and Duration must be valid numbers' }, { status: 400 });
+        }
+        if (new Date(movieData.startDate) > new Date(movieData.endDate)) {
             return NextResponse.json({ Message: 'EndDate must be greater than startDate' }, { status: 400 });
         }
         await connectMongoDB();
@@ -21,7 +24,13 @@ export async function POST(request) {
         if (checkname) {
             return NextResponse.json({ Message: "Movie name already exists!" }, { status: 400 }); // Change status to 400
         }
-        const newMovie = new Movie(movieData);
+        
+        const newMovie = new Movie({
+            ...movieData,
+            Tag: movieData.Tags,
+            Age:movieData.Age,
+            Sub:movieData.Sub,
+        });
         try {
             await newMovie.save();
             return NextResponse.json({ Message: "Insert Movie success" }, { status: 201 });
@@ -38,7 +47,7 @@ export async function PUT(request) {
     try {
         const movieData = await request.json();
         console.log(movieData)
-        if (!movieData._id || !movieData.movie_name || !movieData.startDate || !movieData.endDate || !movieData.price || !movieData.duration || !movieData.desc) {
+        if (!movieData._id || !movieData.movie_name || !movieData.startDate || !movieData.endDate || !movieData.price || !movieData.duration || !movieData.desc||!movieData.Age||!movieData.Sub) {
             return NextResponse.json({ Message: 'Missing required fields' }, { status: 400 });
         }
         await connectMongoDB();
@@ -57,6 +66,8 @@ export async function PUT(request) {
                     duration: movieData.duration,
                     desc: movieData.desc,
                     imageUrl: movieData.imageUrl,
+                    Age:movieData.Age,
+                    Sub:movieData.Sub,
                 },
             });
         if (result.modifiedCount === 0) {

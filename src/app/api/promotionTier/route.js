@@ -13,7 +13,6 @@ export async function POST(request) {
         if (!user) {
             return NextResponse.json({ Message: 'User not found' }, { status: 404 });
         }
-        
         const promotionTier = [];
         promotionTier.push({
             item_id: Tierid,

@@ -7,8 +7,8 @@ export async function POST(req) {
   try {
 
     const body = await req.json();
-    const { selectedSeats, moviename, date, selectedTheater, selectedShowtime, username,total_amount } = body;
-    console.log(selectedSeats)
+    const { selectedSeats, moviename, date,showid, theater, time, username,total_amount } = body;
+    console.log(body);
     const line_items = Object.entries(selectedSeats).map(([seatId, price]) => ({
       price_data: {
         currency: 'thb', // Define the currency
@@ -23,12 +23,13 @@ export async function POST(req) {
       payment_method_types:['card'],
       line_items: line_items, 
       mode: 'payment',
-      success_url: `${req.headers.get('origin')}/history?success=true`, // Dynamically set success URL based on origin
+      success_url: `${req.headers.get('origin')}/history?success=true`, 
       cancel_url: `${req.headers.get('origin')}/history?canceled=true`, 
       metadata: {
         date: date,
-        selectedTheater: selectedTheater,
-        selectedShowtime: selectedShowtime,
+        theater: theater,
+        time: time,
+        showid:showid,
         moviename: decodeURI(moviename),
         username: username,
         selectedSeats: JSON.stringify(selectedSeats),

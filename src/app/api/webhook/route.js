@@ -69,8 +69,6 @@ export async function POST(req) {
         return NextResponse.json({ error: "Failed to call external API" }, { status: 500 });
       }
     }
-    default:
-      // console.log(`Unhandled event type: ${event.type}`);
   }
 
   // Acknowledge receipt of the event

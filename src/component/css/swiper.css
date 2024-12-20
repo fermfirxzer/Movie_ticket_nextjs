@@ -1,0 +1,12 @@
+
+/* Custom styles for Swiper dots */
+.swiper-pagination-bullet{
+    background-color: #fff !important; /* Dot color */
+    transition: opacity 0.3s ;
+  }
+  
+  /* Style for the active dot */
+  .swiper-pagination-bullet-active {
+    opacity: 1;            /* Full opacity for active dot */
+    background-color: #FFD700; /* Custom color for active dot */
+  }

@@ -1,10 +1,8 @@
 import { connectMongoDB } from "@/../lib/mongodb.js"; // Adjust the import path based on your MongoDB connection file
 import { Movie } from "@/../lib/model/movie.js";// Adjust the import path based on your Mongoose model
 import { NextResponse } from "next/server";
-import { ObjectId } from 'mongodb';
 export async function GET(request, { params }) {
     const { moviename } = params; // Get the movie ID from the request parameters
-
     try {
         await connectMongoDB();// Connect to your MongoDB database
 

@@ -18,10 +18,8 @@ export default function Login() {
     });
 
     const [usernamelogin, setUsernamelogin] = useState("");
-    const [emaillogin, setEmail] = useState("");
     const [passwordlogin, setPasswordlogin] = useState("");
 
-    const router = useRouter();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -61,7 +59,7 @@ export default function Login() {
                     confirmPassword: "",
                 });
             } else {
-                setError(data.Message || "Registration failed");
+                setError(data.Message);
             }
         } catch (error) {
             setError(error.Message)
@@ -82,6 +80,7 @@ export default function Login() {
                 setError("User or Password incorrect!");
                 return;
             }
+            setError("Login Complete");
             window.location.href = "/";
         } catch (error) {
             console.log(error)
@@ -90,7 +89,7 @@ export default function Login() {
 
     return (
         <main className="bg-black h-screen flex justify-center font-Kanit">
-            <div className="bg-black h-[54rem] w-full md:w-3/4 lg:w-[40%] flex flex-col items-center justify-center p-6 md:p-12 lg:p-16">
+            <div className="bg-black h-[56rem] w-full md:w-3/4 lg:w-[40%] flex flex-col items-center justify-center p-6 md:p-12 lg:p-16">
                 <div className="text-center mb-9">
                     <h1 className="text-red-600 text-9xl">M</h1>
                     <h1 className="text-red-600 text-2xl">Movie Ticket</h1>
@@ -110,9 +109,9 @@ export default function Login() {
                         </span>
                     </div>
                     <div className="">
-                    {/*login form*/}
+                    
                     {login && (
-                        <form onSubmit={handleLoginSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-start h-[24rem]">
+                        <form onSubmit={handleLoginSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-start h-[24rem] pb-6">
                             <label className="mx-6 mt-6 mb-2">Username</label>
                             <input
 
@@ -139,13 +138,13 @@ export default function Login() {
                             <button type="submit" className="login-btn">
                                 เข้าสู่ระบบ
                             </button>
-                            {error && <p className="text-red-600 text-center">{error}</p>}
+                            {error && <p className={`text-center ${error=="Login Complete"?"text-green-600":"text-red-600"}`}>{error}</p>}
                         </form>
                     )}
 
                     {/* Registration Form */}
                     {!login && (
-                        <form onSubmit={handleRegisterSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-center">
+                        <form onSubmit={handleRegisterSubmit} className="text-white bg-[#1b181a] w-full flex flex-col justify-center pb-6">
                             <label className="mx-6 mt-6 mb-2">Username</label>
                             <input
                                 type="text"
@@ -198,7 +197,7 @@ export default function Login() {
                             <button type="submit" className="login-btn mt-12">
                                 สมัครสมาชิก
                             </button>
-                            {error && <p className="text-red-600 text-center">{error}</p>}
+                            {error && <p className={`text-center ${error=="Register Complete"?"text-green-600":"text-red-600"}`}>{error}</p>}
                         </form>
                     )}
                     </div>
