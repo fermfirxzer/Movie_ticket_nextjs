@@ -1,7 +1,6 @@
 import { connectMongoDB } from "@/../lib/mongodb.js";
 import { History } from "@/../lib/model/history";
 import { User } from "@/../lib/model/user";
-import mongoose from 'mongoose';
 import { NextResponse } from "next/server";
 //get HIstory from User
 export async function POST(req) {
@@ -13,7 +12,6 @@ export async function POST(req) {
         const body = await req.json();
         const { username } = body;
         const user = await User.findOne({ username: username }).select('_id');
-
         const historyData = await History.aggregate([
             {
                 $match: { user_id: user._id }
@@ -83,7 +81,6 @@ export async function POST(req) {
             {
                 $project: {
                     _id: 0,
-                    
                     theater_name: 1,
                     show_date: 1,
                     show_time: 1,
