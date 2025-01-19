@@ -27,10 +27,10 @@ export default function Showtime({ params }) {
         Showid: '',
     });
     useEffect(() => {
-       
+
         const time = searchParams.get('time');
         const urlDate = searchParams.get('date');
-        
+
         if (time) {
             setSelectedShowtime((prev) => ({
                 ...prev, Time: time,
@@ -40,7 +40,7 @@ export default function Showtime({ params }) {
             setDate(urlDate);
         }
     }, [searchParams]);
-    useEffect(()=>{
+    useEffect(() => {
         const theater_name = searchParams.get('theater_name');
         const selectedTheater = showtimes.find(theater => theater.theater_name === theater_name);
 
@@ -52,7 +52,7 @@ export default function Showtime({ params }) {
                 Theater: selectedTheater.theater_name,
             });
         }
-    },[searchParams,showtimes])
+    }, [searchParams, showtimes])
     const handleDateSelect = (date) => {
         const selectedDate = new Date(date).toISOString().split('T')[0];
         setDate(selectedDate);
@@ -124,7 +124,7 @@ export default function Showtime({ params }) {
 
 
     const handleShowtimeClick = (theater_name, time, Sub, show_id) => {
-        
+
         setSelectedSeats('');
         setSelectedShowtime({
             Theater: theater_name,
@@ -216,7 +216,6 @@ export default function Showtime({ params }) {
             (bookedSeat) => bookedSeat.seat_id === seat
         );
     };
-    console.log(selectedShowtime)
     const [totalprice, setTotalprice] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleConfirmPurchase = async (e) => {
@@ -254,10 +253,10 @@ export default function Showtime({ params }) {
     }
     return (
         <main className="mt-16 min-h-screen duration-200 ">
-            <div className="flex  my-12 bg-bggray w-full py-6 ">
-                <div className="flex justify-center items-center mx-4  md:mx-12">
+            <div className="flex my-12 bg-bggray w-full py-6">
+                <div className="flex justify-start md:justify-start items-start mx-2  md:mx-12 w-2/5 md:w-auto">
                     <div className="flex flex-col justify-start">
-                        <div className="w-60 rounded-2xl mx-2 my-6">
+                        <div className="w-36 md:w-60 rounded-2xl  my-6">
                             <Image
                                 src={`/uploads/${movies.imageUrl}`}
                                 alt={movies.movie_name}
@@ -278,30 +277,30 @@ export default function Showtime({ params }) {
                         )}
                     </div>
                 </div>
-                <div className="w-3/5 md:w-1/2 lg:w-1/3 text-sm lg:text-[16px] text-white font-Kanit mt-12 mr-2">
-                    <p className="text-[--gold]"> {movies.startDate} - {movies.endDate}</p>
-                    <p className="text-xl lg:text-2xl"> {movies.movie_name} </p>
+                <div className="w-3/5 md:w-1/2 lg:w-1/3 text-sm lg:text-[16px] text-white font-Kanit mt-4 mr-2 ">
+                    <p className="text-[--gold] text-[10px] md:text-[12px]"> {movies.startDate} - {movies.endDate}</p>
+                    <p className="text-[14px] font-blod md:text-2xl"> {movies.movie_name} </p>
                     <div className="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" /></svg>
-                        <p className="mx-1 ">{Math.floor(movies.duration / 60)} ชม. {movies.duration % 60} นาที</p>
-                        <p className="mx-1 ">ราคา : {movies.price} บาท</p>
+                        <p className="mx-1 text-[10px] md:text-[12px]">{Math.floor(movies.duration / 60)} ชม. {movies.duration % 60} นาที</p>
+                        <p className="mx-1 text-[10px] md:text-[12px]">ราคา : {movies.price} บาท</p>
                     </div>
 
-                    <div className="mt-6 line-clamp-4 md:line-clamp-8 font-sans">
-                        <p className="font-Kanit mb-2">เรื่องย่อ</p>
-                        <p>{movies.desc}</p>
+                    <div className="mt-6  line-clamp-8 font-sans">
+                        <p className="font-Kanit mb-2 text-[12px] md:text-[14px]">เรื่องย่อ</p>
+                        <p className='text-left overflow-wrap text-[12px] md:text-[14px] break-words'>{movies.desc}</p>
                     </div>
                     <div className='flex gap-4 mt-4'>
                         {movies.Tag && movies.Tag.map((item, index) => (
-                            <div key={index} className='text-white p-1.5 border-white rounded-2xl border-[2px]'>
+                            <div key={index} className='text-[10px] md:text-[12px] text-white p-1.5 border-white rounded-2xl border-[2px]'>
                                 {item}
                             </div>
                         ))}
 
                     </div>
-                    {movies.Sub && <div className='mt-4'>
+                    {movies.Sub && <div className='mt-2 md:mt-4'>
                         <h3>Avalible Sub:</h3>
-                        <div className='mt-4 flex gap-4 '>
+                        <div className='mt-2 md:mt-4 flex gap-4 '>
                             {movies.Sub.map((item, index) => (
                                 <div key={index}>
                                     {item}
@@ -349,16 +348,15 @@ export default function Showtime({ params }) {
 
 
             {selectedShowtime && showtimes.length !== 0 && (
-                <div className="mx-5 my-20 font-Kanit md:mx-16">
+                <div className=" my-20 font-Kanit md:mx-16">
                     <hr className="border-t-2 border-gray-300 my-4" />
 
                     <div className="flex flex-col xl:flex-row items-center font-Kanit  w-full " id="booking">
 
-                        <div className=' flex flex-col items-center w-5/6 xl:w-2/3 mt-20 text-white'>
-                            <div className='flex w-full p-1 justify-center md:justify-end md:mr-56 mb-5'>
-
-                                <div className='flex items-end'>
-                                    <div className='flex items-center'>
+                        <div className=' flex flex-col items-center w-full xl:w-2/3 mt-20 text-white'>
+                            <div className='flex  w-full p-1 justify-center md:justify-end md:mr-96 mb-5'>
+                                <div className='flex items-end text-[12px] md:text-md'>
+                                    <div className='flex items-center '>
                                         <h3>ราคา : ปกติ</h3>
                                         <div className={`cursor-pointer text-center rounded mr-1 md:m-1 w-8 h-8 md:h-10 md:w-10  text-white rounded-t-2xl bg-red-700`}></div>
                                     </div>

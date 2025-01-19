@@ -71,8 +71,8 @@ const Explore = () => {
 
     return (
         <div>
-            <div className='font-Kanit mx-8 lg:mx-40 xl:mx-56'>
-                <div className="lg:mx-9 mt-6 flex justify-center px-24 md:px-0">
+            <div className='font-Kanit mx-1 lg:mx-40 xl:mx-56'>
+                <div className="lg:mx-9 mt-6 flex justify-center px-0 md:px-24">
                     <div className="relative w-full md:w-1/2 lg:w-1/3">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,10 +96,10 @@ const Explore = () => {
                         <button className='bg-white text-black hover:scale-90 p-2 rounded-md mx-2 ml-auto flex' onClick={handleAddClick}>เพิ่มหนัง</button>
                     }
                     <div className='flex justify-between items-center'>
-                        <h3 className='text-3xl text-white font-bold'>Explore</h3>
+                        <h3 className='text-2xl md:text-3xl  text-white font-bold'>Explore</h3>
 
                         {/* Sorting Dropdown on the Right */}
-                        <div className='flex items-center'>
+                        <div className='flex items-center text-[12px] '>
 
                             <h5 className='mr-2 text-white'>เรียงจาก :</h5>
                             <select className='text-black px-2 py-1 rounded-md' value={orderBy} onChange={handleSortChange}>
@@ -111,7 +111,7 @@ const Explore = () => {
                     </div>
                 </div>
                 {/* Movie list */}
-                <div className='flex flex-wrap gap-4 align-center justify-center'>
+                <div className='flex flex-wrap gap-3 md:gap-4 align-center justify-center'>
                     {movies.length === 0 ? (
                         <div className='h-[50vh]'>
                         <p className='error'>
@@ -119,10 +119,10 @@ const Explore = () => {
                             </p>
                         </div>
                     ) : (movies.map((movie, index) => (
-                        <div key={index} className='flex flex-col w-[40%] md:w-[30%] xl:w-[24%] items-center justify-start '>
-                            <div className=" w-4/5 relative flex flex-col items-center cursor-pointer">
+                        <div key={index} className='flex flex-col w-[45%] md:w-[30%] xl:w-[24%] items-center justify-start '>
+                            <div className="w-100 md:w-4/5 relative flex flex-col items-center cursor-pointer">
                                 <div className=' rounded-xl'>
-                                    <img src={`/uploads/${movie.imageUrl}`} className='w-96 h-96 object-cover' alt={movie.movie_name} />
+                                    <img src={`/uploads/${movie.imageUrl}`} className='w-72 h-48 md:w-96 md:h-96 object-cover' alt={movie.movie_name} />
                                 </div>
 
 

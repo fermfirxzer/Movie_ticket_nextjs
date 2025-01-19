@@ -40,15 +40,15 @@ export default function Mainpage(){
 
 
     return(
-        <main className="bg-black  text-white font-Kanit ml-2">
-            <div className="md:mx-12">
-                <div className="px-12">
+        <main className="bg-black  text-white font-Kanit ml-2 h-[150vh] md:h-[100vh]">
+            <div className="md:mx-12 ">
+                <div className="md:px-12 px-3 text-bold">
                     <h1 className="text-3xl mx-5 my-6 lg:mx-9">กำลังฉาย</h1>
-                    <SwiperComponent movies={ongoingmovies}></SwiperComponent>
+                    {ongoingmovies&&ongoingmovies.length>0&&<SwiperComponent movies={ongoingmovies}></SwiperComponent>}
                 </div>
-                <div className="px-12">
+                <div className="md:px-12 px-4 text-bold mt-8 md:mt-0">
                     <h1 className="text-3xl mx-5 my-6 lg:mx-9">โปรแกรมหน้า</h1>
-                    <SwiperComponent movies={upcomingmovies}></SwiperComponent>
+                    {upcomingmovies&&upcomingmovies.length>0&&<SwiperComponent movies={upcomingmovies}></SwiperComponent>}
                 </div>
             </div>
         </main>

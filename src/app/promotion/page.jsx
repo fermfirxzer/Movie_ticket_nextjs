@@ -203,7 +203,7 @@ export default function Promotion() {
 
     return (
         <main className="min-h-screen text-white">
-            <div className="font-Kanit justify-center flex flex-wrap w-4/5 mx-auto" >
+            <div className="font-Kanit justify-center flex flex-wrap w-4/5 mx-auto text-[14px] md:text-lg" >
 
                 <div className="flex flex-wrap gap-4 text-white">
                     <h1 className="w-full text-3xl  mt-12 ">User : {session?.user?.username}</h1>
@@ -222,7 +222,7 @@ export default function Promotion() {
                         </p>
                     </div>}
 
-                    <h1 className="w-full text-3xl  mt-12 ">ระดับสมัครสมาชิก</h1>
+                    <h1 className="w-full text-xl md:text-3xl mt-12 ">ระดับสมัครสมาชิก</h1>
                     {Tier && Tier.map((tier, index) => (
                         <div key={index} className={`duration-300 w-full md:w-[22%] p-2 shadow-lg ${selectedSub.name === tier.name ? 'shadow-gold' : 'shadow-gray-500/50'} hover:shadow-gold h-64 cursor-pointer`}
                             onClick={() => setSelectedSub({ name: tier.name, price: tier.price, discount: tier.promotion, id: tier.id })}>
@@ -263,10 +263,10 @@ export default function Promotion() {
 
                 <div className="flex flex-wrap gap-8 text-white text-lg justify-center md:justify-start">
                     <div className="w-[85%] mx-auto flex justify-between">
-                        <h1 className="text-3xl mt-12">แลกของรางวัล</h1>
-                        <h1 className="text-3xl mt-12">{point} points</h1>
+                        <h1 className="text-xl md:text-3xl mt-12">แลกของรางวัล</h1>
+                        <h1 className="text-xl md:text-3xl mt-12">{point} points</h1>
                     </div>
-                    <div className='mx-auto flex flex-wrap justify-center md:justify-start'>
+                    <div className='mx-auto flex flex-wrap justify-center md:justify-start text-[14px] md:text-xl'>
                         {Item && Item.map((reward) => (
                             <div key={reward.id} className={`duration-200 w-60 lg:w-1/4 xl:w-1/5 p-2 shadow-lg shadow-gray-500/50 cursor-pointer ${selectedRewards.some(selected => selected.rewardId === reward.id) ? 'opacity-50' : ''}`}>
                                 <div className="p-4">
@@ -300,7 +300,7 @@ export default function Promotion() {
                     </div>
                     <div>
                         {History && History.map((history, index) => (
-                            <div key={index} className='text-xl'>
+                            <div key={index} className='md:text-xl text-[14px]'>
                                 <div>
                                     <h3>Order : {index + 1}</h3>
                                     {history.items && history.items.map((item, itemIndex) => (

@@ -65,10 +65,10 @@ export default function SwiperDate({ onDateSelect, selectedDate }) {
 
         <div className='flex lg:w-4/5 font-Kanit '>
 
-            <div className="flex  mx-6 my-6 md:mx-16 justify-start w-12 md:w-16" onClick={() => handleDateSelect(today, -1)}>
-                <div className={`flex items-center justify-center text-sm w-12 md:w-16 h-12 font-bold border  rounded-lg  cursor-pointer border-gold  ${isToday ? 'bg-gold ' : 'bg-black text-gold'}`}>{formattedToday}</div>
+            <div className="flex  my-6 md:mx-16 justify-start w-16 mx-2 md:w-16" onClick={() => handleDateSelect(today, -1)}>
+                <div className={`flex items-center  text-[14px]  px-1  font-bold border  rounded-lg  cursor-pointer border-gold  ${isToday ? 'bg-gold ' : 'bg-black text-gold'}`}>{formattedToday}</div>
             </div>
-            <div className='mr-12'>
+            <div className='mr-4 md:mr-12'>
 
             
             <div onClick={() => swiperRef.current?.slidePrev()} className="swiper-button-prev !top-[50px] !relative !text-white" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-5f2d314efc736a51" aria-disabled="false">
