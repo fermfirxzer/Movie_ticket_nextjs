@@ -72,7 +72,7 @@ const Explore = () => {
     return (
         <div>
             <div className='font-Kanit mx-1 lg:mx-40 xl:mx-56'>
-                <div className="lg:mx-9 mt-6 flex justify-center px-0 md:px-24">
+                <div className="lg:mx-9 mt-6 flex justify-center px-4 md:px-24">
                     <div className="relative w-full md:w-1/2 lg:w-1/3">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,18 +122,15 @@ const Explore = () => {
                         <div key={index} className='flex flex-col w-[45%] md:w-[30%] xl:w-[24%] items-center justify-start '>
                             <div className="w-100 md:w-4/5 relative flex flex-col items-center cursor-pointer">
                                 <div className=' rounded-xl'>
-                                    <img src={`/uploads/${movie.imageUrl}`} className='w-72 h-48 md:w-96 md:h-96 object-cover' alt={movie.movie_name} />
+                                    <img src={`/uploads/${movie.imageUrl}`} className='w-64 h-64 md:w-96 md:h-96 object-cover' alt={movie.movie_name} />
                                 </div>
-
-
-                            
                                 <div onClick={(e) => handleClick(movie.movie_name)}>
                                     <div className="absolute inset-0 bg-black bg-opacity-70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
                                         <input type="button" value="ดูเพิ่มเติม" className='bg-gray-100 text-black w-4/6 rounded cursor-pointer' />
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex flex-wrap justify-between w-4/5  mt-2 '>
+                            <div className='flex flex-wrap justify-between w-4/5  my-2 '>
                                 <div className='w-full xl:w-1/2 '>
                                     <p className='text-[--gold] text-xs md:text-sm'>{new Date(movie.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                                     <p className='text-white text-sm md:text-lg'>{movie.movie_name}</p>

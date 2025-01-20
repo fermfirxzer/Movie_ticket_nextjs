@@ -277,7 +277,7 @@ export default function Showtime({ params }) {
                         )}
                     </div>
                 </div>
-                <div className="w-3/5 md:w-1/2 lg:w-1/3 text-sm lg:text-[16px] text-white font-Kanit mt-4 mr-2 ">
+                <div className="w-3/5 md:w-1/2 lg:w-1/3 text-sm lg:text-[16px] text-white font-Kanit mt-4 mr-4 ">
                     <p className="text-[--gold] text-[10px] md:text-[12px]"> {movies.startDate} - {movies.endDate}</p>
                     <p className="text-[14px] font-blod md:text-2xl"> {movies.movie_name} </p>
                     <div className="flex items-center">
