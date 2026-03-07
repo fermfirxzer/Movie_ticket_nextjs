@@ -118,30 +118,30 @@ export default function Edit() {
                     </div>
                     <form className="w-4/5 md:w-2/3 lg:w-1/2 mx-6 my-6" onSubmit={insertMovie}>
                         <div className="mb-4">
-                            <label className="block text-gray-700 ">Name</label>
+                            <label className="block ">Name</label>
                             <input type="text" name="movie_name" value={currentMovieInfo.movie_name} onChange={handleInputChange} className="movie-input" required />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 ">Description</label>
+                            <label className="block  ">Description</label>
                             <textarea name="desc" value={currentMovieInfo.desc} onChange={handleInputChange} className="movie-input" rows="4" required />
                         </div>
                         <div className="mb-4 flex">
                             <div className="w-1/2 mr-2">
-                                <label className="block text-gray-700 ">Price</label>
+                                <label className="block ">Price</label>
                                 <input type="number" name="price" value={currentMovieInfo.price} onChange={handleInputChange} className="movie-input" required />
                             </div>
                             <div className="w-1/2">
-                                <label className="block text-gray-700 ">Duration</label>
+                                <label className="block ">Duration</label>
                                 <input type="text" name="duration" value={currentMovieInfo.duration} onChange={handleInputChange} className="movie-input" required />
                             </div>
                         </div>
                         <div className="mb-4 flex">
                             <div className="w-1/2 mr-2">
-                                <label className="block text-gray-700 ">Starting Date</label>
+                                <label className="block">Starting Date</label>
                                 <input type="date" name="startDate" value={currentMovieInfo.startDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
                             <div className="w-1/2 ">
-                                <label className="block text-gray-700">End Date</label>
+                                <label className="block">End Date</label>
                                 <input type="date" name="endDate" value={currentMovieInfo.endDate} onChange={handleInputChange} className="movie-input" required />
                             </div>
                         </div>

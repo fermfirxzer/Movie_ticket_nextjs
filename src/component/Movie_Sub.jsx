@@ -11,6 +11,7 @@ const Sub = ({ selectedSub, setSelectedSub, selectedAge,setselectedAge }) => {
                     throw new Error("failed to fetch Movie Sub and Age")
                 }
                 const data = await response.json();
+                console.log(data);
                 setSub(data.sub);
                 setAge(data.age);
             } catch (err) {
@@ -49,7 +50,7 @@ const Sub = ({ selectedSub, setSelectedSub, selectedAge,setselectedAge }) => {
                         
                         <option value=''>เลือก เรทหนัง ที่ต้องการ</option>
                         {Ages && Ages.map((item, index) => (
-                            <option key={index} selected={item.age==selectedAge?true:false} value={item.age}>{item.age}</option>
+                            <option key={index} selected={item.Age==selectedAge?true:false} value={item.Age}>{item.Age}</option>
                         ))}
                     </select>
                     </div>
@@ -57,7 +58,7 @@ const Sub = ({ selectedSub, setSelectedSub, selectedAge,setselectedAge }) => {
                 <select selected={selectedSub} type="select" className='w-48 h-12 text-black rounded-md' onChange={handleSubChange}>
                     <option value=''>เลือก Sub ที่ต้องการ</option>
                     {Subs && Subs.map((item, index) => (
-                        <option key={index} value={item.sub} onClick={(e) => selectedSub.includes(item.sub)}>{item.sub}</option>
+                        <option key={index} value={item.Sub} onClick={(e) => selectedSub.includes(item.Sub)}>{item.Sub}</option>
                     ))}
                 </select>
 

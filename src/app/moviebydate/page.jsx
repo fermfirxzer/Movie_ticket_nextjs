@@ -97,8 +97,11 @@ export default function MovieBydate(){
                     <div key={movie.movie_name} className="mb-20 md:flex">
                         <div className="md:w-2/5 xl:w-1/5 mr-2 text-xl md:text-2xl">
                             <Link href={`showtime/${movie.movie_name}`}>
-                                <img src={`/uploads/${movie.imageUrl}`} className='w-48 md:w-60 rounded-xl' alt={movie.movie_name} />
-                                
+                                <img
+                                    src={`/uploads/${movie.imageUrl}`}
+                                    className='w-48 h-64 md:w-56 md:h-72 lg:w-64 lg:h-80 rounded-xl object-cover'
+                                    alt={movie.movie_name}
+                                />
                             </Link>
 
                             <div className="flex justify-between md:block my-2 text-white">
@@ -129,9 +132,9 @@ export default function MovieBydate(){
                         </div>
                         <div className="w-full font-bold font-Kanit text-md md:text-lg mb-5 xl:flex xl:flex-wrap h-full">
                             {movie.theaters.map((theater) => (
-                                <div key={theater.theater_name} className="text-white bg-bggray mb-2 p-4 rounded-md md:w-4/5 lg:w-4/5 md:mx-12 xl:w-1/3">
+                                <div key={theater.theater_name} className="text-white mb-2 p-4 rounded-md md:w-4/5 lg:w-4/5 md:mx-12 xl:w-1/3">
                                     <div className="text-md">{theater.theater_name}</div>
-                                    <div className="flex flex-wrap">
+                                    <div className="flex flex-wrap mt-3">
                                         {theater.show_time.map((time, index) => (
                                             <Link key={index} href={`showtime/${movie.movie_name}?theater_name=${theater.theater_name}&date=${date}&time=${time}`}>
                                                 <div key={index} className="m-2 bg-white text-black p-2 w-20 text-center rounded-md hover:bg-gold duration-300 cursor-pointer">

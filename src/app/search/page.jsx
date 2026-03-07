@@ -19,11 +19,6 @@ const Explore = () => {
     const [currentPage, setCurrentPage] = useState(1);
    
 
-    const [sessionData, setSessionData] = useState(null);
-
-
-
-
     useEffect(() => {
         const fetchMovies = async () => {
             try {
@@ -111,9 +106,9 @@ const Explore = () => {
                     </div>
                 </div>
                 {/* Movie list */}
-                <div className='flex flex-wrap gap-3 md:gap-4 align-center justify-center'>
+                <div className='flex flex-wrap gap-3 md:gap-4 align-center'>
                     {movies.length === 0 ? (
-                        <div className='h-[50vh]'>
+                        <div className='h-[50vh] w-full flex justify-center items-center'>
                         <p className='error'>
                             Movie not found
                             </p>

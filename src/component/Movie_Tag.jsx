@@ -17,23 +17,6 @@ const Tag = ({ selectedTags, setSelectedTags, moviename }) => {
         "3D": ["IMAX", "4DX", "Dolby Atmos"],
         "หนังฟอร์มยักษ์": ["IMAX", "3D", "ระบบตัวร้าย"],
     };
-    // useEffect(() => {
-    //     const fetchTag = async () => {
-    //         try {
-    //             const response = await fetch(`/api/movie/fetchAllTagmovie?moviename=${moviename}`);
-    //             const data = await response.json();
-    //             if (!response.ok) {
-    //                 throw new Error(data.Message || "Failed to fetch movie tags");
-    //             }
-    //             setSelectedTags(data);
-    //         } catch (err) {
-    //             console.log(err);
-    //         }
-    //     }
-    //     if (moviename) {
-    //         fetchTag();
-    //     }
-    // }, [setSelectedTags, moviename]);
     const insertTag = async (tag, movieName) => {
         try {
             const payload = { 

@@ -65,8 +65,14 @@ export default function SwiperDate({ onDateSelect, selectedDate }) {
 
         <div className='flex lg:w-4/5 font-Kanit '>
 
-            <div className="flex  my-6 md:mx-16 justify-start w-16 mx-2 md:w-16" onClick={() => handleDateSelect(today, -1)}>
-                <div className={`flex items-center  text-[14px]  px-1  font-bold border  rounded-lg  cursor-pointer border-gold  ${isToday ? 'bg-gold ' : 'bg-black text-gold'}`}>{formattedToday}</div>
+            {/* today box styled like the mapped slides but kept outside swiper */}
+            <div className="flex mx-16" onClick={() => handleDateSelect(today, -1)}>
+                <div
+                    className={`relative flex items-center justify-center border w-12 h-12 my-6 md:w-16 m-0 rounded-lg cursor-pointer duration-300 font-bold border-gold
+                        ${isToday ? 'bg-gold text-black border-black' : 'text-gold'}`}
+                >
+                    {formattedToday}
+                </div>
             </div>
             <div className='mr-4 md:mr-12'>
 

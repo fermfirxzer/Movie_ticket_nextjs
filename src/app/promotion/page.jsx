@@ -266,13 +266,16 @@ export default function Promotion() {
                         <h1 className="text-xl md:text-3xl mt-12">แลกของรางวัล</h1>
                         <h1 className="text-xl md:text-3xl mt-12">{point} points</h1>
                     </div>
-                    <div className='mx-auto flex flex-wrap justify-center md:justify-start text-[14px] md:text-xl'>
+                    <div className='mx-auto flex flex-wrap justify-center items-center gap-12 text-[14px] md:text-xl'>
                         {Item && Item.map((reward) => (
                             <div key={reward.id} className={`duration-200 w-60 lg:w-1/4 xl:w-1/5 p-2 shadow-lg shadow-gray-500/50 cursor-pointer ${selectedRewards.some(selected => selected.rewardId === reward.id) ? 'opacity-50' : ''}`}>
                                 <div className="p-4">
-                                    <img className="" src={reward.imageUrl} alt={reward.name} />
+                                    <div className="w-full h-72 rounded overflow-hidden mb-2">
+                                        <img className="w-full h-full object-cover" src={reward.imageUrl} alt={reward.name} />
+                                    </div>
+                                
                                     <div className="my-4 flex justify-between">
-                                        <h2 className="w-4/5">{reward.name}</h2>
+                                        <h2 className="w-3/5">{reward.name}</h2>
                                         <h2>{reward.points} แต้ม</h2>
                                     </div>
                                     <div
@@ -284,6 +287,9 @@ export default function Promotion() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                    <div className="w-[85%] mx-auto">
+                        <p className="text-sm text-gray-200/80 mt-2">***แลกได้ครั้งละ 1 ชิ้นต่อสินค้า แล้วนำประวัติการซื้อไปให้พนักงานที่เคาน์เตอร์***</p>
                     </div>
                     <div className="w-full flex justify-center mt-12">
                         <div onClick={handleitemPurchase} className="bg-red-900  font-bold w-80 p-4 rounded-lg text-center cursor-pointer ">

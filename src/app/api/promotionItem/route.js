@@ -10,7 +10,7 @@ export async function GET(req) {
     try {
         await connectMongoDB();
 
-        const promotionItems = await PromotionItem.find().sort({ points: -1 });
+        const promotionItems = await PromotionItem.find().sort({ points: 1 });
         const promotionTier = await PromotionTier.find().sort({price:1});
         return NextResponse.json({ Item: promotionItems, Tier: promotionTier }, { status: 200 });
     } catch (error) {

@@ -17,7 +17,7 @@ const SwiperComponent = ({ movies }) => {
   const swiperRef = useRef(null);
 
   return (
-    <div className="relative">
+    <div className="relative transform scale-110 origin-center">
       <div onClick={() => swiperRef.current?.slidePrev()} className="swiper-button-prev !top-[130px] md:!top-[165px] !left-[-13px] !text-[#595959] hover:!text-white" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-5f2d314efc736a51" aria-disabled="false">
 
       </div>
@@ -52,7 +52,10 @@ const SwiperComponent = ({ movies }) => {
                     src={`/uploads/${movie.imageUrl}`}
                     fill={true}
                     alt={movie.movie_name}
-                    className="rounded-xl"
+                    className="rounded-xl object-cover"
+                    onError={(e) => {
+                  
+                    }}
                   />
                 </div>
                 <Link href={`showtime/${movie.movie_name}`} id="hover-container">

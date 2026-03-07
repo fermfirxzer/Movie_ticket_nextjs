@@ -65,6 +65,8 @@ const HistoryPage = () => {
       <div className="font-Kanit p-6 min-h-screen">
         <div className="flex flex-col justify-center font-Kanit">
           <h3 className="text-center text-2xl mb-5">ประวัติการซื้อ</h3>
+          <div className="flex justify-center mb-6">
+          </div>
           {showMessage && (
             <div className={`${success ? 'bg-green-700' : 'bg-red-700'} text-white p-4 w-[45%] flex justify-between rounded-md mx-auto items-center mb-12`}>
               <span>{success ? "You buy ticket success!" : "Please Try again you payment is failed!"}</span>
@@ -74,7 +76,8 @@ const HistoryPage = () => {
             </div>
           )}
 
-          {purchase && purchase.map((purchase, index) => (
+          {purchase && purchase.length > 0 ? (
+            purchase.map((purchase, index) => (
             <div key={index} className='mx-auto'>
               <div className="bg-gray-800 text-white p-6 rounded-xl shadow-lg w-full mb-5">
                 <div className='w-full border text-white p-2 text-sm md:text-lg md:flex-nowrap'>
@@ -145,7 +148,12 @@ const HistoryPage = () => {
 
               <hr className='w-full md:w-[48rem]'></hr>
             </div>
-          ))}
+            ))
+          ) : (
+            <div className='text-center text-red-500 font-Kanit text-lg mt-12'>
+              ** ไม่พบประวัติการซื้อของคุณกรุณาซื้อตั๋วภาพยนตร์ที่ต้องการ **
+            </div>
+          )}
 
         </div>
       </div>

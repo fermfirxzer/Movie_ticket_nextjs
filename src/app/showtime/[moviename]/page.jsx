@@ -12,7 +12,6 @@ export default function Showtime({ params }) {
     const searchParams = useSearchParams();
 
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [selectedTheater, setSelectedTheater] = useState(null);
     const { data: session, status } = useSession();
     const [userTier, setUserTier] = useState('');
     const [movies, setMovies] = useState([]);
@@ -277,7 +276,7 @@ export default function Showtime({ params }) {
                         )}
                     </div>
                 </div>
-                <div className="w-3/5 md:w-1/2 lg:w-1/3 text-sm lg:text-[16px] text-white font-Kanit mt-4 mr-4 ">
+                <div className="w-3/5 md:w-1/2 text-sm lg:text-[16px] text-white font-Kanit mt-4 mr-4 ">
                     <p className="text-[--gold] text-[10px] md:text-[12px]"> {movies.startDate} - {movies.endDate}</p>
                     <p className="text-[14px] font-blod md:text-2xl"> {movies.movie_name} </p>
                     <div className="flex items-center">
@@ -292,17 +291,17 @@ export default function Showtime({ params }) {
                     </div>
                     <div className='flex gap-4 mt-4'>
                         {movies.Tag && movies.Tag.map((item, index) => (
-                            <div key={index} className='text-[10px] md:text-[12px] text-white p-1.5 border-white rounded-2xl border-[2px]'>
+                            <div key={index} className='text-[10px] md:text-[12px] p-1.5 bg-white text-black border-white rounded-2xl border-[2px] font-semibold'>
                                 {item}
                             </div>
                         ))}
 
                     </div>
                     {movies.Sub && <div className='mt-2 md:mt-4'>
-                        <h3>Avalible Sub:</h3>
+                        <h3>Avalible Sub :</h3>
                         <div className='mt-2 md:mt-4 flex gap-4 '>
                             {movies.Sub.map((item, index) => (
-                                <div key={index}>
+                                <div key={index} className='px-2 py-1 bg-white text-black rounded'>
                                     {item}
                                 </div>
                             ))}
@@ -316,6 +315,8 @@ export default function Showtime({ params }) {
                 <h1 className='text-white font-Kanit text-2xl'>รอบภาพยนตร์</h1>
             </div>
             <SwiperDate onDateSelect={handleDateSelect} selectedDate={date}></SwiperDate>
+
+            
 
             {showtimes.length === 0 &&
                 <div className="text-center text-xl mt-12">
@@ -344,10 +345,14 @@ export default function Showtime({ params }) {
                     </div>
                 ))}
             </div>
+            {!selectedShowtime.Theater && (
+            <div className='mx-5 md:mx-20 my-4 text-red-500 font-Kanit text-sm md:text-base'>
+                *กรุณาเลือกโรงหนังและรอบฉายที่ต้องการ
+            </div>
+            )}
 
 
-
-            {selectedShowtime && showtimes.length !== 0 && (
+            {selectedShowtime.Theater && showtimes.length !== 0 && (
                 <div className=" my-20 font-Kanit md:mx-16">
                     <hr className="border-t-2 border-gray-300 my-4" />
 
@@ -380,7 +385,7 @@ export default function Showtime({ params }) {
 
                             {seats.map((rowSeats, rowIndex) => (
                                 <div key={rowIndex} className="flex mb-4 justify-center text-white  w-full ">
-                                    <span className='mx-1 md:mx-2'>{letters[rowIndex]}</span>
+                                    <span className='mx-1 mt-3 md:mx-2'>{letters[rowIndex]}</span>
                                     {rowSeats.map((seat) => (
                                         <div key={seat} id={seat} onClick={!isSeatBooked(seat) ? () => toggleSeat(seat) : undefined}
                                             className={`cursor-pointer text-center rounded mr-1 md:m-1 w-8 h-6 md:h-10 md:w-10  text-white rounded-t-2xl
@@ -393,7 +398,7 @@ export default function Showtime({ params }) {
                                         </div>
 
                                     ))}
-                                    <span className='mx-1'>{letters[rowIndex]}</span>
+                                    <span className='mx-1 mt-3 md:mx-2'>{letters[rowIndex]}</span>
                                 </div>
                             ))}
                         </div>
@@ -401,7 +406,7 @@ export default function Showtime({ params }) {
                             {userTier && <h6 className='text-sm text-red-500'>**ส่วนลด : {userTier.discount} % สำหรับสมาชิก {userTier.name}</h6>}
                             <h1 className='font-bold mx-2  text-lg '>SUMMARY</h1>
                             <div className='flex'>
-                                <img src={`/uploads/${movies.imageUrl}`} className='w-40 m-2'></img>
+                                <img src={`/uploads/${movies.imageUrl}`} className='w-40 h-40 object-cover m-2 rounded-lg'></img>
                                 <div className='flex flex-col mt-2 mx-2'>
                                     <p className='font-bold text-xl'>{movies.movie_name}</p>
                                     <div className="flex items-center">
@@ -456,7 +461,7 @@ export default function Showtime({ params }) {
                             <h1 className='font-bold mx-2'></h1>
                             <div className='flex '>
 
-                                <img src={`/uploads/${movies.imageUrl}`} className='m-2 w-40'></img>
+                                <img src={`/uploads/${movies.imageUrl}`} className='w-40 h-40 object-cover m-2 rounded-lg'></img>
                                 <div className='flex flex-col mt-2 mx-4 w-full justify-between'>
                                     <div>
                                         <p className='font-bold text-lg'>{movies.movie_name}</p>
