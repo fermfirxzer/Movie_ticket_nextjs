@@ -48,7 +48,7 @@ export default function Navbar() {
         <nav id="navbar" className='mx-auto'>
             <div className='py-5 px-4 md:px-12 flex justify-between items-center'>
                 <div className='flex gap-6 items-center '>
-                    <Link href="/" className='cursor-pointer text-2xl mr-3'>Movie Ticket</Link>
+                    <Link href="/" className='cursor-pointer text-3xl mr-3'>Movie Ticket</Link>
                     <Link href="/" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>หน้าแรก</Link>
                     <Link href="/moviebydate" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>หนังที่ฉายวันนี้</Link>
                     <Link href="/promotion" className='cursor-pointer text-sm hover:underline underline-offset-4 decoration-4 md:block hidden'>โปรโมชั่น</Link>

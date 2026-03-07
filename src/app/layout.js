@@ -8,9 +8,9 @@ export const metadata = {
   title: "Movie Ticket",
   description: "Movie Ticket - Book Your Movie Tickets Online",
   icons: {
-    icon: "/movie_ticket_logo.svg",
-    shortcut: "/movie_ticket_logo.svg",
-    apple: "/movie_ticket_logo.svg"
+    icon: "/movieticketicon-512.png",
+    shortcut: "/movieticketicon-512.png",
+    apple: "/movieticketicon-512.png"
   }
 };
 
