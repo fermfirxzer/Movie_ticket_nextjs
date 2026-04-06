@@ -10,6 +10,7 @@ import 'swiper/css/navigation';
 import { useRef, useState } from 'react';
 // Import required modules from Swiper
 import Image from 'next/image';
+import { formatDate } from '@/app/utils/formatdate';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
 
@@ -77,7 +78,7 @@ const SwiperComponent = ({ movies }) => {
               </div>
               <div className="flex justify-between w-4/5 mt-2">
                 <div className="w-1/2">
-                  <p className="text-[--gold] text-xs md:text-sm">{movie.startDate}</p>
+                  <p className="text-[--gold] text-xs md:text-sm">{formatDate(movie.startDate)}</p>
                   <div className='flex justify-between'>
                     <p className="text-sm md:text-lg lg:text-xl">{movie.movie_name.length > 15 ? movie.movie_name.slice(0, 15) + "..." : movie.movie_name}</p>
 

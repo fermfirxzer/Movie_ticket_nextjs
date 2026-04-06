@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import SwiperDate from '@/component/SwiperDate.jsx';
 import Loading from '@/component/Loading.jsx';
-
+import { formatDate } from '@/app/utils/formatdate';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -277,7 +277,7 @@ export default function Showtime({ params }) {
                     </div>
                 </div>
                 <div className="w-3/5 md:w-1/2 text-sm lg:text-[16px] text-white font-Kanit mt-4 mr-4 ">
-                    <p className="text-[--gold] text-[10px] md:text-[12px]"> {movies.startDate} - {movies.endDate}</p>
+                    <p className="text-[--gold] text-[10px] md:text-[12px]"> {formatDate(movies.startDate)} - {formatDate(movies.endDate)}</p>
                     <p className="text-[14px] font-blod md:text-2xl"> {movies.movie_name} </p>
                     <div className="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" /></svg>
@@ -298,8 +298,8 @@ export default function Showtime({ params }) {
 
                     </div>
                     {movies.Sub && <div className='mt-2 md:mt-4'>
-                        <h3>Avalible Sub :</h3>
-                        <div className='mt-2 md:mt-4 flex gap-4 '>
+                        <div className='mt-2 md:mt-4 flex gap-4 items-center'>
+                             <h3>Avalible Sub :</h3>
                             {movies.Sub.map((item, index) => (
                                 <div key={index} className='px-2 py-1 bg-white text-black rounded'>
                                     {item}
@@ -315,8 +315,6 @@ export default function Showtime({ params }) {
                 <h1 className='text-white font-Kanit text-2xl'>รอบภาพยนตร์</h1>
             </div>
             <SwiperDate onDateSelect={handleDateSelect} selectedDate={date}></SwiperDate>
-
-            
 
             {showtimes.length === 0 &&
                 <div className="text-center text-xl mt-12">

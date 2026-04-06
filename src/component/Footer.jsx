@@ -50,7 +50,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="text-center mt-8">
-          <p>&copy; 2024 MovieTicket.</p>
+          <p>&copy; {new Date().getFullYear()} MovieTicket.</p>
         </div>
       </div>
     </footer>
