@@ -27,12 +27,16 @@ export async function GET(req) {
             return new Response('Theater not found', { status: 404 });
         }
 
+        const now = new Date();
         const seats = await Seat.find({
-            theater_id: theater._id,  
-            Date:  { $eq: date },               
-            Time: time
-          
-        }).select('seat_id -_id');;
+            theater_id: theater._id,
+            Date: date,
+            Time: time,
+            $or: [
+                { status: 'success' },
+                { status: 'not paying', expires_at: { $gt: now } },
+            ],
+        }).select('seat_id -_id');
         return NextResponse.json(seats, { status: 200 });
     } catch (error) {
         console.error('Error fetching seats:', error);

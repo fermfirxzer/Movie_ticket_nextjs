@@ -12,7 +12,6 @@ export async function POST(req) {
   let event;
   try {
     const body = await req.text(); // Get the raw body
-    console.log("Request body:", body);
 
     // Verify the signature
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
@@ -28,11 +27,8 @@ export async function POST(req) {
     case 'checkout.session.completed':
       const session = event.data.object;
       const metadata = session.metadata;
-      console.log(metadata);
       if (metadata.type === 'seat') {
-        console.log('Seat purchase successful for session:', session.id);
       try {
-
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seat`, {
           method: 'POST',
           headers: {
@@ -70,7 +66,6 @@ export async function POST(req) {
       }
     }
   }
-
   // Acknowledge receipt of the event
   return NextResponse.json({ received: true });
 }

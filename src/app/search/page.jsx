@@ -66,7 +66,7 @@ const Explore = () => {
 
     return (
         <div>
-            <div className='font-Kanit mx-1 lg:mx-40 xl:mx-56'>
+            <div className='font-Kanit mx-1 lg:mx-40 xl:mx-56 min-h-screen'>
                 <div className="lg:mx-9 mt-6 flex justify-center px-4 md:px-24">
                     <div className="relative w-full md:w-1/2 lg:w-1/3">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer">
@@ -76,7 +76,6 @@ const Explore = () => {
                         </div>
                         <input
                             type="text"
-                            
                             value={searchQuery||''}
                             placeholder="Search for movies..."
                             className="w-full pl-10 px-4 py-2 rounded-md border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-[--gold]"
@@ -108,7 +107,7 @@ const Explore = () => {
                 {/* Movie list */}
                 <div className='flex flex-wrap gap-3 md:gap-4 align-center'>
                     {movies.length === 0 ? (
-                        <div className='h-[50vh] w-full flex justify-center items-center'>
+                        <div className='h-[50vh] w-full flex justify-center mt-4'>
                         <p className='error'>
                             Movie not found
                             </p>

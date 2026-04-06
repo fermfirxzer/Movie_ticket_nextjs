@@ -11,8 +11,8 @@ import QRCode from 'qrcode';
 export async function POST(req) {
     await connectMongoDB();
     const body = await req.json(); // Parse JSON body
-    const {  selectedSeats: selectedSeatsString, moviename, date,showid, theater, time, username,total_amount } = body;
-    const selectedSeats = typeof selectedSeatsString === 'string' ? JSON.parse(selectedSeatsString) : selectedSeatsString;
+    const {  seatIds, moviename, date,showid, theater, time, username,total_amount } = body;
+    // const selectedSeats = typeof selectedSeatsString === 'string' ? JSON.parse(selectedSeatsString) : selectedSeatsString;
     console.log("This is seat api");
     console.log(body);
     const session=await mongoose.startSession();
@@ -21,19 +21,6 @@ export async function POST(req) {
         const userId = await User.findOne({ username: username }).select('_id point');
         const movie_id = await Movie.findOne({ movie_name: decodeURI(moviename) }).select('_id');
         const theater_id = await Theater.findOne({ theater_name: theater }).select('_id');
-        const seatIds = Object.keys(selectedSeats);
-
-        const takenSeats = await Seat.find({
-            seat_id: { $in: seatIds },
-            Time: time,
-            Date: date,
-            theater_id: new mongoose.Types.ObjectId(theater_id),
-        });
-
-        if (takenSeats.length > 0) {
-            return NextResponse.json({ message: "Seat already Taken!" }, { status: 400 });
-        }
-
         // Create the history entry first
         const history = new History({
             user_id: new mongoose.Types.ObjectId(userId),
@@ -49,36 +36,31 @@ export async function POST(req) {
         const savedHistory = await history.save();
         const historyId = savedHistory._id;
 
+        const parsedSeatIds = JSON.parse(seatIds);
+        const seatObjectIds = parsedSeatIds.map(id => new mongoose.Types.ObjectId(id));
+        await Seat.updateMany({ _id: { $in: seatObjectIds } }, { status: 'success', history_id: historyId });
+        const updatedSeats = await Seat.find({ _id: { $in: seatObjectIds } }).select('seat_id price');
+
         const qrData = {
             history_id: historyId, // Include the history ID here
             movie: moviename,
             theater_name: theater,
             show_date: date,
             show_time: time,
-            seats: Object.entries(selectedSeats).map(([seatId, price]) => ({
-                seat_id: seatId,
-                price: price,
+            seats: updatedSeats.map(seat => ({
+                seat_id: seat.seat_id,
+                price: seat.price,
             }))
         };
         const qrCodeDataUrl = await QRCode.toDataURL(JSON.stringify(qrData));
         savedHistory.qrcode = qrCodeDataUrl;
         await savedHistory.save(); // Save the updated history entry
-
-        const seatDocs = Object.entries(selectedSeats).map(([seatId, price]) => ({
-            seat_id: seatId, 
-            price: price,
-            theater_id: new mongoose.Types.ObjectId(theater_id),
-            Date: date, 
-            Time: time,
-            history_id: new mongoose.Types.ObjectId(historyId)
-        }));
-        await Seat.insertMany(seatDocs);
-        const count_seat=seatIds.length;
+        const count_seat=parsedSeatIds.length;
         userId.point=userId.point+count_seat;
         await userId.save();
         await session.commitTransaction();
         session.endSession();
-        return NextResponse.json({ message: "Booking successful", qrCode: qrCodeDataUrl }, { status: 200 });
+        return NextResponse.json({ message: "Booking successful" }, { status: 200 });
 
     } catch (err) {
         await session.abortTransaction();

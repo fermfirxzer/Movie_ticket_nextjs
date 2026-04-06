@@ -66,7 +66,12 @@ export default function Promotion() {
         setSelectedRewards((prev) => {
             const newTotal = prev.includes(rewardId) ? total - rewardPoint : total + rewardPoint;
             console.log(newTotal)
-            if (newTotal > point) {
+            if (prev.some(reward => reward.rewardId === rewardId)) {
+                    // Remove the reward if already selected
+                    setTotal(total - rewardPoint);
+                    return prev.filter(reward => reward.rewardId !== rewardId);
+            } 
+            else if (newTotal > point) {
                 Swal.fire({
                     icon: 'error',
                     title: 'แต้มไม่เพียงพอ',
@@ -76,18 +81,9 @@ export default function Promotion() {
 
                 return prev; // Do not update selection
             } else {
-
-                // Update total points
-
-                if (prev.some(reward => reward.rewardId === rewardId)) {
-                    // Remove the reward if already selected
-                    setTotal(total - rewardPoint);
-                    return prev.filter(reward => reward.rewardId !== rewardId);
-                } else {
                     setTotal(newTotal);
                     // Add the reward (store both rewardId and rewardName)
                     return [...prev, { rewardId, rewardName }];
-                }
             }
         });
     };
@@ -207,7 +203,7 @@ export default function Promotion() {
 
                 <div className="flex flex-wrap gap-4 text-white">
                     <h1 className="w-full text-3xl  mt-12 ">User : {session?.user?.username}</h1>
-                    {userTier && <div><p> ระดับสมัครสมาชิก : {userTier.tier} ส่วนลด : {userTier.discount}</p>
+                    {userTier && <div><p> ระดับสมัครสมาชิก : {userTier.tier} ส่วนลด : {userTier.discount} %</p>
                         <p>
                             หมดอายุ :{' '}
                             {new Date(userTier.tier_expiration_date).toLocaleDateString('en-EN', {
@@ -266,7 +262,7 @@ export default function Promotion() {
                         <h1 className="text-xl md:text-3xl mt-12">แลกของรางวัล</h1>
                         <h1 className="text-xl md:text-3xl mt-12">{point} points</h1>
                     </div>
-                    <div className='mx-auto flex flex-wrap justify-center items-center gap-12 text-[14px] md:text-xl'>
+                    <div className='mx-auto flex flex-wrap justify-center  gap-12 text-[14px] md:text-xl'>
                         {Item && Item.map((reward) => (
                             <div key={reward.id} className={`duration-200 w-60 lg:w-1/4 xl:w-1/5 p-2 shadow-lg shadow-gray-500/50 cursor-pointer ${selectedRewards.some(selected => selected.rewardId === reward.id) ? 'opacity-50' : ''}`}>
                                 <div className="p-4">
@@ -275,7 +271,7 @@ export default function Promotion() {
                                     </div>
                                 
                                     <div className="my-4 flex justify-between">
-                                        <h2 className="w-3/5">{reward.name}</h2>
+                                        <h2 className="w-2/5">{reward.name}</h2>
                                         <h2>{reward.points} แต้ม</h2>
                                     </div>
                                     <div

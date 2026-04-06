@@ -65,14 +65,14 @@ export default function Mainpage(){
             </div>
           )}
           <main className="bg-black text-white font-Kanit min-h-screen">
-            <div className="container mx-auto px-4 md:px-8 lg:px-12 py-8">
+            <div className="container mx-auto px-6 md:px-10 lg:px-16 py-8">
                 {/* section: ongoing movies */}
-                <section className="mb-12">
-                    <header className="flex items-center justify-start mb-4 -ml-3.5">
+                <section className="mb-16">
+                    <header className="flex items-center justify-start mb-6">
                         <h1 className="text-3xl font-bold">กำลังฉาย</h1>
                     </header>
                     {ongoingmovies && ongoingmovies.length > 0 ? (
-                        <div className="mt-6">
+                        <div className="mt-6 -mx-6 md:-mx-10 lg:-mx-16 px-6 md:px-10 lg:px-16 overflow-x-hidden">
                             <SwiperComponent movies={ongoingmovies} />
                         </div>
                     ) : (
@@ -82,11 +82,11 @@ export default function Mainpage(){
 
                 {/* section: upcoming movies */}
                 <section>
-                    <header className="flex items-center justify-start mb-4 -ml-3.5">
+                    <header className="flex items-center justify-start mb-6">
                         <h1 className="text-3xl font-bold">โปรแกรมหน้า</h1>
                     </header>
                     {upcomingmovies && upcomingmovies.length > 0 ? (
-                        <div className="mt-6">
+                        <div className="mt-6 -mx-6 md:-mx-10 lg:-mx-16 px-6 md:px-10 lg:px-16 overflow-x-hidden">
                             <SwiperComponent movies={upcomingmovies} />
                         </div>
                     ) : (

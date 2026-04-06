@@ -7,7 +7,7 @@ import './css/swiper.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 // Import required modules from Swiper
 import Image from 'next/image';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
@@ -15,15 +15,20 @@ import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
 const SwiperComponent = ({ movies }) => {
   const swiperRef = useRef(null);
+  const [showNavigation, setShowNavigation] = useState(true);
 
   return (
-    <div className="relative transform scale-110 origin-center">
-      <div onClick={() => swiperRef.current?.slidePrev()} className="swiper-button-prev !top-[130px] md:!top-[165px] !left-[-13px] !text-[#595959] hover:!text-white" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-5f2d314efc736a51" aria-disabled="false">
+    <div className="relative">
+      {showNavigation && (
+        <>
+          <div onClick={() => swiperRef.current?.slidePrev()} className="swiper-button-prev !top-[130px] md:!top-[165px] !left-[-13px] !text-[#595959] hover:!text-white" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-5f2d314efc736a51" aria-disabled="false">
 
-      </div>
-      <div onClick={() => swiperRef.current?.slideNext()} className="swiper-button-next !top-[130px] md:!top-[165px] !right-[-13px] !text-[#595959] hover:!text-white !text-white" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-5f2d314efc736a51" aria-disabled="false">
+          </div>
+          <div onClick={() => swiperRef.current?.slideNext()} className="swiper-button-next !top-[130px] md:!top-[165px] !right-[-13px] !text-[#595959] hover:!text-white !text-white" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-5f2d314efc736a51" aria-disabled="false">
 
-      </div>
+          </div>
+        </>
+      )}
       {/* Swiper Component */}
       <Swiper
         modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -34,6 +39,12 @@ const SwiperComponent = ({ movies }) => {
         loop={false}
         onSwiper={(swiper) => {
           swiperRef.current = swiper; // Save Swiper instance for navigation control
+          // Show navigation only if there are enough slides
+          setShowNavigation(swiper.slides.length > swiper.params.slidesPerView);
+        }}
+        onBreakpoint={(swiper) => {
+          // Update navigation visibility when breakpoint changes
+          setShowNavigation(swiper.slides.length > swiper.params.slidesPerView);
         }}
         breakpoints={{
           640: { slidesPerView: 2 },
@@ -47,20 +58,20 @@ const SwiperComponent = ({ movies }) => {
           <SwiperSlide key={index}>
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center w-full" id="movie-card">
-                <div className="relative w-4/5 h-60 md:h-80">
-                  <Image
-                    src={`/uploads/${movie.imageUrl}`}
-                    fill={true}
-                    alt={movie.movie_name}
-                    className="rounded-xl object-cover"
-                    onError={(e) => {
-                  
-                    }}
-                  />
-                </div>
-                <Link href={`showtime/${movie.movie_name}`} id="hover-container">
-                  <div className="opacity-0 hover:opacity-100 absolute inset-0 bg-black bg-opacity-70 text-white transition-opacity duration-300 flex flex-col justify-center items-center">
-                    <input type="button" value="ดูเพิ่มเติม" className="bg-gray-100 text-black w-4/6 rounded cursor-pointer" />
+                <Link href={`showtime/${movie.movie_name}`} id="hover-container" className="w-4/5">
+                  <div className="relative w-full h-60 md:h-80">
+                    <Image
+                      src={`/uploads/${movie.imageUrl}`}
+                      fill={true}
+                      alt={movie.movie_name}
+                      className="rounded-xl object-cover"
+                      onError={(e) => {
+                    
+                      }}
+                    />
+                    <div className="opacity-0 hover:opacity-100 absolute inset-0 bg-black bg-opacity-70 text-white transition-opacity duration-300 flex flex-col justify-center items-center">
+                      <input type="button" value="ดูเพิ่มเติม" className="bg-gray-100 text-black w-4/6 rounded cursor-pointer" />
+                    </div>
                   </div>
                 </Link>
               </div>
